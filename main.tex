@@ -651,7 +651,16 @@ level --- the model invokes AST search, file navigation, compilation, and test-e
 gathering failure information before committing patches~\cite{ossfuzzfix2024}. Reported efficacy
 on real OSS-Fuzz vulnerabilities remains far from saturation (52.4\% on a curated set under the
 paper's conditions), and validation is sanitizer/test-based rather than exploit-aware ---
-precisely the gap AIxCC's oracle-gaming taxonomy names.
+precisely the gap AIxCC's oracle-gaming taxonomy names. CVE-Genie reproduces approximately 51\%
+of CVEs published in 2024--2025 with verifiable exploits at an average cost of \$2.77 per
+CVE~\cite{cvegenie2025}, demonstrating the feasibility of automated vulnerability reproduction
+at scale. Recent surveys systematize the broader landscape of LLM-based automated program
+repair~\cite{llmaprsurvey2026}, identifying four paradigms: fine-tuning, prompting, procedural,
+and agentic workflows. On the security-specific repair side, tree-of-thought prompting with
+execution-log feedback achieves substantially higher patch correctness than direct generation on
+real-world vulnerability datasets~\cite{logsinpatchesout2025}, suggesting that structured
+reasoning over repair candidates --- rather than single-shot generation --- is an important
+design choice for B3 systems.
 
 \subsection{What the Competition Taught About Repair Quality}
 AIxCC provides the corpus's largest competition-based stress test of automated patching. Its lessons
@@ -668,17 +677,17 @@ minutes~\cite{taafc2025}, an infrastructure constraint on B3 scaling that no ben
 \subsection{Blind Spots}
 Four gaps bound current evidence. (i)~\emph{Exploit-aware validation}: outside competition
 scoring, no corpus system validates that a patch removes exploitability rather than a symptom;
-the PoV-as-oracle literature begins and largely ends with AIxCC artifacts. (ii)~\emph{Regression
-and redeployment}: B4 exists in our corpus solely as foundation-documented ecosystem transition
---- OpenSSF SIG hosting, \$200K-per-team integration funding, Team Atlanta's \$2M prize
-recycling into continuous hunting~\cite{openssfaixcc2026,tobbuttercup2025,taafc2025} --- never
-as an academic evaluation target with regression metrics. (iii)~\emph{Attacker adaptation}: no
-included work studies adversaries reacting to deployed auto-patchers; the offensive side of B3
-is absent. (iv)~\emph{Interaction with discovery}: patching and discovery are evaluated as
-separate competencies everywhere except inside CRS pipelines; whether autonomous discovery
-changes patch demand or maintainer workload at ecosystem scale is unmeasured (DARPA has not yet
-released the telemetry that would permit it~\cite{tobbuttercup2025}). These gaps seed the
-roadmap experiments of Sec.~\ref{sec:roadmap}.
+the PoV-as-oracle literature begins and largely ends with AIxCC artifacts~\cite{patcheval2025}.
+(ii)~\emph{Regression and redeployment}: B4 exists in our corpus solely as foundation-documented
+ecosystem transition --- OpenSSF SIG hosting, \$200K-per-team integration funding, Team Atlanta's
+\$2M prize recycling into continuous hunting~\cite{openssfaixcc2026,tobbuttercup2025,taafc2025}
+--- never as an academic evaluation target with regression metrics. (iii)~\emph{Attacker
+adaptation}: no included work studies adversaries reacting to deployed auto-patchers; the
+offensive side of B3 is absent. (iv)~\emph{Interaction with discovery}: patching and discovery
+are evaluated as separate competencies everywhere except inside CRS pipelines; whether autonomous
+discovery changes patch demand or maintainer workload at ecosystem scale is unmeasured (DARPA has
+not yet released the telemetry that would permit it~\cite{tobbuttercup2025}). These gaps seed
+the roadmap experiments of Sec.~\ref{sec:roadmap}.
 
 % sections/08-coevolution.tex — graded coupling edges; headline per protocol v4 claim ledger.
 \section{The Co-Evolution Loop: Graded Evidence}
@@ -1159,7 +1168,6 @@ rissebohme-wrongexam2024 & 2024 &  & n-a & n-a & validity-critique & --/--/-- & 
 \bottomrule
 \end{tabular}}
 \end{table*}
-\clearpage
 % appendix-b.tex — search log summary (full: search-log.md)
 \section{Search Log Summary}
 \label{app:search}
@@ -1175,7 +1183,6 @@ D4 vulnerability repair LLM (24); subtotal 214. Streams B/C: targeted retrieval 
 verification entries in the artifact manifest. Executed 2026-08-26; full strings and failure
 notes in repository file \texttt{search-log.md}.
 
-\clearpage
 % appendix-c.tex — dated AIxCC / industrial timeline (F3 data source)
 \section{AIxCC and Industrial Timeline}
 \label{app:timeline}
