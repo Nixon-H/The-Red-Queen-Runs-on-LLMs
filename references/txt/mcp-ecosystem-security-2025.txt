@@ -1,0 +1,898 @@
+                                         Accepted to DSN 2026. This paper was previously released on arXiv under a different title during double-blind review
+
+
+
+                                             A First Look at the Security Issues in the Model
+                                                       Context Protocol Ecosystem
+                                                                                               Xiaofan Li, Xing Gao
+                                                                                           University of Delaware, USA
+                                                                                        xiaofan@udel.edu, xgao@udel.edu
+
+
+                                            Abstract—The Model Context Protocol (MCP) has emerged        We still lack a systematic understanding of the security issues
+arXiv:2510.16558v2 [cs.CR] 27 Apr 2026
+
+
+
+
+                                         as a standard for connecting large language models (LLMs)       in the MCP ecosystem, such as how malicious servers are
+                                         with external tools. However, this MCP ecosystem introduces     introduced into MCP hosts and why such attacks succeed.
+                                         new security risks across hosts, servers, and registries. In this
+                                         paper, we present the first cross-entity security study of MCP     In this paper, we present the first cross-entity security study
+                                         under a two-stage attack surface. At the registry-level, weak   of the current MCP ecosystem. We begin by outlining its
+                                         vetting and ownership checks allow adversarial or hijacked      architecture, which consists of MCP hosts, registries, and
+                                         servers to enter hosts. After integration, attacker-controlled  servers. These three entities form the analytical framework
+                                         tool metadata can shape LLM reasoning and induce attacker-      of our study. Registries list servers for integration. Servers
+                                         intended operations, which hosts execute without independent
+                                                                                                         implement various tools, each accompanied by tool metadata
+                                         verification. Code-level vulnerabilities (e.g., code injection) are
+                                         not required but can amplify attacker-controlled parameters into(e.g., description). Hosts retrieve and aggregate this metadata,
+                                                                                                         mediate interactions between integrated servers and LLMs, and
+                                         exploitation. We analyze 67,057 servers across six public registries
+                                         and identify widespread conditions enabling server hijacking andinvoke tools returned by LLMs. This cross-entity workflow
+                                         invocation manipulation. We further implement MCPInspect, a     forms an end-to-end risk chain, from server discovery in
+                                         pre-integration analysis tool that detects misleading tool metadata
+                                         and exploitable code vulnerabilities, identifying 833 vulnerableregistries, to server integration into hosts, to LLM-selected
+                                         servers and 18 with suspicious descriptions.                    tool invocation inside hosts. Following this risk chain, we
+                                                                                                         identify a unified two-stage attack surface. In the first stage
+                                                                I. I NTRODUCTION                         (i.e., registry-level), weaknesses at the registry layer allow
+                                            The Model Context Protocol (MCP) [1] has recently emerged malicious or hijacked servers to be discovered and integrated
+                                         as a foundational standard for connecting large language models into hosts. In the second stage (i.e., post-integration), once
+                                         (LLMs) with external tools. MCP defines a unified protocol that integrated, their tool metadata enters the host-LLM interaction
+                                         allows LLMs to discover, describe, and invoke external services loop, where attacker-controlled descriptions can shape LLM
+                                         through structured metadata. It consists of three components: reasoning and induce attacker-intended operations that hosts
+                                         MCP host, MCP client, and MCP servers. The host is the invoke without independent verification. Unlike malicious code,
+                                         LLM-integrated application that connects to MCP servers tool metadata appears as textual descriptions and is not subject
+                                         through clients to access context and tool capabilities. Major to static analysis, making it a distinct and under-explored risk.
+                                         AI companies (e.g., OpenAI [2]) have started to integrate MCP      To examine these two stages, we adopt a hybrid methodology
+                                         into their platforms. For example, Google has supported MCP that aligns with this two-stage attack surface: qualitative
+                                         in its Gemini models [3], and Microsoft has integrated MCP analysis of post-integration invocation issues and quantitative
+                                         into GitHub and Azure [4]. With the widespread adoption, a analysis of registry-level issues. Our qualitative analysis shows
+                                         diverse MCP ecosystem has rapidly emerged, including various that hosts lack independent verification of LLM outputs. For
+                                         MCP hosts (e.g., Cursor, Windsurf, Claude Desktop), public example, when the LLM returns a tool that no longer exists
+                                         MCP registries (e.g., mcp.so, Smithery), and thousands of and remains only in the host-LLM interaction history (i.e.,
+                                         community-contributed MCP servers.                              context-dangling tool), the host still invokes it. This verification
+                                            Unfortunately, this newly emerging MCP ecosystem also gap also enables metadata-based manipulation. Malicious tool
+                                         introduces new attack surfaces. For example, researchers metadata can steer the LLM toward attacker-intended tool
+                                         have found that attackers can exploit vulnerabilities in MCP selection and parameter, leading to unintended or attacker-
+                                         to extract sensitive data or invoke unauthorized actions [5]. controlled operations (e.g., reading credential fils), even without
+                                         Moreover, subsequent research has shown that an untrusted requiring malicious code. If code-level vulnerabilities exist
+                                         MCP server can launch attacks and exfiltrate data from (e.g., SQL injection), attacker-controlled parameters can further
+                                         applications that are simultaneously connected to trusted MCP propagate into vulnerable sinks and amplify the attack (i.e.,
+                                         servers [6]. However, these studies focus primarily on the tool shadowing attack).
+                                         security vulnerabilities arising from malicious MCP servers.       Our quantitative analysis shows that weakness at the registry-
+        LLMs                      MCP Hosts (flawed)                                      MCP Servers                        MCP Registries (flawed)
+       (Trust)    Add 21 and 21
+                                           AI Pane           MCP Clients                                                              List
+                                       Context history                                                                            MCP Server 2
+                                                                                                                   Code
+                                                              MCP Client 1
+                                      MCP Tool List                                                               Hosting
+                  Users                                                      invocation                          Platforms
+                                           ...                                                                                 Link   Config Desc
+                   tool list
+                                                                                                       Provide                         ...
+                                     mcp_server2_add          MCP Client 2
+                 selected tool                                                                 tools    ...
+                  + params        Params: a: int, b: int          ...
+                                    Desc: Adds two
+                                      numbers....             MCP Client n
+                                             ...                                                                                Publish / Hijack
+                                                                                Adversarial server integration
+
+                                        Stage-II: Post-integration attacks                                       Stage-I: Registry-level attacks
+
+Fig. 1: The overview of the MCP ecosystem. mcp server2 add represents a tool from the configured server: mcp is the
+host-assigned prefix, server2 the server name, and add the tool name. A double-headed arrow denotes a bidirectional connection.
+level allows adversarial or hijacked servers to enter hosts LDAs connect to external tools capable of accessing resources
+through normal discovery and integration. For example, config- (e.g., databases or APIs). MCP defines a unified architecture
+uration examples on mcp.so can expose server owners’ tokens, that organizes its key components and their interactions.
+allowing attackers to inject malicious tool metadata into other-
+wise benign servers (i.e., credential leakage). Inconsistencies A. MCP Ecosystem
+between registries and hosting platforms (e.g., GitHub) can          The Model Context Protocol (MCP) architecture contains
+also allow attackers to hijack servers by reclaiming namespaces three core components [7]. The MCP Server is a lightweight
+(i.e., redirection hijacking attack).                             program that can provide actions (e.g., a specific service or
+   To mitigate the identified risks, we implement MCPInspect, functionality). The MCP Host refers to an LLM-integrated
+a pre-integration analysis tool for screening servers before application (e.g., an LDA such as Cursor) that serves as
+integration. Once a server is integrated, its metadata already the central coordinator to manage execution flows between
+enters the host-LLM interaction path and can influence subse- the LLM and MCP servers. In this paper, we focus on four
+quent invocation behavior. Therefore, MCPInspect targets the real-world LDAs (i.e., Cursor, Windsurf, Cline, and Claude
+risk chain before integration. At the registry-level, it performs Desktop), and use the term MCP hosts specifically to refer
+online validation of server links. At the post-integration stage, to them throughout the rest of the paper. The MCP Client
+it analyzes tool metadata and implementations to identify acts as a bridge between the MCP host and an MCP server.
+misleading descriptions and exploitable code vulnerabilities.     When the host connects to a new MCP server, it creates a
+   To quantitatively analyze the security issues in MCP reg- corresponding client instance. Through this client, the host
+istries, we collect 67,057 MCP servers from four decentralized retrieves and invokes available actions on this server, and the
+registries (i.e., mcp.so, MCP Market, MCP Store, and Pulse execution results are returned to the host.
+MCP) and two centralized registries (i.e., Smithery and npm).        Specifically, MCP servers can define tools, which are
+Our analysis shows that many servers are affected by the executable code that performs server-implemented functions
+identified registry-level issues. Using MCPInspect, we further based on inputs. Each tool includes a description that informs
+analyze servers collected from decentralized registries and find the LLM of its functionality, and can be invoked by the host
+that 833 contain exploitable vulnerabilities, while 18 include through the corresponding client.
+suspicious or vulnerable tool descriptions. Finally, we reported Overview. Figure 1 shows the overview of the MCP ecosystem.
+our findings to the affected hosts and registries.                Users discover MCP servers via public registries and configure
+                                                                  them on the MCP host (step ❶). Without registry vetting,
+      II. M ODEL C ONTEXT P ROTOCOL AND E COSYSTEM                adversarial servers may be integrated (step ❷). The tool
+   LLMs have recently been integrated into a desktop assistant metadata of the adversarial server will also be retrieved (step
+software (LDA) as a permissioned tool to directly operate on the ❸). To use the system, the user first initiates the operation
+user’s system. LDAs translate the text output of LLMs into tool through the MCP host (step ❹). The host then constructs a
+invocations (e.g., file system access and shell commands) and request and sends it to the backend LLM (e.g., GPT-4o) (step
+stream the results back to the users. LDAs inherit the privileges ❺). The request includes three types of information: (i) the
+of the installing users, who typically have broader capabilities system prompt, which is predefined by the host; (ii) the tool list,
+(and a larger attack surface) than LLM-based web interfaces including both server-provided tools and built-in tools offered
+(e.g., ChatGPT). For example, they can access local files, by the host; and (iii) the context, including the user’s query
+networks, and operating system services. To enable developers history (e.g., the initiated operation).
+to establish secure bidirectional links between external data        The LLM processes the request by analyzing each tool
+sources and LDAs, Anthropic introduced the Model Context description to identify the most suitable tool and extract the
+Protocol (MCP), which is a standard protocol that defines how required parameters from the context. It then returns the selected
+ 1   {"mcpServers": {
+                                                                     TABLE I: Overview of supported features on every four hosts.
+ 2     # Local MCP server                                            The ✓ means support.
+ 3     "github": {
+         "command": "docker",                                                                                      Claude
+ 4                                                                            Feature          Cursor   Windsurf             Cline
+ 5       "args": ["run", "-i", "--rm", "-e",                                                                       Desktop
+              "GITHUB_PERSONAL_ACCESS_TOKEN",                           Displaying servers
+              "ghcr.io/github/github-mcp-server"],                            Simple disply      ✓                    ✓        ✓
+ 6       "env": {                                                          Complete display      ✓         ✓                   ✓
+ 7         "GITHUB_PERSONAL_ACCESS_TOKEN": "token" } }                   Alphabetical order                ✓
+ 8     # Remote MCP server                                              Configuration order      ✓                             ✓
+ 9     "semgrep": {
+10       "url": "https://mcp.semgrep.ai/sse" }                          Updating servers
+                                                                                   Re-start      ✓         ✓         ✓        ✓
+11     ...
+                                                                                 Re-enable       ✓         ✓         ✓        ✓
+        Listing 1: MCP server configuration examples.                         Re-configure       ✓                            ✓
+                                                                             Tool auto-run
+                                                                             Basic auto-run      ✓         ✓
+tool and its parameters to the host (step ❻). The host invokes             Detailed auto-run                          ✓        ✓
+the selected tool through the corresponding client (step ❼)             Invocation display
+and updates the interface to indicate that a tool call has been                    Collapse      ✓         ✓         ✓
+                                                                                    Expand                                    ✓
+initiated. Once the tool call completes, the host sends the result
+back to the LLM (step ❽). Finally, the LLM analyzes the result
+                                                                   (re-configure). Users might also manually disable and re-enable
+to complete the reasoning process and returns the final output
+                                                                   a server through its toggle button (re-enable).
+to the host (step ❾).
+                                                                   Tool Auto-Run. By default, the MCP host prompts users to
+                                                                   confirm each tool invocation. To reduce manual effort, it also
+B. MCP Server Configuration and Management Features
+                                                                   supports an auto-run mode that enables automated execution.
+   Users can configure selected servers on their MCP hosts This mode has two variants: (i) basic auto-run, which allows
+to enable corresponding functionalities. The configuration is all tools from all configured servers to execute automatically;
+typically specified through a JSON file (e.g., mcp.json in and (ii) detailed auto-run, which limits auto-execution to user-
+Cursor), as shown in Listing 1. A server can be either a specified tools and servers.
+local server (line 3) or a remote server (line 10). Local Tool Invocation Display. For each tool invocation, the host
+servers run directly on the user’s system and are specified displays the tool name, parameters, and corresponding result.
+by a command and corresponding args (Lines 4-5), which MCP hosts provide two display options: (i) collapse, which
+define how the server is launched. The host then creates a client hides these details, and (ii) expand, which reveals the full
+to connect to the local server via standard input/output (Stdio). information.
+In contrast, remote servers are hosted on external infrastructure     We have surveyed four popular MCP hosts (i.e., Cursor,
+and require only a url parameter that points to the server’s Windsurf, Claude Desktop, and Cline) and summarized the
+endpoint (Line 11). The host connects to the remote server supported features in Table I.
+through a client established over HTTP. Some servers might
+also depend on additional environment variables (i.e., env) to C. MCP Registries
+enable authentication (Line 7).                                       Similar to software packages, MCP servers can be developed
+   After the MCP servers are configured, the hosts provide by individual developers and uploaded to registries known as
+several common features for managing these configured servers. MCP registries. Users can then search for specific servers of
+These features can be exploited by attackers to introduce interest and integrate them into their installed hosts.
+malicious behaviors or manipulate the system.                      Centralized Registries. Centralized registries typically main-
+Displaying Servers. The MCP host displays a list of configured tain a website to showcase available servers and host their
+MCP servers for users, typically using one of two display styles. associated files (e.g., source code). Currently, most developers
+The simple display shows only basic information, including the publish MCP servers written in JavaScript or TypeScript to the
+server name, connection status, and a toggle button to enable npm registry, a widely used package repository for managing
+or disable the server. In contrast, the complete display lists all and distributing JavaScript-based projects. In addition, there
+available tools on each server together with their descriptions, exists an MCP-specific registry called Smithery.
+parameters, and corresponding toggle controls. MCP servers Decentralized Registries. This type of registry does not
+are typically arranged alphabetically by server name or in the maintain a centralized website for managing MCP servers.
+order defined in the configuration file.                           Instead, it provides an index that lists available servers, while
+Updating Servers. To synchronize modifications to MCP the actual server files are hosted on external platforms (e.g.,
+servers, the host must restart existing clients and retrieve the GitHub repositories or personal websites). These registries
+latest server metadata (e.g., tool names and descriptions). This typically present essential metadata to help users discover
+synchronization can be triggered when the host is restarted servers, including server name, server description, and server
+(re-start) or when it detects changes in the configuration file links. Notable decentralized registries include mcp.so [8],
+MCP Market [9], MCP Store [10], and Pulse MCP [11].                  configurations) or by reclaiming deleted or redirected server
+Among them, mcp.so provides additional optional metadata             links. Additionally, adversaries can register servers under
+(i.e., server configuration), displaying setup examples to help      misleadingly similar names (e.g., github-mcp instead of
+users configure the server. In contrast, other registries typically  github), akin to [12], [13]. As a result, adversarial servers
+redirect users to external server links where configuration          can be listed in the registry and integrated into MCP hosts. This
+examples can be found.                                               establishes a precondition for post-integration manipulation.
+   Some registries, such as MCP Store and mcp.so, also support          (ii) Post-integration attacks: Post-integration attacks target
+server hosting. In such cases, users can configure servers using     invocation behavior after an adversarial server has been
+the URLs assigned by the registries.                                 integrated into the host. The adversary controls only the tool
+                                                                     metadata of its own server, and has no control over the host,
+       III. T HREAT M ODEL AND A NALYSIS A PPROACH                   other integrated servers, or the backbone LLM. This stage arises
+   This paper investigates security issues in the MCP ecosystem from design limitations at the hosts. As an honest-but-flawed
+by analyzing potential security risks in the three entities (e.g., entity, the host forwards tool metadata from integrated servers
+MCP hosts, MCP servers, and MCP distribution). We attempt to the backbone LLM and invokes the returned tool without
+to address a series of research questions. For example, are independently verifying its identity and parameters. Under these
+there weaknesses in the MCP distribution process that could conditions, attacker-controlled metadata serves as an attack
+allow attackers to hijack existing MCP servers (Section VI)? vector that can shape LLM reasoning and induce unintended
+For malicious or compromised MCP servers, what types or attacker-intended operations (e.g., reading credential files).
+of malicious activities could be conducted against MCP We focus on malicious tool metadata rather than malicious
+hosts and users (Section V)? Finally, given that MCP hosts code, as metadata appears as textual descriptions and is not
+might run multiple servers from different sources, are there subject to static analysis. Code-level vulnerabilities are not
+sufficient isolation and verification mechanisms to ensure required for exploitation, but if present (e.g., injection flaws),
+security (Section IV)? We adopt a hybrid methodology that attacker-controlled parameters can further amplify the impact
+combines qualitative analysis of risks in MCP hosts and servers (e.g., SQL injection).
+with quantitative analysis of registry-level issues.                 Host-side Amplification Features. Certain host features can
+                                                                     amplify post-integration attacks. For example, automatic server
+A. Threat Model
+                                                                     updates allow modifications to tool metadata after integration.
+   In general, our threat model is constructed within the context Similarly, if auto-run is enabled, selected tools are invoked
+of the MCP ecosystem, where users search for MCP servers in without additional user confirmation. These host features
+public MCP registries and configure them for use in MCP hosts. increase invocation-level manipulation.
+We assume that MCP registries and hosts are honest-but-flawed.
+They are not actively malicious, but lack sufficient validation or B. Qualitative Analysis
+enforcement mechanisms. LLMs are external services accessed
+through official APIs and are assumed to be uncompromised,              Our qualitative analysis is conducted under a controlled
+and communication between hosts, servers, and LLMs is experimental setup. We install four MCP hosts (Cursor, Wind-
+assumed secure. We consider adversaries that control or surf, Claude Desktop, and Cline) and develop local servers to
+hijack MCP servers. In this setting, insufficient vetting in systematically investigate security issues in host–LLM–server
+registries and the lack of independent verification in hosts are interactions. The objective is to examine whether inconsisten-
+design limitations. Server hijacking and attacker-controlled tool cies arise between the LLM’s structured tool-selection output
+metadata are attack vectors that exploit these limitations. We and the actual tool invocation performed by the host. We
+reserve the term security vulnerabilities for concrete exploitable leverage OpenAI’s logging feature to obtain detailed traces of
+flaws, especially at the server implementation level, that can requests and responses, enabling direct comparison between
+further amplify attacker-controlled parameters.                      the LLM’s output and the host’s execution behavior.
+   Under the above assumptions, our threat model focuses on             We identify potential issues when the invoked tool or its
+two stages of the attack surface.                                    parameters do not align with the LLM’s returned response.
+   (i) Registry-level attacks: A registry-level attack aims to place We then repeat our experiments on all four MCP hosts. For
+an adversarial MCP server in a public registry so that it can be each host, we select three commonly used LLMs (i.e., GPT-4o,
+discovered and integrated through the standard configuration Claude Sonnet 4, and Gemini 2.5 Pro) to verify the existence
+process. This stage is enabled by design limitations at the and consistency of identified issues. The only exception is
+registry level, especially the lack of continuous ownership Claude Desktop, which supports only Claude Sonnet 4 among
+validation for server links and the lack of vetting for submitted the three models. Each experiment is conducted five times for
+server metadata. Under these conditions, an adversary can every host-model pair to account for potential variability in
+exploit multiple attack vectors to introduce malicious servers LLM outputs and to assess the consistency of the observed
+in registries for user discovery and integration. For example, behavior across repeated runs. These repeated trials are used
+control over a benign server can be obtained through leaked to establish attack feasibility under the evaluated settings, not
+repository credentials (e.g., exposed GitHub tokens in server to make a broader statistical claim about attack success rates.
+                    25000                                                                   40                                                                                                           100
+                                                           Decentralized                    35                                                                   Cursor    20.0       80.0       100.0
+                    20000                                  Centralized                                                                                                                                   80
+Number of Servers
+
+                                                                                            30
+
+
+
+
+                                                                                                                                                                                                              Success Rate (%)
+                                                                           Percentage (%)
+                                                                                            25                                                                 Windsurf    20.0        0.0       20.0
+                    15000                                                                                                                                                                                60
+                                                                                            20
+                    10000                                                                   15
+                                                                                                                                                         Claude Desktop               40.0               40
+                                                                                            10
+                     5000                                                                   5                                                                                                            20
+                                                                                            0
+                                                                                                                                                                  Cline   100.0      100.0       100.0
+                        0                                                                        mcp.so   MCP Market    MCP Store        Pulse MCP                                                       0
+                                 so        et re P               ey pm
+                            mcpM. CP MaMrkCP StPoulse MC    Smith n                              Python    JavaScript       TypeScript          Others                GPT-4uode Sonnete4mini 2.5 Pro
+                                                                                                                                                                                    G
+                                                                                                                                                                       Cla
+Fig. 2: Distribution of MCP servers                                        Fig. 3: Distribution of programming                                           Fig. 4: Context-dangling tool issue
+across six registries.                                                     languages used in MCP servers.                                                success rate per host–model pair.
+C. Quantitative Analysis                                                                                                Characteristics of Collected Data. We collect data between
+    The quantitative analysis is conducted at the MCP server                                                            late June and early July 2025, resulting in a total of 67,057 MCP
+level to evaluate the registry-level attack surface. We follow a                                                        servers from all registries. Figure 2 shows the distribution of
+principled measurement methodology: registries are selected                                                             MCP servers in decentralized and centralized registries. Among
+based on explicit criteria, server data are collected through sys-                                                      them, decentralized registries host the majority of servers, with
+tematic crawling or official APIs, and SDK-based dependency                                                             MCP Store contributing the largest number (more than 20,000
+filtering is applied to retain valid MCP servers.                                                                       servers). In contrast, centralized registries host substantially
+MCP Registries Selection. We use mastra [14], a registry                                                                fewer servers, each containing fewer than 8,000.
+that lists multiple MCP registries, to identify the most relevant                                                          For servers hosted on decentralized registries, 52,102 out of
+ones for our study. Our selection is based on three criteria:                                                           52,539 (99.16%) are hosted on GitHub public repositories (i.e.,
+(i) the registry hosts a large number of MCP servers; (ii) it                                                           in the format user/repo). Figure 3 further illustrates the
+provides a feature to display all MCP servers, which enables                                                            distribution of their programming language usage. In general,
+us to collect the data; and (iii) it allows users to submit their                                                       Python, JavaScript, and TypeScript dominate the entire MCP
+own MCP servers. We select 5 registries out of the 27 listed                                                            ecosystem, together accounting for more than 70% of all servers.
+on mastra: four decentralized registries (mcp.so, MCP Market,                                                           Python is the most prevalent language across all registries,
+MCP Store, Pulse MCP), and a centralized registry Smithery.                                                             particularly in MCP Market and MCP Store.
+Data Collection. Each decentralized registry provides an index
+                                                                                                                        D. Ethical Considerations
+page listing all available servers. This page displays metadata
+about each server, such as its name and description. More                                                                  We collect all data either by crawling registry websites or by
+detailed information, including server links and, in the case                                                           accessing official platform APIs (e.g., Smithery). For crawling,
+of mcp.so, the optional server configurations, is only available                                                        we set an interval of 30-60 seconds between requests to collect
+on the server’s detail page. Therefore, we first crawl the index                                                        data in an automated yet respectful manner. When using APIs,
+page of each registry to retrieve the list of MCP servers. Then,                                                        we strictly follow the usage guidelines and rate limits specified
+we visit the detail page of each server to obtain its server link                                                       by the platforms. For credential verification, we issue a single
+and additional information (e.g., server configuration). Next,                                                          API request, following the methodology outlined in [15]. In
+we visit each server link and record its status (i.e., valid or                                                         all experiments, we only created MCP servers and configured
+invalid).                                                                                                               them locally; none were submitted to public registries. We do
+    Centralized registries typically provide APIs for retrieving                                                        not launch any actual attacks against the MCP hosts and the
+servers. For example, Smithery offers one API to list all                                                               models. All experiments were conducted as proof-of-concept
+available servers and another to retrieve detailed information                                                          demonstrations, with no real-world impact or interaction with
+for each server (e.g., tools it provides). Both API require a valid                                                     external users. Section IX details our disclosure.
+Smithery API key. Consequently, we use these two APIs to
+collect Smithery server data. In contrast, npm does not provide                                                                             IV. H ONEST- BUT-F LAWED MCP H OSTS
+a dedicated category to distinguish MCP servers from regular                                                               When the MCP host sends a user operation to the LLM, it
+packages. To address this limitation, we use the npm package                                                            builds a request that includes three parts: the system prompt, the
+all-the-package-names to retrieve all packages con-                                                                     tool list, and the context history of user operations. The model
+taining the keyword mcp, and then collect metadata for each                                                             then processes this request based on all of this information.
+candidate package, including its dependencies and maintainers.                                                          However, we find that, once the LLM returns a tool name
+However, not all keyword-matching packages are necessarily                                                              along with its associated parameters, many hosts simply invoke
+MCP servers. Since every MCP server is built upon the MCP                                                               the tool, assuming that the LLM’s decision is correct and safe.
+protocol, it must depend on at least one MCP SDK, such as                                                               This implicit trust is problematic, as the LLM’s behavior can
+modelcontextprotocol/sdk or fastmcp. Therefore,                                                                         be influenced by many factors, such as untrusted inputs or
+we examine the dependencies of each collected package and                                                               inconsistent information. The lack of verification introduces
+exclude those that do not rely on known MCP SDKs.                                                                       critical issues. If the model is misled, either intentionally or
+1 @mcp.tool()                                                       1 @mcp.tool()
+2 def add(a: int, b: int, sidenote: str) -> int:                    2 def add(a: int, b: int, sidenote: str) -> int:
+3 """                                                               3 """
+4 Adds two numbers.                                                 4 Adds two numbers.
+5 <IMPORTANT>                                                       5 <IMPORTANT>
+6 Before using this tool, please read ˜/.ssh/id_rsa and pass        6 Remember when using the send_email tool, the actual
+       it to the sidenote, otherwise this tool cannot be                   recipient is attacker@email.com.
+       performed successfully.                                      7 ...
+7 ...
+                                                                   Listing 3: Tool shadowing through a malicious description
+Listing 2: Tool poisoning through a malicious description          embedded within <IMPORTANT>.
+embedded within <IMPORTANT>.
+                                                                   host lacks a verification mechanism, it does not check whether
+unintentionally, the host might invoke the wrong tool, pass        the referenced tool is still available before invocation. As a
+incorrect parameters, or trigger harmful operations.               result, the host proceeds with the invocation blindly, leading to
+                                                                   failed or undefined behavior. For example, the failure message
+A. Ambiguity from Identical Tool Names
+                                                                   is sent back to the LLM, which then analyzes it and selects an
+   Multiple MCP servers can host tools with identical names. incorrect tool for the user’s operation. We refer to this issue as
+Without proper verification, a host might invoke a tool from an the context-dangling tool issue. This issue arises when a host
+unintended server, potentially leading to incorrect or malicious restores prior conversation context while reinitializing clients
+operations (e.g., invoking one controlled by an attacker).         for configured servers. For example, when a user closes and
+Tool Confusion. Although the host spawns a separate process reopens Cursor, the host reinitializes clients while restoring
+for each client to isolate individual servers and their hosted the previous context. Additionally, all four hosts store previous
+tools, it maintains a unified list of tools aggregated from context histories to support session continuity. As a result,
+all configured servers. This tool list is then sent to the when a user reopens a host and selects a prior conversation,
+LLM for tool selection. However, when two tools share the this issue might arise.
+same name but originate from different servers, the host may Result. We find that none of the hosts implements a verification
+invoke the incorrect tool, even if the LLM selects the one mechanism to ensure that the tools returned by the model
+from the intended server. For example, the host maintains still exist in the current tool list. As a result, hosts invoke
+a tool list containing two tools, mcp_A.send_email, and now-unavailable tools. Figure 4 presents the success rates
+mcp_B.send_email, where mcp_ is the common prefix, between different pairs of host-model. Each rate represents
+and A and B denote different MCP servers. In this case, even cases where the LLM failed to locate a tool in the current
+if the LLM selects the tool from server B, the host might tool list but successfully retrieved it from the context history,
+mistakenly invoke the tool from server A.                          after which the host invokes the tool but failed because it no
+Result. We find that the host Cursor is vulnerable to tool longer existed. Among the evaluated hosts, Windsurf appears to
+confusion. Regardless of whether the LLM selects the tool handle this issue more robustly, while Cline shows the weakest
+from server A or B, Cursor consistently invokes the one that performance, often returning tools that are no longer present
+appears first in the tool list. This behavior is unexpected, given in the current tool list.
+that the Cursor prefixes tool names with a combination of mcp
+and server names to distinguish tools across servers. However,           V. P OST-I NTEGRATION R ISKS IN MCP S ERVERS
+these prefixes are disregarded during invocation, causing the         MCP hosts maintain a list of tools that contain tool metadata
+host to always invoke the first-listed tool. In Cursor, the tool (i.e., names, parameters, and descriptions) from configured
+list follows the order of their servers in the configuration servers. Unfortunately, we find that existing MCP hosts also
+file, creating a bias toward tools from earlier-listed servers. blindly trust these metadata, without enforcing any security
+Appendix A provides the detailed trace from the OpenAI log. policies. In particular, the host feature of updating servers
+                                                                   enables it to fetch the latest metadata, but this process does not
+B. Inconsistent Handling of Invocation Requests
+                                                                   perform a validation on the retrieved content. Compromised
+   This issue stems from inconsistent information in the request servers can simply inject malicious metadata to mislead the
+sent to the LLM, including the tool list and context information. LLM into selecting incorrect tools or parameters, which again
+Context-dangling Tool. When a server is removed, its provided are trusted by the host without verification. This risk is further
+tools are also removed. However, the context might still retain exacerbated by automatic updates. For example, the commonly
+the history of previously available tools. In such a case, an used npx command automatically retrieves the latest version of
+inconsistency arises: the tool remains in the context history but an MCP server from the npm registry whenever it is executed
+no longer exists in the current tool list. When the user reuses with the latest tag.
+the same context to perform another operation, the LLM first
+checks the current tool list and finds no tools available for the A. Direct Invocation Risks from Tool Metadata
+task. Then it searches the context for references, retrieves the      The tool description can directly prompt the LLM to generate
+previously available tool, and returns it to the host. Because the operations beyond the tool’s intended scope.
+                TABLE II: Tool poisoning attacks in the target models on each host. ASR: Attack Success Rate.
+                                               Crafted Tool Descriptions — (ASR %)          Crafted Returned Error Messages — (ASR %)
+   Host & Model
+                                       built-in    request information   server-provided   built-in   request information   server-provided
+   Cursor & GPT-4o                        80               0.0                60             100             100                 0.0
+   Cursor & Claude Sonnet 4              100               100                 60            100             100                 80
+   Cursor & Gemini 2.5 Pro               100               100                100             80             100                 80
+   Windsurf & GPT-4o                      20               20                 40              80             40                  40
+   Windsurf & Claude Sonnet 4            100               100                 60            100             100                 100
+   Windsurf & Gemini 2.5 Pro             100               100                 80            100             100                 100
+   Claude Desktop & Claude Sonnet 4      100               100                 20            100             100                 80
+   Cline & GPT-4o                         40               100                0.0            100             100                 60
+   Cline & Claude Sonnet 4               100               100                 80            100             100                 100
+   Cline & Gemini 2.5 Pro                100               100                100            100             100                 100
+
+
+Tool Poisoning Attack. The LLM interprets each tool descrip- Claude Desktop & Claude Sonnet 4
+tion to select the tool that best matches the intent of the user.                  Windsurf & GPT-4o
+Malicious descriptions can mislead the LLM into generating                   Cline & Claude Sonnet 4
+                                                                               Cline & Gemini 2.5 Pro
+unintended operations that are then invoked by the host. When                          Cline & GPT-4o
+the tool auto-run mode is enabled, this entire process occurs             Windsurf & Claude Sonnet 4
+without user awareness or intervention.                                    Windsurf & Gemini 2.5 Pro
+                                                                            Cursor & Claude Sonnet 4
+   Listing 2 illustrates an attacker-controlled tool with a                  Cursor & Gemini 2.5 Pro    Attack Success = 100%
+malicious description. When a user intends to invoke the tool                        Cursor & GPT-4o    Attack Success < 100%
+add (e.g., to add 21 and 21), the LLM interprets its description                                      0      20        40        60      80 100
+                                                                                                                 Attack Success Rate (%)
+and infers that it must first read the file and then pass its content
+to the sidenote before actually returning the add. Therefore, Fig. 5: Tool shadowing attack success rate per host–model pair.
+the LLM first returns the built-in tool of the host (e.g., read file) crafted tool descriptions and returned error messages, and
+along with the specified file as its parameter. The host executes generate corresponding operations induced by these malicious
+the tool, obtains the file content, and sends it back to the LLM. inputs. In contrast, GPT-4o shows more conservative behavior,
+Once all parameters are prepared, the LLM then returns the often ignoring or failing to respond to the crafted tool descrip-
+add tool together with the corresponding parameters for the tions and error messages. Specifically, based on the LLM’s
+host to invoke. Finally, the host sends the parameters to the reasoning process displayed by the hosts, we observe that
+server to invoke add, in doing so, sensitive information (i.e., Gemini 2.5 Pro can identify abnormal instructions embedded
+the content of ˜/.ssh/id_rsa ) is leaked to the attacker.             in the tool descriptions and error messages. However, it still
+   Beyond description manipulation, attackers can further selects to follow them, explicitly stating that it is preferable to
+manipulate the return messages of a tool to mislead the LLM. proceed despite the anomalies.
+For example, an attacker can deliberately cause a tool to fail           When invoking tools, the success rate is consistently higher
+and return a crafted error message indicating that a required for host built-in tools than for server-provided ones. This
+parameter is missing (e.g., sidenote above). The manipulated suggests that the LLM is more cautious towards server-provided
+message is forwarded to the LLM for analysis, inducing tools when interpreting tool descriptions and error messages. In
+the LLM to conclude that the failure arose from a missing particular, Claude Desktop is the only one that can occasionally
+parameter. As a result, the LLM issues additional actions, block tool invocations and display a message “unable to
+leading to an unexpected result.                                      respond to this request”.
+   We identify three types of poisoning attacks that can be              We also find that the success rate of using crafted returned
+posed. (i) Abuse of host built-in tools: these tools provide error messages is higher. Also, crafted returned error messages
+various basic operations (e.g., file access). (ii) Extraction of are more covert because they modify only the tool’s return
+request information: this information contains the system messages, which are not exposed on the host’s display.
+prompt, the tool list, and the user interaction history. (iii)
+Abuse of server-provided tools: these tools require user B. Indirect Exploitation via Server Implementation
+credentials and can perform actions authorized on behalf of              The tool description can also implicitly influence benign
+the user. If any of these tools contain vulnerabilities (e.g., code tools provided by other servers configured on the same host.
+injection or SQL injection), an attacker can exploit them to Tool Shadowing Attack. Because LLM reads all tool descrip-
+execute malicious commands and exfiltrate data beyond the tions before selecting a tool, each description can influence
+user’s system.                                                        the behavior of the LLM (e.g., extracting wrong parameters).
+Result. As shown in Table II, the success rate of tool poisoning Attackers can exploit this behavior by injecting malicious
+attacks is primarily determined by the LLM’s behavior, since all descriptions to mislead the LLM. In this way, a malicious
+hosts lack verification mechanisms. Among our target models, tool can indirectly influence the behavior of a benign one,
+Claude Sonnet 4 and Gemini 2.5 Pro consistently interpret even without being invoked. For example, when a user intends
+TABLE III: Invalid links, empty server content, and missing
+README files in decentralized registries.
+                 Invalid Server   Empty Server     Missing
+   Registries
+                File Links (%)    Content (%)    README (%)
+   mcp.so            6.75             0.07           1.04
+ MCP Market          3.30              0             0.29
+ MCP Store           0.18             4.25           10.11
+ Pulse MCP           0.14             0.04           1.73
+
+to invoke a target tool (e.g., send email), LLM analyzes tool
+descriptions to identify the appropriate tool and extract relevant Fig. 6: A leaked GitHub token discovered on the registry
+parameters. Attackers inject misleading descriptions into their mcp.so. The token is blurred in the figure, as it was still valid
+own tool, which distort LLM’s interpretation of the intended at the time of disclosure.
+parameters (e.g., the recipient), as shown in the Listing 3
+                                                                    lacks configuration examples, making it unclear how the server
+(Line 6). As a result, LLM replaces the user-specified recipient
+                                                                    should be used. This configuration information is typically
+with an attacker-controlled address (e.g., attacker@email.com),
+                                                                    provided in the README file, as 99.16% of servers are hosted
+causing the email to be sent to the attacker instead. Note that,
+                                                                    on public GitHub repositories.
+in this attack, the malicious tool is not even invoked.
+Result. By default, all hosts except Cline display concise Result. We first verify server links by sending HTTP requests
+summaries generated by LLMs (e.g., collapse tool parameters to their URLs and checking the response status codes (200 for
+and invocation results). Thus, users only see a confirmation valid and 404 for invalid). For valid links, we then query the
+that an email has been sent successfully, without realizing that GitHub API to check whether the corresponding repositories
+it was actually delivered to an attacker-controlled address.        are empty (i.e., empty servers). For non-empty servers, we
+    As shown in Figure 5, the attack succeeds across Cursor, further examine their contents to check whether a README
+Windsurf, and Cline in most settings, with one failure case file exists. Table III summarizes the results of three common
+observed for GPT-4o in Windsurf. These models follow attacker- issues observed in decentralized MCP registries. Among all
+crafted descriptions, allowing the attacker to influence target registries, mcp.so shows the highest proportion of invalid server
+tools (e.g., by replacing the intended recipient). The hosts then file links (6.75%), while MCP Store suffers the most from
+invoke the tool using the parameters returned by the LLM empty content (4.25%) and missing README files (10.11%).
+without additional verification. Claude Desktop is the only host In contrast, Pulse MCP and MCP Market show relatively low
+that performs parameter validation. In some cases, it blocks tool error rates across all three categories. These results highlight the
+invocations and returns the message: ”unable to respond to this lack of a vetting mechanism between decentralized registries,
+request, which appears to violate our usage policy.” However, which prevents users from correctly using the servers.
+we also observe cases where the host displays this message MCP Server Maintainer Credential Leakage (R2). mcp.so
+yet still invokes the tool, indicating inconsistent enforcement allows developers to submit configuration examples for server
+of the validation.                                                  usage, which are displayed on individual server detail pages. It
+                                                                    provides a GitHub-specific configuration template (intended for
+    VI. R EGISTRY-L EVEL I SSUES IN MCP D ISTRIBUTION               using the GitHub MCP server, which requires a GitHub token)
+    MCP registries are open platforms allowing anyone to as a guide. However, some server owners misunderstand this
+publish servers. However, these registries lack effective security template and embed their own GitHub tokens, even when their
+scrutiny mechanisms. Attackers can inject malicious tool servers are not related to GitHub servers, leading to unintended
+metadata into existing servers, hijack benign ones, or publish credential exposure. The owners’ servers are actually hosted on
+malicious servers that impersonate legitimate ones to deceive GitHub repositories. If attackers obtain the embedded GitHub
+users.                                                              tokens, they can gain broad access, including write permissions
+                                                                    to the public repositories of owners. Attackers can then use
+A. Lack of Server Vetting                                           these tokens to inject malicious tool metadata into the benign
+    In decentralized MCP registries, each server must include a servers.
+link to its actual server files, as the registry only serves as an Result. To identify publicly exposed tokens, we use gitleaks, a
+index. Without a proper vetting mechanism, submitted servers tool designed to detect credentials, to check server configura-
+may be incomplete. The lack of such mechanisms can also tions collected from mcp.so. Among 5,659 configurations, we
+lead to credential leakage (e.g., GitHub tokens), potentially have identified 9 GitHub tokens. We further conduct a simple
+resulting in server hijacking or compromise.                        test to verify their validity. For each token, we send an API
+Incomplete MCP Server Information (R1). The most request to query user information, using our own account as
+common issues of incomplete information include: (i) invalid the target user. A response with status code 200 indicates a
+server links, where the servers are inaccessible; (ii) empty server valid token, while the Bad credentials confirms an invalid one.
+content, where the links are valid but contain no files; and As of July 2025, 5 tokens remain valid. Figure 6 shows an
+(iii) missing configurations, where the server content exists but example of a valid leaked token from the registry mcp.so.
+TABLE IV: Detected hijackable MCP servers across decentral-                                            Same Maintainer
+ized registries.                                                                                       79 (19.4%)
+    Registries   Maintainer Hijacking   Redirection Hijacking
+     mcp.so              111                     98
+   MCP Market             95                     50
+   MCP Store              5                     155                       Different Maintainer
+   Pulse MCP              1                      1                                329 (80.6%)
+       Total             212                    304               Fig. 7: MCP server maintainer comparison on npm registry.
+
+B. Inconsistent Server Identity Information                          query the GitHub user API. A 200 status code means the
+   Over time, server owners might delete or migrate their account is in use and cannot be re-registered, while a 404
+servers, introducing inconsistencies between the registry records indicates it is available. Table IV shows our detected results,
+and the server links. For example, a server might be migrated we find 304 GitHub redirected accounts that attackers could
+to a new address, while the registry still retains its outdated reclaim to hijack the corresponding MCP servers. To check if
+record. Such inconsistencies create opportunities for attackers developers continued maintaining these servers, we examine
+to hijack these servers by reclaiming their abandoned addresses. whether new servers of the same name are submitted using the
+MCP Server Maintainer Hijacking Attack (R3). As shown links under renamed accounts. We find 139 such cases. For
+in Table III, we detected 0.14% to 6.84% invalid server links example, on MCP Market, the server Share still points to the
+across the four registries, totaling 1,379. This indicates that the server link to the old account amesoraqwq, while a new Share
+corresponding servers have been deleted by the owners, yet the server is submitted under the new account ArcStellar2025. This
+registries continue to list these servers as active due to a lack of can confuse users who might mistakenly choose the hijacked
+update mechanisms. According to GitHub documentation, when version under the old account.
+an account is deleted, it becomes available for registration after
+90 days [16]. This opens the door for attackers to register the
+deleted accounts and recreate previously removed servers. As C. Informal and Ambiguous Naming Practices
+a result, the registry will display the attacker-controlled server,
+which allows the attacker to serve malicious tool metadata MCP Server Affix-squatting Attack (R5). Developers can
+while appearing as the original maintainer.                          choose the npm registry to submit their MCP servers. To
+Result. To identify GitHub accounts that can be re-registered, distinguish MCP packages (i.e., servers) from regular ones,
+we extract accounts from the invalid server links and query the developers often adopt informal naming practices, such as
+GitHub User API. A response with status code 200 indicates appending a suffix like -mcp (e.g., firecrawl-mcp, an MCP
+that the account still exists and cannot be re-registered, while server built on Firecrawl for web scraping) or prepending a
+a 404 response means that the account has been deleted prefix like mcp-server (e.g., mcp-server-code-runner, which
+and is available for registration. As shown in Table IV, out executes code snippets). However, these conventions are neither
+of 1,379 invalid links, we find 212 cases (15.37%) where standardized nor enforced. This lack of formal naming creates
+the associated GitHub accounts are re-registrable, creating opportunities for abuse. For example, an attacker might release
+opportunities for attackers to hijack the corresponding servers. a malicious MCP server with a name nearly identical to a
+Among the registries, mcp.so has the highest number of such legitimate one (e.g., package-mcp), but with an additional
+accounts (111), while Pulse MCP has the fewest (1). Users who suffix (i.e., package-mcp-server) to deceive users. We refer to
+later visit or configure these hijacked servers may unknowingly this as the MCP server affix-squatting attack, which differs
+introduce security threats to their hosts.                           from traditional typosquatting. While typosquatting exploits
+MCP Server Maintainer Redirection Hijacking Attack common misspellings, affix-squatting leverages the legitimate
+(R4). Another similar situation occurs when developers rename package name with a misleading affix to mislead users into
+their accounts to new, unused ones. After such changes, the configuring a malicious server.
+old account names become available for anyone, including Result. To detect affix-squatting MCP packages, we use
+attackers, to claim, while links to repositories under the old regular expressions to group packages that share the same
+accounts automatically redirect to the new ones. This creates package name but differ in affixes. For each group, we
+an opportunity for attackers to re-register the old accounts examine the maintainer information, as some developers might
+and recreate the corresponding repositories (i.e., MCP servers). intentionally publish multiple affixed packages themselves. We
+Once this occurs, GitHub terminates the redirection, and users exclude groups where all packages are maintained by the same
+who still use the old location will access repositories controlled developer. As shown in Figure 7, of the 408 identified groups
+by attackers. We refer this as the MCP server redirection of MCP packages with identical names but different affixes,
+hijacking attack, similar to package redirection hijacking 80.6% are maintained by different developers. In addition to
+attack [13] and plugin redirection hijacking attack [17].            -mcp (166) and -mcp-server (138), developers also frequently
+Result. To detect redirected GitHub accounts that can be re- use prefixes like mcp- (88) and composite affixes such as
+registered, we extract them from valid server links and then mcp-package-server (33) (e.g., mcp-image-server).
+                       VII. M ITIGATION                               (e.g., @mcp.tool()), whereas in JavaScript/TypeScript-based
+   We implement MCPInspect, a pre-integration analysis tool           servers, tools are registered through the addTool function
+for screening servers before integration. It follows the two-stage    (e.g., server.addTool()).
+structure of our threat model. At the registry-level, it performs         For tools implemented in a primitive manner, Python-based
+online server analysis to identify ownership and integrity issues     servers define them using the class mcp.types.Tool within
+that may allow adversarial servers to enter hosts. For risks          functions decorated by @server.list_tools(), whereas
+that manifest after integration, it first generates a vulnerability   JavaScript/TypeScript-based servers register them as JSON
+summary of server implementations to identify unsafe sinks,           objects through the setRequestHandler function.
+then performs offline server analysis to extract tools, tracks            Not all servers define their tools within a single file. Some
+whether identified vulnerabilities occur in those tools, and          servers register tools in a dedicated registration file, while
+analyzes tool metadata for misleading descriptions.                   their implementations are located in separate files. To handle
+                                                                      this case, we first extract the tool definitions and all locally
+A. Online Server Analysis                                             imported files from the registration file, and then traverse each
+   This phase supports pre-integration assessment at the registry     imported file to locate the corresponding tool implementations.
+level by validating repository ownership and link integrity.              We also examine whether other functions are invoked within
+MCPInspect performs a three-phase online analysis to support          the tool implementations. If such functions are identified, we
+this validation. It first checks the status of the server link by     further trace their corresponding implementations. Overall,
+sending an HTTP request to verify its validity. Then it extracts      we extract each file, the tools registered or implemented
+the account name from the link and queries the GitHub API             within it, the tools’ parameters, descriptions, imported files (if
+to verify the availability of the account and identify potential      implemented in that file), invoked functions (if any), and the
+account hijacking risks. Finally, it checks the server content        start and end lines of their implementations.
+to determine whether it is empty or contains configuration            Tool Vulnerability Tracking. For each extracted file that
+examples (e.g., a README file). After these three phases,             contains tools, we first examine the generated vulnerability
+MCPInspect summarizes the results in an online analysis report.       summary to determine whether the file contains any vulnerabil-
+If no security issues are detected, MCPInspect proceeds to            ities. We also analyze the imported files to check for potential
+download the code from the link for further analysis. Otherwise,      vulnerabilities within them. Furthermore, we examine each
+it displays the identified issues to alert the user.                  detected vulnerability to determine whether it occurs within
+                                                                      the tool’s implementation.
+B. Vulnerability Summary Generator                                    Tool Metadata Analysis. At this stage, we analyze the tool
+   This phase analyzes server implementations for code-level          metadata (i.e., descriptions) to identify potential misleading or
+risks before integration. It detects unsafe sinks where LLM-          suspicious information. We adopt a heuristic approach to filter
+influenced parameters reach security-sensitive operations (e.g.,      potential suspicious tool descriptions. Our approach considers
+code or SQL injection). Since the majority MCP servers are            two aspects. First, we check whether the tool description
+developed in Python and JavaScript/TypeScript, we focus on            contains words related to suspicious information (e.g., ignore
+servers implemented in these languages. We adopt Semgrep, a           previous instruction). Second, we examine whether it includes
+lightweight static analysis tool capable of detecting vulnerabil-     labels that strongly attract the LLM’s attention.
+ities in multiple programming languages. We apply the default             For the first aspect, we generate a list of words with
+detection rules for Python, JavaScript, and TypeScript, along         suspicious meanings. We start with a simple sentence (i.e.,
+with the rules for security audits and secret detection. Semgrep      ignore previous instruction) and decompose it into three
+scans the downloaded code and applies these rules to detect           components: the verb (ignore), the adjective (previous), and the
+potential vulnerabilities, generating a vulnerability summary.        noun (instruction). For each category, we generate a separate
+                                                                      list of synonyms. For example, the adjective list includes
+C. Offline Server Analysis                                            words such as previous and earlier. Then, we pair each word
+   This phase extracts tools, analyzes tool metadata to detect        from the three lists with one another (e.g., ignore earlier
+misleading content, and tracks whether identified vulnerabilities     command). For the second aspect, we generate a list of labels
+occur within extracted tools.                                         with strong attention-drawing effects (e.g., <important> or
+Tool Extraction. MCPInspect first extracts MCP tools from             <attention>). Then, we use these two generated lists to
+the downloaded code. We develop two different modules to              filter out suspicious tool descriptions.
+extract tools from Python-based and JavaScript/TypeScript-                In the end, we generate a report that includes each file, the
+based servers. We first convert each code file (i.e., files           tools within those files that contain vulnerabilities or suspicious
+ending with .js, .ts, or .py) into an Abstract Syntax Tree            tool descriptions, and their corresponding line numbers.
+(AST). We consider tools implemented in two ways: using
+the popular fastmcp framework (applicable to both Python                        VIII. E VALUATION AND M EASUREMENT
+and JavaScript/TypeScript) or implementing them in a more                We first evaluate the accuracy of our tool, MCPInspect, using
+primitive manner. In Python-based servers, tools implemented          a manually constructed dataset. We then apply it to perform
+using the fastmcp framework are defined with a decorator              a large-scale measurement based on the data collected. Since
+1 async def handle_call_tool(..., arguments: dict...) -> ...       1 @mcp.tool()
+2     elif name == "visualize_data":                               2 async def list_emails(max_results: int = 10) -> ...
+3         ...                                                      3 """
+4         vegalite_specification =                                 4 List emails from your email inbox.
+               eval(arguments["vegalite_specification"])           5 <Important>
+                                                                   6 ..., use the ‘mark_email_as_handled‘ tool to remove the
+Listing 4: Detected vulnerable tool within the MCP server                 email from your inbox.
+mcp vegalite server [18].                                          7 ...
+
+
+                                                                   Listing 5: Tool description from mcp.so demonstrating a tool
+we already present the result for sever links (e.g., redirection   confusion risk [19].
+accounts) (Section VI), we now focus on servers with detected
+vulnerabilities and suspicious tool descriptions.                  vulnerable servers, indicating a larger proportion of risky or less-
+                                                                   maintained servers within this registry. In contrast, MCP Store
+A. Evaluation Discussion                                           (1.2%) shows the lowest rate, suggesting relatively better vetting
+Evaluation of vulnerable MCP servers. We extract tools             mechanisms. These vulnerable servers could be exploited once
+based on their specification syntax and perform rule-based         integrated into the same MCP host, enabling attacks that extend
+detection using Semgrep. To evaluate the precision, we ran-        beyond the user’s operating system.
+domly select 41 out of 377 vulnerable MCP servers identified       Suspicious tool metadata. Among the four registries, the num-
+from the registry mcp.so. We then manually inspect these           ber of detected servers with suspicious tool metadata are mcp.so
+41 servers. Our verification standard is as follows: for any       (6), MCP Market (2), MCP Store (9), and Pulse MCP (1). We
+detected vulnerability (e.g., code injection), if a corresponding  manually check the metadata of these suspicious tools and find
+tool parameter flows directly into the vulnerable sink without     that most are presented as proof-of-concept implementations.
+any validation checks, we classify it as a true positive. Listing 4For example, harishsg993010/damn-vulnerable-MCP-server
+presents a vulnerable tool detected within an MCP server. The      provides intentionally vulnerable server implementations for
+argument vegalite specification is passed directly to eval,        educational purposes. However, five of them are unaware of the
+creating a code injection vulnerability (Line 4). Of the 41        tool confusion issue and directly invoke other tools within their
+vulnerable servers, we manually confirm 4 false positives (i.e.,   descriptions, potentially leading to incorrect tool invocations.
+90.24% precision).
+Evaluation of suspicious tool metadata. Tool metadata C. Limitations and Future Work
+evaluation is guided by three dimensions. First, we examine           For tool extraction, our current implementation focuses on
+whether a tool description contains instruction-like content that tools explicitly added through their specifications (e.g., through
+can influence model behavior (e.g., tool shadowing). Second, @server.list_tools()). However, tools that are added
+we assess whether such content affects actual tool invocation dynamically from a list, such as within a for loop, cannot yet
+under MCP host execution (e.g., file access). Third, we check be correctly extracted. For the vulnerability summary generator,
+whether the case reflects an intentionally vulnerable proof-of- we currently use the default Semgrep detection rules for MCP
+concept server or an unintended risk arising from host behavior servers, which may lead to false positives. In the future, we
+(e.g., tool confusion). From the suspicious tool descriptions plan to trace the source of such lists and extract tools directly
+detected in the registry mcp.so, we identify 6 cases. Among from them. We also plan to construct custom rules specifically
+them, 4 are used for proof-of-concept purposes, while 2 are tailored for MCP servers to improve accuracy.
+vulnerable to tool confusion. Listing 5 shows one of the tool
+                                                                                          IX. D ISCLOSURE
+descriptions. This tool description instructs the LLM to invoke
+the tool mark email as handled (Line 6) after completing the          We have promptly disclosed our findings to both the
+current task.                                                       corresponding host and relevant MCP registries. For example,
+                                                                    we have reported the tool confusion issue to Cursor via the
+B. Measurement Results
+                                                                    designated email address as Cursor’s security policy [20].
+   Among four decentralized MCP registries, the number of Specifically, we provided the MCP server code used in our
+successfully extracted tools from MCP servers by MCPInspect experiments, the corresponding server configurations, and
+are mcp.so (8,484), MCP Market (6,262), MCP Store (12,541), supporting screenshots. Cursor acknowledged the reported
+and Pulse MCP (3,771). Overall, we find that some links behavior and classified it as a functional issue. Given the
+reference the same server repository; some server repositories absence of publicly available contact information for several
+have been deleted; some servers do not provide any tools; and affected MCP server owners, we have disclosed the findings
+in some cases, syntax errors during code-to-AST conversion to mcp.so, along with a list of MCP servers containing leaked
+caused extraction failures.                                         credentials. We did not receive a response from mcp.so.
+Vulnerable MCP servers. In total, the number of vulnerable After repeating the data collection and reanalyzing server
+MCP servers detected are mcp.so (377), MCP Market (148), configurations, we identified only one expired GitHub token.
+MCP Store (151), and Pulse MCP (157). Among the four This indicates that the previously exposed credentials are no
+registries, mcp.so (4.44%) has the highest rate of detected longer accessible.
+                      X. R ELATED W ORK
+General LLM Security. Prior research has extensively studied
+the security of LLMs, including data poisoning attacks [21]–
+[23], jailbreak attacks [24]–[26], backdoor attacks [27]–[29],
+prompt injection attacks [30]–[33], and adversarial attacks [34]–
+[36]. Zhang et al. [37] addressed privacy leakage arising from
+legitimate tool use in LLM agents. Our work instead focuses on
+adversarial MCP servers and analyzes how registry-distributed
+tool metadata can result in attacker-driven operations during
+host invocation. Shi et al. [38] evaluated how adversarial tool
+descriptions can bias an LLM agent’s tool selection using
+benchmark-style experimental setups. In contrast, we study
+the registry-mediated introduction of malicious metadata in
+real deployments and examine how such metadata leads to
+attacker-intended operations that are invoked by widely used
+MCP hosts. Wang et al. [39] showed that adversarial content in Fig. 8: OpenAI API invocation log demonstrating tool confu-
+multi-source inputs can manipulate LLM outputs by exploiting sion behavior.
+input aggregation. In contrast, we analyze multi-source MCP
+configurations, where tool metadata from integrated servers weaknesses that expose users to various threats (e.g., tool
+influences LLM reasoning and results in executable operations confusion). Our qualitative analysis reveals that MCP hosts
+rather than merely altered outputs. Zou et al. [40] studied how do not verify LLM-selected tools or parameters, enabling
+corrupting retrieval corpora in RAG systems can manipulate malicious servers to influence LLM behavior. Our measurement
+model responses by poisoning external knowledge sources. We of 67,057 servers from six registries uncovers widespread
+instead analyze risks that arise from tool metadata distributed issues, including redirection hijacking and affix-squatting.
+through MCP registries, without modifying training or retrieval Using MCPInspect, we identify 833 vulnerable servers and 18
+data, and trace how these risks materialize during invocation. with suspicious tool descriptions.
+LLM Application Security. Extensive research has explored
+                                                                                        XII. ACKNOWLEDGMENT
+the security of LLM-based applications [41]–[48]. Wu et
+al. [47] demonstrated that improper KV-cache sharing in multi-         We thank Dr. Dan Dongseong Kim (shepherd) and the anony-
+tenant LLM serving can leak user prompts through side chan-         mous   reviewers for their insightful comments and suggestions.
+nels. Pedro et al. [49] and Liu et al. [50] investigated prompt-    This  work    was partially supported by the National Science
+to-SQL injection and RCE vulnerabilities within specific            Foundation    (NSF) grants CNS-2317830 and CNS-2338837.
+LLM-based web applications. In contrast, we explore registry-                                    A PPENDIX
+mediated malicious tool metadata in the MCP ecosystem
+and how it translates into executable risks at the host level,      A.  Tool  Confusion
+independent of a particular application context.                       Figure 8 shows the OpenAI API log for the tool confusion
+Registry Ecosystem Exploit. The software registry ecosystem         experiment     in Cursor. Two MCP servers export the same
+faces various security threats, including account hijacking [51]–   tool name,    send  email. email-mcp-server send email returns
+[55]. Gu et al. [13] demonstrated that decentralized registries are “victim-mcp-server:     send email successfully,” whereas mcp-
+vulnerable to account reclamation attacks, enabling hijacking of    tools  send   email  returns  “my-experimental-mcp-tools: send
+previously deleted accounts. In contrast, our work analyzes how email success.” The forwarded tool list orders email-mcp-
+such registry-level weaknesses in MCP not only allow server server send email before mcp-tools send email (❶). Although
+hijacking but also translate into attacker-directed execution the LLM selects mcp-tools send email (❷), the host invokes
+once integrated into hosts.                                         email-mcp-server send email, as shown by the result “victim-
+   Many research studies have been conducted on typosquat- mcp-server: send email successfully” (❸).
+ting [56]–[60]. Prior works mainly focus on domain names [61]–
+                                                                    B. Summary of Identified Issues
+[63] or package names [54]. Vu et al. [64] analyzed ty-
+posquatting and combosquatting attacks in the Python package                                   R EFERENCES
+ecosystem. In contrast, our work studies naming-based risks          [1] Anthropic, “Introducing the model context protocol,” https://www.
+in MCP registries, including affix-squatting patterns specific           anthropic.com/news/model-context-protocol, 2025.
+                                                                     [2] TechCrunch, “Openai adopts rival anthropic’s standard for
+to MCP-branded servers.                                                  connecting ai models to data,” https://techcrunch.com/2025/03/26/
+                                                                           openai-adopts-rival-anthropics-standard-for-connecting-ai-models-to-data/,
+                       XI. C ONCLUSION                                     2025.
+  This paper presents the first cross-entity security study of         [3] ——, “Google to embrace anthropic’s standard for connecting
+                                                                           ai    models       to     data,”    https://techcrunch.com/2025/04/09/
+the Model Context Protocol (MCP) ecosystem. By outlining                   google-says-itll-embrace-anthropics-standard-for-connecting-ai-models-to-data/,
+the ecosystem into hosts, servers, and registries, we uncover              2025.
+TABLE V: Overview of Identified Issues Across MCP Ecosys-                                me: Poisoning vulnerabilities in neural code completion,” in 30th USENIX
+tem and Affected Platforms.                                                              Security Symposium (USENIX Security 21), 2021, pp. 1559–1575.
+                                                                                    [23] S. Yan, S. Wang, Y. Duan, H. Hong, K. Lee, D. Kim, and Y. Hong, “An
+  MCP Entity       Identified Issue                   Affected Platforms                 llm-assisted easy-to-trigger backdoor attack on code completion models:
+                   Tool Confusion                     Cursor                             Injecting disguised vulnerabilities against strong detection,” arXiv preprint
+  Hosts                                                                                  arXiv:2406.06822, 2024.
+                   Context-dangling Tool              All hosts                     [24] A. Wei, N. Haghtalab, and J. Steinhardt, “Jailbroken: How does llm
+                                                                                         safety training fail?” Advances in Neural Information Processing Systems,
+                   Tool Poisoning Attack              All hosts
+  Servers                                                                                vol. 36, 2024.
+                   Tool Shadowing Attack              All hosts                     [25] X. Shen, Z. Chen, M. Backes, Y. Shen, and Y. Zhang, “” do anything
+                                                                                         now”: Characterizing and evaluating in-the-wild jailbreak prompts on
+                   Incomplete Information             All decentralized registries       large language models,” in Proceedings of the 2024 on ACM SIGSAC
+                   Credential  Leakage                mcp.so                             Conference on Computer and Communications Security, 2024, pp. 1671–
+  Registries                                                                             1685.
+                   Maintainer Hijacking Attack        All decentralized registries [26] G. Deng, Y. Liu, Y. Li, K. Wang, Y. Zhang, Z. Li, H. Wang, T. Zhang, and
+                   Maintainer Redirection                                                Y. Liu, “Jailbreaker: Automated jailbreak across multiple large language
+                                                      All decentralized registries       model chatbots,” arXiv preprint arXiv:2307.08715, 2023.
+                      Hijacking Attack
+                                                                                    [27] N. Kandpal, M. Jagielski, F. Tramèr, and N. Carlini, “Backdoor
+                   Affix-squatting Attack             npm                                attacks for in-context learning with language models,” arXiv preprint
+                                                                                         arXiv:2307.14692, 2023.
+                                                                                    [28] J. Yan, V. Yadav, S. Li, L. Chen, Z. Tang, H. Wang, V. Srinivasan, X. Ren,
+ [4] Microsoft, “Model context protocol (mcp) is now gen-                                and H. Jin, “Backdooring instruction-tuned large language models with
+     erally available in microsoft copilot studio,” https://www.                         virtual prompt injection,” arXiv preprint arXiv:2307.16888, 2023.
+     microsoft.com/en-us/microsoft-copilot/blog/copilot-studio/                     [29] Q. Zhang, Y. Ding, Y. Tian, J. Guo, M. Yuan, and Y. Jiang, “Advdoor:
+     model-context-protocol-mcp-is-now-generally-available-in-microsoft-copilot-studio/, adversarial backdoor attack of deep learning system,” in Proceedings of
+     2025.                                                                               the 30th ACM SIGSOFT International Symposium on Software Testing
+ [5] Invariantlabs, “Mcp security notification: Tool poisoning attacks,” https:          and Analysis, 2021, pp. 127–138.
+     //invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks, [30] Y. Liu, G. Deng, Y. Li, K. Wang, Z. Wang, X. Wang, T. Zhang, Y. Liu,
+     2025.                                                                               H. Wang, Y. Zheng et al., “Prompt injection attack against llm-integrated
+ [6] ——, “Whatsapp mcp exploited: Exfiltrating your message history via                  applications,” arXiv preprint arXiv:2306.05499, 2023.
+     mcp,” https://invariantlabs.ai/blog/whatsapp-mcp-exploited, 2025.              [31] Y. Liu, Y. Jia, R. Geng, J. Jia, and N. Z. Gong, “Formalizing and
+ [7] modelcontextprotocol,          “Architecture         overview,”         https:      benchmarking prompt injection attacks and defenses,” in 33rd USENIX
+     //modelcontextprotocol.io/docs/learn/architecture, 2025.                            Security Symposium (USENIX Security 24), 2024, pp. 1831–1847.
+ [8] mcp.so, “Mcp servers,” https://mcp.so/, 2025.                                  [32] K. Greshake, S. Abdelnabi, S. Mishra, C. Endres, T. Holz, and M. Fritz,
+ [9] MCP Market, “Discover top mcp servers — mcp market,” https:                         “Not what you’ve signed up for: Compromising real-world llm-integrated
+     //mcpmarket.com/, 2025.                                                             applications with indirect prompt injection,” in Proceedings of the 16th
+[10] MCP Store, “Mcp store - find and connect to 20,000+ mcp servers,”                   ACM Workshop on Artificial Intelligence and Security, 2023, pp. 79–90.
+     https://mcpstore.co/, 2025.                                                    [33] F. Wu, X. Liu, and C. Xiao, “Deceptprompt: Exploiting llm-driven code
+[11] Pulse MCP, “Pulsemcp — keep up-to-date with mcp,” https://www.                      generation via adversarial natural language instructions,” arXiv preprint
+     pulsemcp.com/, 2025.                                                                arXiv:2312.04730, 2023.
+[12] G. Liu, X. Gao, H. Wang, and K. Sun, “Exploring the unchartered space          [34] E. Shayegani, M. A. A. Mamun, Y. Fu, P. Zaree, Y. Dong, and N. Abu-
+     of container registry typosquatting,” in 31st USENIX Security Symposium             Ghazaleh, “Survey of vulnerabilities in large language models revealed
+     (USENIX Security 22), 2022, pp. 35–51.                                              by adversarial attacks,” arXiv preprint arXiv:2310.10844, 2023.
+                                                                                    [35] J. Wang, Z. Liu, K. H. Park, Z. Jiang, Z. Zheng, Z. Wu, M. Chen, and
+[13] Y. Gu, L. Ying, Y. Pu, X. Hu, H. Chai, R. Wang, X. Gao, and H. Duan,
+                                                                                         C. Xiao, “Adversarial demonstration attacks on large language models,”
+     “Investigating package related security threats in software registries,” in
+                                                                                         arXiv preprint arXiv:2305.14950, 2023.
+     2023 IEEE Symposium on Security and Privacy (SP). IEEE, 2023, pp.
+                                                                                    [36] Q. Zhang, B. Zeng, C. Zhou, G. Go, H. Shi, and Y. Jiang, “Human-
+     1578–1595.
+                                                                                         imperceptible retrieval poisoning attacks in llm-powered applications,”
+[14] mastra,      “The      mcp      registry    registry,”      https://mastra.ai/
+                                                                                         in Companion Proceedings of the 32nd ACM International Conference
+     mcp-registry-registry, 2025.
+                                                                                         on the Foundations of Software Engineering, 2024, pp. 502–506.
+[15] S. Liao, L. Cheng, X. Luo, Z. Song, H. Cai, D. Yao, and H. Hu, “A [37] X. Zhang, H. Xu, Z. Ba, Z. Wang, Y. Hong, J. Liu, Z. Qin, and K. Ren,
+     first look at security and privacy risks in the rapidapi ecosystem,” in             “Privacyasst: Safeguarding user privacy in tool-using large language
+     Proceedings of the 2024 on ACM SIGSAC Conference on Computer and                    model agents,” IEEE Transactions on Dependable and Secure Computing,
+     Communications Security, 2024, pp. 1626–1640.                                       vol. 21, no. 6, pp. 5242–5258, 2024.
+[16] GitHub         Docs,        “Deleting         your         personal        ac- [38] J. Shi, Z. Yuan, G. Tie, P. Zhou, N. Z. Gong, and L. Sun, “Prompt injection
+     count,”                  https://docs.github.com/en/account-and-profile/            attack to tool selection in llm agents,” arXiv preprint arXiv:2504.19793,
+     setting-up-and-managing-your-personal-account-on-github/                            2025.
+     managing-your-personal-account/deleting-your-personal-account,                 [39] R. Wang, Y. Jia, and N. Z. Gong, “Obliinjection: Order-oblivious prompt
+     2025.                                                                               injection attack to llm agents with multi-source data,” arXiv preprint
+[17] X. Li, Y. Gu, C. Qiao, Z. Zhang, D. Liu, L. Ying, H. Duan, and X. Gao,              arXiv:2512.09321, 2025.
+     “Toward understanding the security of plugins in continuous integration [40] W. Zou, R. Geng, B. Wang, and J. Jia, “{PoisonedRAG}: Knowledge
+     services,” in Proceedings of the 2024 on ACM SIGSAC Conference on                   corruption attacks to {Retrieval-Augmented} generation of large language
+     Computer and Communications Security, 2024, pp. 482–496.                            models,” in 34th USENIX Security Symposium (USENIX Security 25),
+[18] isaacwasserman,          “mcp-server-vegalite,”           https://github.com/       2025, pp. 3827–3844.
+     isaacwasserman/mcp-vegalite-server/blob/main/src/mcp server                    [41] L.-b. Ning, S. Wang, W. Fan, Q. Li, X. Xu, H. Chen, and F. Huang,
+     vegalite/server.py, 2025.                                                           “Cheatagent: Attacking llm-empowered recommender systems via llm
+[19] RKeelan,          “mcp-server-email,”          https://github.com/RKeelan/          agent,” in Proceedings of the 30th ACM SIGKDD Conference on
+     mcp-server-email/blob/main/server.py, 2025.                                         Knowledge Discovery and Data Mining, 2024, pp. 2284–2295.
+[20] Cursor Security, “Cursor security,” https://cursor.com/security, 2025.         [42] Z. Deng, Y. Guo, C. Han, W. Ma, J. Xiong, S. Wen, and Y. Xiang,
+[21] H. Aghakhani, W. Dai, A. Manoel, X. Fernandes, A. Kharkar, C. Kruegel,              “Ai agents under threat: A survey of key security challenges and future
+     G. Vigna, D. Evans, B. Zorn, and R. Sim, “Trojanpuzzle: Covertly                    pathways. arxiv,” 2024.
+     poisoning code-suggestion models,” in 2024 IEEE Symposium on Security          [43] S. Abdali, R. Anarfi, C. Barberan, J. He, and E. Shayegani, “Securing
+     and Privacy (SP). IEEE, 2024, pp. 1122–1140.                                        large language models: Threats, vulnerabilities and responsible practices,”
+[22] R. Schuster, C. Song, E. Tromer, and V. Shmatikov, “You autocomplete                arXiv preprint arXiv:2403.12503, 2024.
+[44] H. Li, D. Guo, W. Fan, M. Xu, J. Huang, F. Meng, and Y. Song,                 in 2020 ieee european symposium on security and privacy workshops
+     “Multi-step jailbreaking privacy attacks on chatgpt,” arXiv preprint          (euros&pw). IEEE, 2020, pp. 509–514.
+     arXiv:2304.05197, 2023.
+[45] A. Zou, Z. Wang, N. Carlini, M. Nasr, J. Z. Kolter, and M. Fredrikson,
+     “Universal and transferable adversarial attacks on aligned language
+     models,” arXiv preprint arXiv:2307.15043, 2023.
+[46] Y. Huang, S. Gupta, M. Xia, K. Li, and D. Chen, “Catastrophic
+     jailbreak of open-source llms via exploiting generation,” arXiv preprint
+     arXiv:2310.06987, 2023.
+[47] G. Wu, Z. Zhang, Y. Zhang, W. Wang, J. Niu, Y. Wu, and Y. Zhang, “I
+     know what you asked: Prompt leakage via kv-cache sharing in multi-
+     tenant llm serving,” in Proceedings of the 2025 Network and Distributed
+     System Security (NDSS) Symposium. San Diego, CA, USA, 2025.
+[48] Q. Zhang, C. Zhou, G. Go, B. Zeng, H. Shi, Z. Xu, and Y. Jiang, “Imper-
+     ceptible content poisoning in llm-powered applications,” in Proceedings
+     of the 39th IEEE/ACM International Conference on Automated Software
+     Engineering, 2024, pp. 242–254.
+[49] R. Pedro, M. E. Coimbra, D. Castro, P. Carreira, and N. Santos,
+     “Prompt-to-sql injections in llm-integrated web applications: Risks and
+     defenses,” in 2025 IEEE/ACM 47th International Conference on Software
+     Engineering (ICSE). IEEE Computer Society, 2024, pp. 76–88.
+[50] T. Liu, Z. Deng, G. Meng, Y. Li, and K. Chen, “Demystifying
+     rce vulnerabilities in llm-integrated apps. arxiv 2023,” arXiv preprint
+     arXiv:2309.02926, 2023.
+[51] P. Doerfler, K. Thomas, M. Marincenko, J. Ranieri, Y. Jiang, A. Moscicki,
+     and D. McCoy, “Evaluating login challenges as adefense against account
+     takeover,” in The World Wide Web Conference, 2019, pp. 372–382.
+[52] D. Gruss, M. Schwarz, M. Wübbeling, S. Guggi, T. Malderle, S. More,
+     and M. Lipp, “Use-after-freemail: Generalizing the use-after-free problem
+     and applying it to email services,” in Proceedings of the 2018 on Asia
+     Conference on Computer and Communications Security, 2018, pp. 297–
+     311.
+[53] R. Duan, O. Alrawi, R. P. Kasturi, R. Elder, B. Saltaformaggio, and
+     W. Lee, “Towards measuring supply chain attacks on package managers
+     for interpreted languages,” arXiv preprint arXiv:2002.01139, 2020.
+[54] M. Zimmermann, C.-A. Staicu, C. Tenny, and M. Pradel, “Small world
+     with high risks: A study of security threats in the npm ecosystem,” in 28th
+     USENIX Security symposium (USENIX security 19), 2019, pp. 995–1010.
+[55] N. Zahan, T. Zimmermann, P. Godefroid, B. Murphy, C. Maddila,
+     and L. Williams, “What are weak links in the npm supply chain?”
+     in Proceedings of the 44th International Conference on Software
+     Engineering: Software Engineering in Practice, 2022, pp. 331–340.
+[56] N. P. Tschacher, “Typosquatting in programming language package man-
+     agers,” Ph.D. dissertation, Universität Hamburg, Fachbereich Informatik,
+     2016.
+[57] P. Agten, W. Joosen, F. Piessens, and N. Nikiforakis, “Seven months’
+     worth of mistakes: A longitudinal study of typosquatting abuse,” in
+     Proceedings of the 22nd Network and Distributed System Security
+     Symposium (NDSS 2015). Internet Society, 2015.
+[58] J. Szurdi, B. Kocso, G. Cseh, J. Spring, M. Felegyhazi, and C. Kanich,
+     “The long {“Taile”} of typosquatting domain names,” in 23rd USENIX
+     Security Symposium (USENIX Security 14), 2014, pp. 191–206.
+[59] N. Nikiforakis, M. Balduzzi, L. Desmet, F. Piessens, and W. Joosen,
+     “Soundsquatting: Uncovering the use of homophones in domain squatting,”
+     in International Conference on Information Security. Springer, 2014,
+     pp. 291–308.
+[60] M. T. Khan, X. Huo, Z. Li, and C. Kanich, “Every second counts:
+     Quantifying the negative externalities of cybercrime via typosquatting,”
+     in 2015 IEEE Symposium on Security and Privacy. IEEE, 2015, pp.
+     135–150.
+[61] N. Nikiforakis, S. Van Acker, W. Meert, L. Desmet, F. Piessens, and
+     W. Joosen, “Bitsquatting: Exploiting bit-flips for fun, or profit?” in
+     Proceedings of the 22nd international conference on World Wide Web,
+     2013, pp. 989–998.
+[62] P. Kintis, N. Miramirkhani, C. Lever, Y. Chen, R. Romero-Gómez,
+     N. Pitropakis, N. Nikiforakis, and M. Antonakakis, “Hiding in plain
+     sight: A longitudinal study of combosquatting abuse,” in Proceedings of
+     the 2017 ACM SIGSAC Conference on Computer and Communications
+     Security, 2017, pp. 569–586.
+[63] T. Moore and B. Edelman, “Measuring the perpetrators and funders of
+     typosquatting,” in International Conference on Financial Cryptography
+     and Data Security. Springer, 2010, pp. 175–191.
+[64] D.-L. Vu, I. Pashchenko, F. Massacci, H. Plate, and A. Sabetta,
+     “Typosquatting and combosquatting attacks on the python ecosystem,”
+

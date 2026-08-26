@@ -1,0 +1,19 @@
+cell_A_level,cell_B_position,count,works,note
+A0,B1,3,"csev12023-bg; csev22024(partially); primevul2024(eval-side)","model-capability evaluation era"
+A0-A1,B1/B2,1,csev32024,boundary case recorded honestly
+A1,B2,1,intercode2023-bg,pipeline-orchestrated CTF harness era
+A2,B2,4,"fang2024one-day; cybench2024; nyuctfbench2024; artemis-study2025","bounded-task agents incl. production-network experiment"
+A2-production,B1,3,"bigsleep2024; xbow2025(B1+B2); argusee2025","ALL carry human-in-loop qualifiers: seeded/human-reviewed/human-entry-points"
+A2-contested,B1+B2,1,gtg1002-2025,"80-90% autonomous claim is vendor-reported; classify conservatively"
+competition-integrated,A1+A2 x B1+B2+B3,1,r7-sok-aixcc2026,"CRSs = the only fully-integrated discovery->patch loop in corpus"
+infrastructure,cross-cutting,4,"mcp quartet","tool-layer trust substrate for all autonomy levels"
+ecosystem,B4,1,openssf-retro2026,"redeployment/regression phase almost exclusively here"
+meta-surveys,-,6,"r1;r2;r3;r4;r5;r6",positioning rows not corpus cells
+registry,outcome-record,1,nvd-cve2025-6965,
+UNRESOLVED/multi-cell,--,2,"xbow2025(B1 vs B1+B2); gtg1002(A2-high vs A3)","kept unresolved per spec rule: evidence insufficient to force a cell"
+
+migration_narrative_sketch: 2024 cells dominated by A0/A1 benchmarks + Fang-style bounded A2;
+2025-06..2026 adds production A2 entries (PZ/XBOW/DARKNAVY) with mandatory human-loop qualifiers,
+competition-integrated B1-B3 systems (AIxCC), first B4 ecosystem documentation (OpenSSF),
+and one contested near-A3 incident (GTG-1002). No work in corpus meets A3 definition with
+independent evidence.

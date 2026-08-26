@@ -1,0 +1,37 @@
+# EVIDENCE EXTRACT - Trail of Bits Buttercup AIxCC 2nd place
+reference_key: tob-buttercup-2025
+canonical_url: https://blog.trailofbits.com/2025/08/09/trail-of-bits-buttercup-wins-2nd-place-in-aixcc-challenge/
+title: Trail of Bits' Buttercup wins 2nd place in AIxCC Challenge | author: Dan Guido | date: 2025-08-09
+source_type: vendor-blog (competition participant) | fetched-fulltext-via-webfetch 2026-08-26
+
+## Verified claims (exact quotes)
+1. C20 CLOSED: "During the final round, there were 48 challenges across 23 open-source
+   repositories. We found 28 vulnerabilities and successfully applied 19 patches."
+2. HUMAN-PROHIBITION LOCATOR (primary participant source):
+   "The scoring algorithm rewarded teams for finding vulnerabilities, proving that
+   vulnerabilities existed, and correctly applying patches... Human interaction was strictly prohibited."
+3. Prizes: "runner-up prize of $3M"; "Team Atlanta [GA Tech+KAIST+POSTECH+Samsung Research]
+   won the top prize of $4M"; "Theori ... $1.5M third place".
+4. ASC->AFC funnel: "whittled down to 7 finalists from 42 competitors. Each of the finalists
+   received $2M."
+5. Cost table (matches R7 SoK table exactly): ATL $29.4k LLM+$73.9k compute=$103.3k/$263-per-pt;
+   ToB $21.1+$18.5=$39.6k/$181; Theori $11.5+$20.3=$31.8k/$151; fuzzing_brain $75.4k/$490;
+   Shellphish $57.8k/$425; 42-b3yond-6ug $39.8k/$379; LACROSSE $7.2k/$751.
+6. Model class: "exclusively less expensive, non-reasoning LLMs" (Buttercup).
+7. Breadth: PoVs across 20 unique CWEs of Mitre Top-25 scope ("Cornucopia"); ">90% accuracy";
+   largest patch >300 lines ("LOC Ness Monster"); scored <5min into a task; ">100,000 LLM
+   requests"; one-line patch scored.
+8. REAL-BUG SPILLOVER (additional): "Found a PoV that triggered a vulnerability that was not
+   inserted into the Challenge."
+9. B4 TRANSITION FUNDING: "DARPA and ARPA-H have generously offered each AIxCC team an
+   additional $200,000 to integrate their CRSs into critical software."
+10. Architecture: libFuzzer+Jazzer augmented with LLM-generated test cases; tree-sitter +
+    code-query static analysis; multi-agent patcher with separation of concerns; call-graph/
+    dependency context.
+11. Transparency limit: "DARPA hasn't yet released all of the AIxCC competition data and
+    telemetry to the competitors."
+
+## Interpretation guardrails
+- Participant self-report: numbers cross-check against R7 SoK cost table (independent academic
+  source) -> strongest-corroborated vendor record in corpus for costs/scores.
+- "production-ready" is vendor marketing; treat as CLAIMED.

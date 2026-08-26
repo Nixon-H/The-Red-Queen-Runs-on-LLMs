@@ -1,0 +1,54 @@
+# EVIDENCE EXTRACT — OpenSSF AIxCC legacy retrospective
+
+reference_key: openssf-aixcc-retrospective-2026
+canonical_url: https://openssf.org/blog/2026/05/12/hack-to-the-future-the-impact-and-legacy-of-the-darpa-aixcc-challenge/
+title: "Hack to the Future: The Impact and Legacy of the DARPA AIxCC Challenge"
+author: Helen Woeste | published: 2026-05-12
+source_type: foundation-blog (Linux Foundation/OpenSSF, program-closeout) | PRIMARY text,
+CLAIMED statistics (foundation-reported; individual counts vendor/team-reported upward)
+fetch_method: opencode webfetch; archive: this file
+
+## Verified claims
+
+1. Prize pool: "cash prizes from a pot of $30,500,000 were distributed."
+   DISCREPANCY FLAG: spec-corpus known-good figure was "~$29.5M total" (announced Black Hat
+   Aug 2023). Reconcile against DARPA primary. [TO-VERIFY]
+
+2. Structure: announced 2023, two-year competition, with ARPA-H; support from Anthropic, Google,
+   Microsoft, OpenAI; consulting by Linux Foundation/OpenSSF.
+   Semifinal (ASC): "42 team submissions ... across two tracks" (Open + Small Business).
+   "top seven teams moved forward to the AFC which was set up to mimic a real world CI/CD
+   pipeline." => 7 finalists CONFIRMED.
+
+3. Challenge design: real OSS projects forked with ARTIFICIAL bugs inserted; CRSs also found
+   REAL bugs during execution ("discovered several real potential bugs alongside the artificial
+   ones") -> triage problem delegated to OSTIF -> Ada Logics verification.
+
+4. Real-bug yield: "Ada Logics team was able to reproduce and confirm twenty-seven issues";
+   "Teams discovered twenty-seven candidate real-world issues during the competition and OSTIF
+   engineers were ultimately able to replicate all of the draft bugs."
+   Affected projects: cURL, shadowsocks-libev, healthcare-data-harmonization, hertzbeat,
+   little-cms, mongoose.
+   Outcome noise datum: some findings already fixed in interim, some outside project threat
+   models (Apache POI example), one already known to OSS-Fuzz. -> V5 outcome-definition noise
+   exemplar for §9.
+
+5. POST-COMPETITION REDEPLOYMENT (B4 loop evidence, strongest section):
+   - FuzzingBrain: "discovering sixty-two vulnerabilities across twenty-six projects, from CUPS
+     and Apache Avro to Ghidra and OpenLDAP, with forty-three confirmed by maintainers and
+     thirty-six already patched upstream."
+   - 42-b3yond-6ug: "twelve kernel-related vulnerabilities in the Linux kernel and related
+     components, plus ten zero-day vulnerabilities in userspace projects including Eclipse
+     Mosquitto and OpenLDAP."
+   - OSS-CRS (Team Atlanta): "twenty-five vulnerabilities across sixteen projects spanning ...
+     PHP, U-Boot, memcached, and Apache Ignite 3. Of those, nine have been fixed and eight more
+     have been confirmed with fixes in progress."
+   - Governance continuation: OpenSSF Cyber Reasoning Systems SIG; OSS-CRS + FuzzingBrain hosted
+     at OpenSSF/Linux Foundation.
+
+## Interpretation guardrails
+- All post-competition counts are team/vendor-reported, relayed by OpenSSF: treat as CLAIMED,
+  not independently audited (except Ada Logics' 27, which is an explicit third-party
+  reproduction pass - closest thing to independent verification in the whole AIxCC record).
+- Artificial-bug design detail matters for validity: competition performance ≠ wild-zero-day
+  capability, though real-bug spillover (27 confirmed) partially bridges it.

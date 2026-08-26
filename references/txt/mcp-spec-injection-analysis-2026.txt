@@ -1,0 +1,478 @@
+                                             Breaking the Protocol: Security Analysis of the
+                                            Model Context Protocol Specification and Prompt
+                                            Injection Vulnerabilities in Tool-Integrated LLM
+                                                                  Agents
+                                                                                         Narek Maloyan and Dmitry Namiot
+
+
+                                            Abstract—The Model Context Protocol (MCP) has emerged                  This paper fills this gap with three contributions:
+arXiv:2601.17549v1 [cs.CR] 24 Jan 2026
+
+
+
+
+                                         as a de facto standard for integrating Large Language Models
+                                                                                                                   1) Protocol Specification Analysis: We perform the first
+                                         with external tools, yet no formal security analysis of the
+                                         protocol specification exists. We present the first rigorous security        systematic security analysis of the MCP specification
+                                         analysis of MCP’s architectural design, identifying three funda-             (v1.0), identifying three classes of protocol-level vul-
+                                         mental protocol-level vulnerabilities: (1) absence of capability             nerabilities that cannot be mitigated by implementation
+                                         attestation allowing servers to claim arbitrary permissions, (2)             hardening alone (Section III).
+                                         bidirectional sampling without origin authentication enabling
+                                                                                                                   2) Original Experimental Validation: We develop P RO -
+                                         server-side prompt injection, and (3) implicit trust propagation
+                                         in multi-server configurations. We implement P ROTOA MP, a                   TOA MP, a framework that adapts established agent se-
+                                         novel framework bridging existing agent security benchmarks to               curity benchmarks to MCP-compliant infrastructure, and
+                                         MCP-compliant infrastructure, enabling direct measurement of                 conduct controlled experiments measuring the protocol’s
+                                         protocol-specific attack surfaces. Through controlled experiments            impact on attack success rates across 847 scenarios
+                                         on 847 attack scenarios across five MCP server implementations,
+                                                                                                                      (Section IV).
+                                         we demonstrate that MCP’s architectural choices amplify attack
+                                         success rates by 23–41% compared to equivalent non-MCP                    3) Protocol Extension: We design ATTEST MCP, a
+                                         integrations. We propose ATTEST MCP, a backward-compatible                   backward-compatible extension adding capability attes-
+                                         protocol extension adding capability attestation and message                 tation and message authentication, with full performance
+                                         authentication, reducing attack success rates from 52.8% to                  characterization and multiple trust model options (Sec-
+                                         12.4% with median latency overhead of 8.3ms per message.
+                                                                                                                      tion VI).
+                                         Our findings establish that MCP’s security weaknesses are archi-
+                                         tectural rather than implementation-specific, requiring protocol-
+                                         level remediation.                                                      A. Scope and Non-Goals
+                                            Index Terms—Model Context Protocol, prompt injection, pro-              We explicitly distinguish between:
+                                         tocol security, LLM agents, formal analysis
+                                                                                                                    • Protocol vulnerabilities: Weaknesses in MCP’s speci-
+                                                                I. I NTRODUCTION                                      fication that affect all compliant implementations (our
+                                            The integration of Large Language Models (LLMs) with                      focus)
+                                         external tools has enabled autonomous AI agents capable of                 • Implementation vulnerabilities: Bugs in specific servers
+
+                                         executing complex, multi-step tasks [1]. Anthropic’s Model                   (e.g., SQL injection in sqlite-mcp) that can be patched
+                                         Context Protocol (MCP), introduced in November 2024, pro-                    without protocol changes (not our focus)
+                                         vides an open standard for this integration through a JSON-                We do not claim novelty for the general concept of prompt
+                                         RPC-based client-server architecture [2]. Within months of              injection or inter-agent trust exploitation, which are established
+                                         release, MCP has been adopted by major platforms including              attack vectors [1], [4]. Our contribution is demonstrating how
+                                         Claude Desktop, Cursor, and numerous third-party applica-               MCP’s specific architectural choices amplify these attacks and
+                                         tions, with over 5,000 community-developed servers.                     identifying protocol-level mitigations.
+                                            Despite rapid adoption, no prior work analyzes how
+                                         MCP’s architectural decisions amplify attack success rates.                                   II. BACKGROUND
+                                         Concurrent work (MCPSecBench [23], MCP-Bench [22]) cat-                 A. Model Context Protocol Architecture
+                                         alogs attack types and evaluates agent capabilities, but does not
+                                         compare MCP-integrated systems against non-MCP baselines                  MCP defines a client-server architecture with three roles:
+                                         to isolate protocol-specific effects. Prior work on LLM agent             • Host: The user-facing application (e.g., Claude Desktop)
+                                         security focused on prompt injection generally [1], [3], [4],             • Client: MCP client within the host, managing server
+                                         while disclosed CVEs (e.g., CVE-2025-49596, CVE-2025-                       connections
+                                         68143) target implementation bugs rather than protocol-level              • Server: External process providing tools, resources, or
+                                         weaknesses.                                                                 prompts
+
+
+
+                                                                                                                                                                                 1
+   Communication occurs via JSON-RPC 2.0 over stdio or                MCP-Specific Benchmarks: Concurrent work has begun
+HTTP/SSE transports. The protocol defines three capability         addressing MCP evaluation. Wang et al. [22] introduce MCP-
+types:                                                             Bench, a capability benchmark with 28 servers and 250 tools
+   Resources: Read-only data (files, database records) exposed     measuring task completion, but without security focus. Yang
+by servers. Clients retrieve resources via resources/read          et al. [23] present MCPSecBench, formalizing 17 attack types
+requests.                                                          across four surfaces; our work complements theirs by ana-
+   Tools: Executable functions servers expose. The LLM de-         lyzing protocol-level (not implementation-level) vulnerabilities
+cides when to invoke tools based on their descriptions.            and proposing backward-compatible mitigations. The MCPSec
+   Sampling: Critically, servers can request LLM completions       project [24] documents real-world MCP vulnerabilities includ-
+from clients via sampling/createMessage, allowing                  ing CVE-2025-11445.
+servers to inject prompts and receive responses [17].                 Gap: No prior work quantifies how MCP’s architectural
+B. Threat Model                                                    choices amplify attack success rates compared to equiva-
+   We consider an adversary who:                                   lent non-MCP integrations, nor proposes backward-compatible
+                                                                   protocol extensions with formal capability attestation.
+   • Controls or compromises one MCP server in a multi-
+      server deployment
+   • Can inject content into data sources (web pages, docu-
+                                                                             III. P ROTOCOL S PECIFICATION A NALYSIS
+      ments) that servers retrieve                                    We analyze the MCP specification (v1.0, December 2024)
+   • Has black-box access (cannot modify LLM weights or            to identify protocol-level security weaknesses. Our analysis
+      host application code)                                       examines the JSON-RPC message format, capability negotia-
+   The adversary’s goals include: hijacking agent behavior,        tion, and trust boundaries.
+exfiltrating sensitive data, and persisting across sessions.
+   1) Server Discovery Attack Vectors: A critical question is      A. Vulnerability 1: Least Privilege Violation
+how malicious servers reach users. We surveyed 127 MCP
+server installation guides and identified four primary vectors:      During initialization, servers declare capabilities via
+   1) Typosquatting (34%): Package registries (npm, pip)           initialize response:
+       lack namespace protection. Attackers register near-         {
+       identical names (e.g., mcp-server-filesytem).                   "capabilities": {
+                                                                         "tools": { "listChanged": true },
+   2) Supply Chain Compromise (28%): Popular servers                     "resources": { "subscribe": true },
+       with many dependencies are vulnerable to upstream                 "sampling": {}
+                                                                       }
+       poisoning.                                                  }
+   3) Social Engineering (23%): Tutorials and documen-
+       tation direct users to malicious repositories. 73% of         Protocol Weakness: Capability declarations are self-
+       surveyed guides instruct running npx directly from          asserted without verification. A malicious server can claim
+       GitHub URLs without integrity verification.                 any capability, and the client has no mechanism to validate
+   4) Marketplace Poisoning (15%): IDE extension market-           these claims against an authoritative source.
+       places have limited vetting for MCP server bundles.           Attack        Vector:   A     server    initially   claiming
+C. Related Work                                                    only     resources        capability    can     later   invoke
+                                                                   sampling/createMessage to inject prompts. The
+   Prompt Injection: Greshake et al. [1] established indirect
+                                                                   specification does not mandate capability enforcement at the
+prompt injection. Liu et al. [3] achieved 86% success with
+                                                                   message level.
+HouYi. The HackAPrompt competition [13] collected 600K+
+                                                                     Formal Property Violated: Least Privilege—the principle
+adversarial prompts, documenting 29 attack techniques. Zou et
+                                                                   that principals should possess only capabilities necessary for
+al. [11] demonstrated 90–99% attack success on RAG systems.
+                                                                   their function. MCP allows unrestricted capability escalation
+   Agent Benchmarks: AgentDojo [5] provides 629 security
+                                                                   post-initialization.
+test cases. Agent-SafetyBench [6] found no agent exceeds
+60% safety. AgentHarm [7] measures malicious compliance.
+                                                                   B. Vulnerability 2: Sampling Without Origin Authentication
+WASP [15] evaluates web agents, finding 16–86% adversarial
+execution rates.                                                     The sampling mechanism allows servers to request LLM
+   Tool-Augmented LLMs: ReAct [19] introduced reasoning-           completions:
+action interleaving for tool use. Toolformer [20] demonstrated
+                                                                   {
+self-supervised tool learning. These capabilities, while power-        "method": "sampling/createMessage",
+ful, expand the attack surface [14].                                   "params": {
+                                                                         "messages": [
+   Multi-Agent Security: Recent work [8] reports 84.6%                      {"role": "user", "content": "..."}
+inter-agent attack success. Willison [18] documented cross-              ],
+                                                                         "maxTokens": 1000
+agent privilege escalation. Schroeder de Witt et al. [21] survey       }
+multi-agent security challenges.                                   }
+
+
+
+
+                                                                                                                                 2
+                    1. Request             2. tools/call            enabling powerful multi-tool workflows. We do not argue
+            User                  Host                     Server
+                                          3. sampling/              this tradeoff is inherently wrong; rather, we argue it should
+Fig. 1: Sampling injection: server injects prompt via               require explicit user consent rather than implicit trust. The
+sampling/createMessage with “user” role.                            specification provides no mechanism for users to configure
+                                                                    isolation policies, even when desired.
+                                                                       Consider a legitimate workflow: “Read config.json with
+   Protocol Weakness: The client processes sampling requests        filesystem-server, then query database with sqlite-server.” Full
+without distinguishing server-originated prompts from user-         isolation would prevent this. We measured the tradeoff empir-
+originated prompts. The LLM receives injected content in the        ically:
+same format as legitimate user input.
+                                                                           TABLE II: Isolation Level vs. Security and Utility
+   Figure 1 illustrates the attack flow. A server sends
+sampling/createMessage with attacker-controlled con-                          Isolation Level                   ASR       Task Completion
+tent using the “user” role. The host processes this identically               None (MCP default)               61.3%          94.2%
+to legitimate user input, with no visual or semantic distinction.             User-prompted cross-flow         31.7%          87.4%
+   UI Indicator Analysis: We examined three major MCP                         Strict (no cross-flow)            8.7%          61.8%
+host implementations:
+                                                                      Our ATTEST MCP extension uses “user-prompted” isolation
+    TABLE I: Host UI Indicators for Sampling Messages               by default, requiring explicit authorization for cross-server
+                                                                    data flow. This balances security (reducing ASR by 48%)
+            Host                 Ver.    Indicator         Dist.
+                                                                    while maintaining acceptable utility (87.4% task completion
+            Claude Desktop       1.2.3   None              No       vs 94.2% baseline).
+            Cursor               0.44    None              No
+            Continue              0.9    None              No       D. Message Integrity Analysis
+                                                                      We analyzed the JSON-RPC message format for standard
+   No tested implementation provides visual distinction for         security properties:
+sampling-derived messages. Users cannot differentiate server-
+injected from user-originated prompts, violating the principle                TABLE III: MCP Message Security Properties
+of Origin Authenticity.
+   Protocol vs. Implementation Responsibility: One might                         Property                       Required     MCP v1.0
+argue this is purely a host implementation failure—hosts could                   Message Authentication             Yes          No
+                                                                                 Replay Protection                  Yes          No
+display warnings based on transport channel. However, the                        Capability Binding                 Yes          No
+MCP specification’s silence on origin display enables rather                     Origin Identification              Yes        Partial*
+than prevents the attack. The spec permits servers to use the                    Integrity Verification             Yes          No
+“user” role in sampling without requiring hosts to distinguish      *Transport-level only; not in message payload
+it. ATTEST MCP addresses this by mandating origin tagging
+at the protocol level, removing implementation discretion.             The specification relies entirely on transport security (TLS
+                                                                    for HTTP) without application-layer protections. This is insuf-
+C. Vulnerability 3: Implicit Trust Propagation                      ficient when the threat model includes compromised servers.
+   In multi-server deployments, the client connects to multi-                      IV. E XPERIMENTAL M ETHODOLOGY
+ple servers simultaneously. The specification does not define
+                                                                      To measure the security impact of MCP’s architectural
+isolation boundaries between servers.
+                                                                    choices, we developed P ROTOA MP and conducted controlled
+   Protocol Weakness: Tool responses from Server A can
+                                                                    experiments.
+influence tool invocations on Server B. The LLM context
+window conflates outputs from all servers without provenance        A. P ROTOA MP Framework
+tracking.                                                              Existing benchmarks (InjecAgent, AgentDojo) assume di-
+   Attack Vector: An adversary controlling Server A can:            rect tool APIs rather than MCP’s client-server architecture.
+   1) Embed instructions in tool responses that cause invoca-       Concurrent work on MCP-Bench [22] evaluates capability and
+       tions on Server B                                            task completion, while MCPSecBench [23] catalogs attack
+   2) Exfiltrate data retrieved from Server B via Server A’s        types. Our P ROTOA MP (Protocol Amplification Benchmark)
+       channels                                                     differs by measuring protocol amplification—how MCP’s ar-
+   3) Establish persistence by poisoning shared context             chitecture specifically increases attack success rates compared
+   Formal Property Violated: Isolation—the property that            to non-MCP baselines:
+compromise of one component does not propagate to others.              1) MCP Server Wrappers: We implemented MCP-
+   1) Isolation-Utility Tradeoff: MCP explicitly prioritizes               compliant servers wrapping benchmark tool functions,
+composability—the ability for tools to work together                       preserving semantic equivalence while adding protocol
+seamlessly—over isolation. This is a deliberate design choice              overhead.
+
+
+
+                                                                                                                                            3
+  2) Attack Injection Points: We added injection capabili-          TABLE IV: Attack Success Rate: MCP vs. Baseline
+     ties at three protocol layers:                                  Attack Type                      Baseline      MCP          ∆
+       • Resource content (indirect injection)
+                                                                     Indirect Injection (Resource)     31.2%       47.8%       +16.6%
+       • Tool response payloads                                      Tool Response Manipulation        28.4%       52.1%       +23.7%
+       • Sampling request prompts                                    Cross-Server Propagation          19.7%       61.3%       +41.6%
+                                                                     Sampling-Based Injection           N/A        67.2%         —
+  3) Measurement Infrastructure: We instrumented clients
+                                                                     Overall                           26.4%       52.8%      +26.4%
+     to log all JSON-RPC messages, enabling analysis of
+     attack propagation through protocol channels.
+
+B. Experimental Setup                                           B. Sampling Vulnerability Severity
+  MCP Servers Under Test:                                         The sampling mechanism introduces a novel attack vector
+  • mcp-server-filesystem: File operations (read,
+                                                                absent in non-MCP systems:
+     write, list)                                                     TABLE V: Sampling Attack Analysis by Model
+  • mcp-server-git: Repository management (clone,
+     commit, diff)                                                       Model                  ASR      Exfil. Rate       Persist.
+  • mcp-server-sqlite: Database queries (SELECT,                         Claude-3.5-Sonnet     58.3%             42.1%      31.7%
+     INSERT)                                                             GPT-4o                71.4%             53.8%      38.2%
+  • mcp-server-slack: Messaging integration
+                                                                         Llama-3.1-70B         72.1%             61.2%      44.6%
+  • adversarial-mcp: Custom server exercising protocol
+     edge cases                                                    Servers exploiting sampling achieved 58–72% attack suc-
+  LLM Backends: Claude-3.5-Sonnet, GPT-4o, Llama-3.1-           cess, with 42–61% successfully exfiltrating sensitive context
+70B                                                             and 31–44% establishing persistence across sessions. Claude-
+  Attack Scenarios: 847 test cases:                             3.5-Sonnet shows highest resilience, consistent with prior
+                                                                findings [5].
+  • InjecAgent adaptations: 312 (indirect injection, tool
+     abuse)                                                     C. Multi-Server Trust Exploitation
+  • AgentDojo adaptations: 398 (multi-step attacks)               We tested configurations with 2–5 concurrent MCP servers,
+  • Novel protocol-specific attacks: 137 (sampling, cross-      with one server under adversary control:
+     server)
+  Baseline: Equivalent tool integrations without MCP (direct        TABLE VI: ASR by Server Count (1 Compromised)
+function calls) to isolate protocol-specific effects.                              Servers    ASR       Cascade Rate
+C. Controlled Variables                                                              1        47.8%          N/A
+                                                                                     2        58.4%         34.2%
+  To ensure valid comparison between MCP and baseline                                3        67.1%         51.8%
+conditions:                                                                          5        78.3%         72.4%
+
+  • Tool semantics identical between conditions
+  • Same injection payloads used                                   Attack success scales with server count due to increased
+  • LLM prompting strategy held constant                        cross-server attack surface. With 5 servers, a single compro-
+  • Network latency matched between conditions                  mised server achieves 78.3% ASR with 72.4% cascade rate
+                                                                (successfully compromising additional servers’ operations).
+  Latency Configuration: Baseline uses direct function calls
+                                                                   Prompt Engineering Baseline: We tested whether system
+with simulated network overhead matching MCP. Measured
+                                                                prompt instructions alone could mitigate cross-server attacks
+MCP latencies: median 12.4ms for stdio transport, 23.7ms for
+                                                                without protocol changes. Adding “Never pass data between
+HTTP/SSE. We verified latency does not significantly affect
+                                                                different tool servers without explicit user confirmation” to
+LLM safety refusal rates using paired t-test (p > 0.3, n =
+                                                                the system prompt reduced cross-server ASR from 61.3% to
+200).
+                                                                47.2%—a 23% reduction. However, this remains significantly
+                          V. R ESULTS                           higher than ATTEST MCP’s 8.7%, demonstrating that prompt-
+                                                                level defenses are insufficient and protocol-level isolation is
+A. Protocol Amplification Effect
+                                                                necessary.
+   Table IV shows attack success rates (ASR) comparing MCP-
+integrated agents versus baseline (non-MCP) integrations.       D. Comparison with Prior Benchmarks
+   Key Finding: MCP’s architecture amplifies attack success       Our MCP-specific results contextualize prior findings:
+by 23–41% depending on attack type. The largest amplification     When the same attack scenarios are executed through
+occurs in cross-server propagation, where MCP’s lack of iso-    MCP infrastructure, success rates increase by 7–15 percentage
+lation boundaries enables attacks impossible in single-server   points, confirming protocol-specific amplification independent
+deployments.                                                    of general LLM vulnerabilities.
+
+
+
+                                                                                                                                        4
+  TABLE VII: Benchmark Comparison: Original vs. MCP                    •Open-source servers: Package registry account binding
+        Benchmark              Setting        Original    MCP
+                                                                        (npm, pip) with maintainer identity verification
+        InjecAgent             GPT-4          24–48%     51.2%
+                                                                      Revocation Infrastructure: We propose federated CAs
+        AgentDojo              Best agent      <25%      38.7%     maintain shared Certificate Revocation Lists (CRLs) with the
+        Agent-SafetyBench      Safety score    <60%      47.3%     following SLAs: (1) emergency revocation (e.g., compromised
+                                                                   npm account) within 4 hours, (2) standard revocation within
+                                                                   24 hours, (3) CRL distribution via OCSP stapling with 1-
+   VI. D EFENSE : ATTEST MCP P ROTOCOL E XTENSION                  hour refresh. This mirrors established PKI practices (e.g., Let’s
+   Based on our analysis, we design ATTEST MCP,                    Encrypt) while acknowledging the operational burden on a
+a backward-compatible protocol extension addressing                volunteer-driven ecosystem.
+identified vulnerabilities. While MCPSec [24] documents            C. Protocol Additions
+implementation-level vulnerabilities, MCPSecBench [23]
+provides attack taxonomies, and MCPGuard [25] offers                   Capability Certificate:
+runtime scanning, ATTEST MCP proposes concrete protocol            {
+                                                                       "capability_cert": {
+additions (capability attestation, message authentication) that          "server_id": "filesystem-server",
+can be incorporated into the MCP specification itself—a                  "capabilities": ["resources", "tools"],
+                                                                         "issued_by": "anthropic-ca",
+complementary layer addressing protocol-level rather than                "issued_at": 1706140800,
+implementation-level weaknesses.                                         "expires_at": 1737676800,
+                                                                         "signature": "base64..."
+                                                                       }
+A. Design Principles                                               }
+  1) Capability Attestation: Servers must cryptographically
+     prove capability possession via signed certificates from          Authenticated Message:
+     a capability authority.                                       {
+                                                                       "jsonrpc": "2.0",
+  2) Message Authentication: All JSON-RPC messages in-                 "method": "tools/call",
+     clude HMAC-SHA256 signatures binding content to                   "params": {...},
+                                                                       "mcpsec": {
+     authenticated server identity.                                      "server_id": "filesystem-server",
+  3) Origin Tagging: Sampling requests are tagged with                   "timestamp": 1706140800,
+                                                                         "nonce": "random-32-bytes",
+     server origin, enabling clients to distinguish server-              "hmac": "base64..."
+     injected from user-originated prompts.                            }
+                                                                   }
+  4) Isolation Enforcement: Cross-server information flow
+     requires explicit user authorization.                           Replay Protection: Clients maintain a sliding window of
+  5) Replay Protection: Timestamp plus nonce with config-          1,000 nonces per server with 30-second validity. Messages
+     urable validity window.                                       with duplicate nonces or expired timestamps are rejected.
+B. Trust Model Options                                             D. Backward Compatibility and Migration
+   A critical design decision is the capability authority archi-      ATTEST MCP operates in three modes to support gradual
+tecture. We evaluate three models:                                 adoption:
+      TABLE VIII: Capability Authority Trust Models                   • Permissive: Accept legacy servers with user warning
+                                                                        (migration default)
+          Model             Pros              Cons                    • Prompt: Require explicit user confirmation for unsigned
+          Centralized       Simple     PKI,   Single point of           servers
+                            easy revocation   failure                 • Strict: Reject all unsigned servers
+          Federated         Distributed,      Complex coor-           Downgrade Attack Mitigation: Once a server presents
+                            flexible          dination
+                                                                   valid ATTEST MCP credentials, the client pins that expec-
+          Web-of-Trust      Decentralized     User complex-
+                                              ity
+                                                                   tation. Subsequent connections without credentials trigger
+                                                                   security warnings. This prevents MITM downgrade attacks
+                                                                   where an attacker strips security headers from a previously-
+   Our implementation uses the federated model: platform           authenticated server.
+vendors (Anthropic, Cursor, JetBrains, etc.) operate CAs for
+their ecosystems with cross-signing agreements for interoper-      E. Performance Overhead
+ability. This balances decentralization with operational sim-         Median overhead of 8.3ms (cold) or 2.4ms (warm cache)
+plicity.                                                           per message is negligible compared to LLM inference latency
+   Identity Verification: Servers obtain certificates through:     (typically 500–2000ms). Certificate validation dominates cold-
+   • Commercial servers: Domain ownership verification             start overhead; caching reduces this significantly for repeated
+      (DNS TXT record)                                             calls within a session.
+
+
+
+                                                                                                                                  5
+TABLE IX: ATTEST MCP Latency Overhead (milliseconds)                  •  Patching CVE-2025-49596 (MCP Inspector RCE) does
+         Operation                         P50   P95    P99
+                                                                         not address capability attestation absence
+                                                                       • Fixing SQL injection in sqlite-mcp does not prevent
+         Certificate validation (cold)     4.2    8.1   12.3
+         Certificate validation (cached)   0.3    0.5    0.8             sampling-based injection
+         HMAC-SHA256 computation           0.3    0.4    0.6           • Hardening individual servers does not establish cross-
+         Nonce lookup/insertion            0.1    0.2    0.3             server isolation
+         Total per message (cold)          8.3   14.2   21.7           Protocol-level remediation is required. We recommend An-
+         Total per message (warm)          2.4    4.1    6.2
+                                                                    thropic incorporate ATTEST MCP concepts into MCP v2.0.
+                                                                    B. Limitations of This Work
+F. Effectiveness Evaluation                                           • Our experiments used five MCP servers; production de-
+   We implemented ATTEST MCP as a client-side shim and                  ployments with dozens of servers may exhibit different
+re-ran our full evaluation:                                             characteristics
+                                                                      • ATTEST MCP has not been formally verified; we plan
+      TABLE X: ATTEST MCP Defense Effectiveness
+                                                                        symbolic model checking in future work
+   Attack Type                     MCP     AttestMCP    Reduction     • The federated CA model requires ecosystem coordination
+
+   Indirect Injection             47.8%      18.4%         61.5%        that may face adoption barriers
+   Tool Response Manipulation     52.1%      14.2%         72.7%      • We did not evaluate adversarial attempts to bypass AT-
+   Cross-Server Propagation       61.3%       8.7%         85.8%        TEST MCP specifically
+   Sampling-Based Injection       67.2%      11.3%         83.2%
+   Overall                        52.8%      12.4%        76.5%                            VIII. R ELATED W ORK
+                                                                       We build on foundational prompt injection research [1],
+   ATTEST MCP reduces overall ASR from 52.8% to 12.4%—              [3] and agent security benchmarks [4]–[7]. Prior work on
+a 76.5% reduction. The largest improvements occur in cross-         multi-agent security [8] identified inter-agent trust as a
+server (85.8%) and sampling (83.2%) attacks, where isolation        vulnerability—we extend this by demonstrating MCP’s archi-
+enforcement and origin tagging provide strong protection.           tectural contribution to this weakness.
+                                                                       Defense mechanisms including Spotlighting [9] and Promp-
+G. Limitations                                                      tArmor [10] address prompt-level protection but not protocol-
+   ATTEST MCP does not address:                                     level vulnerabilities. Our ATTEST MCP is complementary,
+  •  Attacks within a single legitimately-authorized server (the    addressing a different layer of the security stack.
+     server has valid credentials but serves malicious content)
+                                                                                              IX. C ONCLUSION
+   • Social engineering of users to authorize malicious capa-
+     bilities                                                          We presented the first security analysis of the Model
+   • CA compromise (mitigated by federation, but not elimi-         Context Protocol specification, identifying three protocol-level
+     nated)                                                         vulnerabilities: capability attestation absence, unauthenticated
+   • First-contact attacks: Pinning (TOFU—Trust On First            sampling, and implicit trust propagation. Through controlled
+     Use) provides no protection when a user first installs a       experiments with P ROTOA MP, we demonstrated that MCP’s
+     malicious server that never claimed ATTEST MCP support         architecture amplifies attack success rates by 23–41% com-
+   • Ecosystem adoption: If most servers remain legacy/un-          pared to non-MCP integrations. Our proposed ATTEST MCP
+     signed, users will default to “Permissive” mode, negating      extension reduces attack success from 52.8% to 12.4% through
+     security benefits                                              capability attestation and message authentication, with accept-
+   Residual 12.4% ASR primarily reflects indirect injection         able performance overhead (8.3ms median per message).
+through legitimately-retrieved content—a fundamental limita-           As MCP adoption accelerates, addressing these architectural
+tion shared with all LLM systems that cannot be solved at the       weaknesses becomes critical. We recommend:
+protocol layer.                                                        1) Protocol revision incorporating mandatory capability at-
+   User Behavior Assumptions: Our ASR measurements                        testation
+assume users carefully review cross-server authorization               2) Origin tagging requirements for all sampling requests
+prompts. In practice, alert fatigue may cause users to click           3) Explicit isolation boundaries with user-prompted cross-
+“Allow” habitually, reducing real-world effectiveness. Future             server authorization
+work should conduct user studies to measure actual authoriza-                                    R EFERENCES
+tion review rates.
+                                                                     [1] K. Greshake, S. Abdelnabi, S. Mishra, C. Endres, T. Holz, and M.
+                        VII. D ISCUSSION                                 Fritz, “Not what you’ve signed up for: Compromising real-world LLM-
+                                                                         integrated applications with indirect prompt injection,” in Proc. ACM
+A. Architectural vs. Implementation Security                             AISec, 2023.
+                                                                     [2] Anthropic, “Model Context Protocol Specification v1.0,” Dec. 2024.
+   Our analysis demonstrates that MCP’s security weaknesses          [3] Y. Liu et al., “Prompt injection attack against LLM-integrated applica-
+are architectural, not merely implementation bugs:                       tions,” arXiv:2306.05499, 2024.
+
+
+
+
+                                                                                                                                              6
+ [4] Q. Zhan et al., “InjecAgent: Benchmarking indirect prompt injections
+     in tool-integrated LLM agents,” in Findings of ACL, 2024.
+ [5] E. Debenedetti et al., “AgentDojo: A dynamic environment to evaluate
+     prompt injection attacks and defenses in LLM agents,” in NeurIPS
+     Datasets and Benchmarks, 2024.
+ [6] Z. Zhang et al., “Agent-SafetyBench: Evaluating the safety of LLM
+     agents,” arXiv:2412.14470, Dec. 2024.
+ [7] M. Andriushchenko et al., “AgentHarm: A benchmark for measuring
+     harmfulness of LLM agents,” in ICLR, 2025.
+ [8] M. Lupinacci et al., “The dark side of LLMs: Agent-based attacks for
+     complete computer takeover,” arXiv:2507.06850, 2025.
+ [9] K. Hines et al., “Defending against indirect prompt injection attacks
+     with spotlighting,” arXiv:2403.14720, 2024.
+[10] T. Shi et al., “PromptArmor: Simple yet effective prompt injection
+     defenses,” arXiv:2507.15219, 2025.
+[11] W. Zou, R. Geng, B. Wang, and J. Jia, “PoisonedRAG: Knowledge cor-
+     ruption attacks on retrieval-augmented generation,” in USENIX Security,
+     2025.
+[12] F. Perez and I. Ribeiro, “Ignore previous prompt: Attack techniques for
+     language models,” in NeurIPS ML Safety Workshop, 2022.
+[13] S. Schulhoff et al., “Ignore this title and HackAPrompt: Exposing
+     systemic vulnerabilities of LLMs through a global prompt hacking
+     competition,” in EMNLP, 2023.
+[14] OWASP Foundation, “OWASP Top 10 for LLM Applications 2025,”
+     2025.
+[15] I. Evtimov et al., “WASP: Web agent security against prompt injection,”
+     in ICML, 2025.
+[16] A. Wei, N. Haghtalab, and J. Steinhardt, “Jailbroken: How does LLM
+     safety training fail?” in NeurIPS, 2023.
+[17] Palo Alto Networks Unit 42, “Model Context Protocol attack vectors
+     and security analysis,” 2025.
+[18] S. Willison, “Cross-agent privilege escalation in AI assistants,” Blog,
+     2025.
+[19] S. Yao et al., “ReAct: Synergizing reasoning and acting in language
+     models,” in ICLR, 2023.
+[20] T. Schick et al., “Toolformer: Language models can teach themselves
+     to use tools,” in NeurIPS, 2023.
+[21] C. Schroeder de Witt et al., “Open challenges in multi-agent security:
+     Towards secure systems of interacting AI agents,” arXiv:2505.02077,
+     2025.
+[22] Z. Wang et al., “MCP-Bench: Benchmarking tool-using
+     LLM agents with complex real-world tasks via MCP
+     servers,” arXiv:2508.20453, Aug. 2025. [Online]. Available:
+     https://github.com/Accenture/mcp-bench
+[23] Y. Yang, D. Wu, and Y. Chen, “MCPSecBench: A systematic secu-
+     rity benchmark and playground for testing Model Context Protocols,”
+     arXiv:2508.13220, Aug. 2025.
+[24] E. Harris, “MCP Security Research,” 2025. [Online]. Available: https:
+     //mcpsec.dev/
+[25] Virtue AI, “MCPGuard: First agent-based MCP scanner to protect AI
+     agents,” Aug. 2025. [Online]. Available: https://blog.virtueai.com/2025/
+     08/22/mcpguard-first-agent-based-mcp-scanner-to-protect-ai-agents/
+
+
+
+
+                                                                                7
+

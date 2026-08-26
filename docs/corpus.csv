@@ -1,0 +1,27 @@
+work_key,year,venue_status,A_level,B_position,evidence_class,repro_0_3,baseline_rigor_0_3,artifact_avail_0_3,validity_concerns,primary_or_secondary
+fang2024one-day,2024,arXiv (influential preprint),A2,B2(+B1-lite),controlled experiment,2,3,3,"V3 description-oracle leakage; V2 hindsight; small n=15",PRIMARY
+cybench2024,2024,ICLR25 Oral,A2,B2,benchmark,3,3,3,V1 public writeups; V4 env reuse,PRIMARY
+nyuctfbench2024,2024,arXiv+dataset,A2,B2,benchmark,3,2,3,V1; V5 binary-success metric,PRIMARY
+csev22024,2024,arXiv (Meta),A0-A1,B1/B2,benchmark,2,2,3,V1 possible train overlap; V3 CWE labels,PRIMARY
+csev32024,2024,arXiv (Meta),A0-A1,B1/B2,benchmark,2,2,3,same as v2,PRIMARY
+intercode2023-bg,2023,arXiv (BACKGROUND),A1,B2,benchmark,3,2,3,pre-window provenance anchor only,PRIMARY
+csev12023-bg,2023,arXiv (BACKGROUND),A0,B1,benchmark,2,1,3,pre-window background only,PRIMARY
+primevul2024,2024,arXiv+dataset,A0,B1,dataset/validity study,3,3,3,"paper ITSELF documents V1/V3/V5 flaws of prior sets",PRIMARY
+r1-slr2024,2024,arXiv SLR,meta,pre-agentic B1-B3,survey,1,1,n/a,stale window (<=Aug 2024); no offense axis depth,PRIMARY
+r2-slr2024,2024,arXiv SLR,meta,B1/B3,survey,1,1,n/a,no exploitation axis; cutoff late 2024,PRIMARY
+r3-survey2026,2026,arXiv survey,meta,pentest B1/B2,survey,1,2,n/a,co-evolution=pentest-internal only; excludes competition systems by design,PRIMARY
+r7-sok-aixcc2026,2026,USENIX Sec26,competition A1-A2,B1+B2+B3 integrated,competition,2,3,3,artificial-bug design; vendor cost self-reports,PRIMARY
+artemis-study2025,2025,arXiv,A2,B1/B2,production-network experiment,2,3,2,V4 fixed infra; 10h scoring window; press inflation risk,PRIMARY
+mcp-ecosystem2025,2025,DSN26,A-infrastructure,cross-cutting tool layer,measurement,2,2,3,V1 snapshot age,PRIMARY
+mcp-governance2025,2025,arXiv,A-infrastructure,cross-cutting,positional/measurement,1,1,2,early-stage area,PRIMARY
+mcp-spec2026,2026,arXiv,A-infrastructure,cross-cutting,analysis,2,2,2,spec-version churn,PRIMARY
+mcp-poisoning2026,2026,arXiv,A-infrastructure,cross-cutting,analysis/experiment,2,2,2,lab-only demos,PRIMARY
+bigsleep2024,2024,PZ blog,production A2 (seeded variant analysis),B1,production discovery (n=1),0,2,0,"single target; seeded commits; no independent repro",PRIMARY-vendor
+xbow2025,2025,XBOW blog,production A2 (human-reviewed),B1+B2,production leaderboard stats,0,1,0,vendor dashboard self-report; policy-mandated human review,PRIMARY-vendor
+argusee2025,2025,DARKNAVY blog,production A2 (human entry points),B1(+human B2 exploit),production discovery,0,2,0,vendor-reported; CSEv2 saturation suggests benchmark overfit,PRIMARY-vendor
+gtg1002-2025,2025,Anthropic report-summary,misuse A2-high/A3-contested,B1+B2,incident report (vendor),0,n/a,0,self-investigation; attribution unverified; hallucination caveat present,PRIMARY-vendor
+openssf-retro2026,2026,OpenSSF blog,ecosystem,B4 redeployment/regression,program closeout report,1,n/a,2,team-reported legacy counts; Ada Logics 27 = third-party pass,PRIMARY-foundation
+nvd-cve2025-6965,2025,NVD registry,registry,B1 outcome record,registry record,3,n/a,3,factual registry entry,PRIMARY
+r4-csur2025,2025,ACM CSUR 58(134),meta,detection-centric B1,survey,n/a,n/a,n/a,paywalled; metadata-verified only,SECONDARY-metadata
+r5-usenix26-agentic-sok,2026,USENIX Sec26,meta-agentic,offense+defense landscape,survey,n/a,n/a,n/a,title-verified on index; full text pending,SECONDARY-metadata
+r6-tosem2026,2026,ACM TOSEM,meta,detection SLR 263 studies,survey,n/a,n/a,repo-open,paywalled paper; author repo open = metadata primary,SECONDARY-metadata+repo

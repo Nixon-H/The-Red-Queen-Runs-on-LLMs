@@ -1,0 +1,44 @@
+# EVIDENCE EXTRACT — DARKNAVY Argusee multi-agent vulnerability discovery
+
+reference_key: darknavy-argusee-2025
+canonical_url: https://www.darknavy.org/blog/argusee_a_multi_agent_collaborative_architecture_for_automated_vulnerability_discovery/
+title: "Argusee: A Multi-Agent Collaborative Architecture for Automated Vulnerability Discovery"
+published: 2025-05-23 | author: DARKNAVY
+source_type: vendor-research-blog | PRIMARY text, CLAIMED results
+fetch_method: opencode webfetch; archive: this file
+
+## Verified claims
+
+1. Real-world CVE found + exploited:
+   "This vulnerability has been assigned CVE-2025-37891 and has been fixed ... DARKNAVY has
+   exploited this vulnerability to reliably escalate to root privileges on Arch Linux."
+   Linux kernel USB host-side stack; MIDI2->UMP conversion improper length checks ->
+   arbitrary kernel heap overflow primitive; introduced since Linux 6.5.
+   Fix ref (from post): git.kernel.org/stable/c/ce4f77bef276e7d2eb7ab03a5d08bcbaa40710ec.
+   Locator: intro + "Auditing of Linux Kernel" section.
+
+2. AUTONOMY GUARDRAIL (critical): "Argusee is not intended to completely replace manual auditing
+   or to discover vulnerabilities from scratch ... Given precise entry points (e.g., specific
+   functions or modules) and relevant context from the auditor, Argusee performs in-depth
+   analysis." => human supplies entry points => A2 classification, NOT autonomous A3.
+   For kernel run: "requires providing Agents with richer contextual information".
+   Locators: "Argusee: A Multi-Agent Collaborative Architecture" para 2 + Kernel section.
+
+3. Architecture: Manager Agent (task decomposition/dispatch), Auditor Agents (code analysis),
+   Checker Agent (verification pass against false positives/negatives); shared toolset incl.
+   LSP-based code reader; agents autonomously time tool calls.
+
+4. Results (vendor-reported):
+   - CyberSecEval 2 single-file cases: "100% accuracy on test cases for categories like
+     Buffer Overflow" -> benchmark-saturation datum for §9.
+   - "cumulatively discovering 15 previously unknown security flaws" in medium projects
+     (GPAC, GIFLIB named); GPAC integer-overflow example detailed.
+
+5. Roadmap admission: Reproducer Agent (PoC construction) and Exploit Agent are FUTURE work,
+   i.e., current Argusee does not auto-exploit; root LPE exploit was achieved via human team
+   using Argusee's finding ("DARKNAVY has exploited").
+
+## Interpretation guardrails
+- Exploitation of CVE-2025-37891 = human-driven using agent finding. Do not attribute exploit
+  to full autonomy.
+- All results vendor-reported; no independent replication of the 15-flaw claim.

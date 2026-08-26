@@ -1,0 +1,50 @@
+# EVIDENCE EXTRACT — XBOW #1 US on HackerOne
+
+reference_key: xbow-top1-2025
+canonical_url: https://xbow.com/blog/top-1-how-xbow-did-it
+title: "The Road to Top 1: How XBOW Did It"
+author: Nico Waisman | published: 2025-06-24
+source_type: vendor-blog | primary_or_secondary: PRIMARY text, CLAIMED results (vendor-reported;
+leaderboard rank is HackerOne's public board = weakly independent corroboration of rank only)
+fetch_method: opencode webfetch; local_archive: this file + references/rawhtml/xbow-top1-2025.jina.md(empty)
+
+## Verified claims (exact quotes)
+
+1. Rank claim:
+   "For the first time in bug bounty history, an autonomous penetration tester has reached the
+   top spot on the US leaderboard." Locator: title/deck.
+
+2. Volume + outcome funnel (all vendor-reported):
+   - "XBOW submitted nearly 1,060 vulnerabilities."
+   - "bug bounty programs have resolved 130 vulnerabilities, while 303 were classified as Triaged"
+   - "33 reports are currently marked as new, and 125 remain pending review by program owners."
+   - "208 were marked as duplicates, 209 as informative and 36 as not applicable"
+   - Severity (last 90 days): "54 critical, 242 high, 524 medium, and 65 low"
+   - "around 45% of XBOW's findings are still awaiting resolution"
+   Locator: "XBOW's Real-World Impact" section.
+
+3. Human-in-the-loop qualifier (CRITICAL for autonomy classification):
+   "All findings were fully automated, though our security team reviewed them pre-submission to
+   comply with HackerOne's policy on automated tools."
+   Locator: same section. => A2 evidence, NOT A3. Human review is mandatory per platform policy.
+
+4. Unknown Palo Alto bug:
+   "a previously unknown vulnerability in Palo Alto's GlobalProtect VPN solution, affecting over
+   2,000 hosts." No CVE ID given in post. Locator: penultimate main paragraph.
+
+5. Internal validation layer ("validators"): automated peer reviewers confirm each finding;
+   LLM-based or custom programmatic checks (e.g., headless browser verifies JS execution for XSS).
+   Locator: "Automated Vulnerability Discovery" section.
+
+6. Targeting infrastructure: LLM+manual curation parsed program scopes/policies; scoring system
+   over domains; SimHash + screenshot imagehash dedup. Removed from one program that banned
+   automatic scanners. Locators: "Scaling Discovery and Scoping capabilities".
+
+7. Method provenance: CTF benchmarks (PortSwigger/PentesterLab) -> proprietary benchmark ->
+   white-box OSS zero-day hunting -> black-box production via HackerOne.
+   Locator: opening sections.
+
+## Interpretation guardrails
+- All outcome numbers are vendor-reported from their own dashboard screenshots; no independent audit.
+- "fully automated" refers to discovery/submission pipeline; pre-submission human review exists.
+- Leaderboard #1 is time-varying state (Q2-2025 US ranking), not a durable scientific result.

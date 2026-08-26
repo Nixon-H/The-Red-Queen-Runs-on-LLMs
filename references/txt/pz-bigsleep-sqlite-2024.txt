@@ -1,0 +1,53 @@
+# EVIDENCE EXTRACT — Big Sleep first AI-agent zero-day (SQLite)
+
+reference_key: pz-bigsleep-sqlite-2024
+canonical_url: https://projectzero.google/2024/10/from-naptime-to-big-sleep.html
+title: "From Naptime to Big Sleep: Using Large Language Models To Catch Vulnerabilities In Real-World Code"
+author: the Big Sleep team (Google Project Zero + Google DeepMind)
+dateline: 2024-Nov-01 (vulnerability found and reported early October 2024, fixed same day)
+source_type: vendor-research-blog | primary_or_secondary: PRIMARY (full text fetched & inspected)
+fetch_method: opencode webfetch (direct egress blocked for projectzero.google from this host)
+local_archive: references/rawhtml/pz-bigsleep-sqlite-2024.webfetch-notes.md (this file)
+
+## Verified claims (exact quotes)
+
+1. First AI-agent memory-safety zero-day:
+   "We believe this is the first public example of an AI agent finding a previously unknown
+   exploitable memory-safety issue in widely used real-world software."
+   Locator: Introduction paragraph 3.
+
+2. Bug class/location:
+   "an exploitable stack buffer underflow in SQLite"; function seriesBestIndex;
+   "resulting in a write into a stack buffer with a negative index when handling a query
+   with a constraint on the rowid column."
+   Trigger: SELECT * FROM generate_series(1,10,1) WHERE ROWID = 1;  (iColumn = -1 sentinel)
+   Locator: "Discovered Vulnerability" section, code lines 619-720 commentary.
+
+3. Model basis: "In this successful run based on Gemini 1.5 Pro, the seed commit was [1976c3f7]"
+   Locator: Trajectory Highlights opening line.
+
+4. Fuzzing baseline failure:
+   "the issue remained undiscovered after 150 CPU-hours of fuzzing" (AFL, CLI target,
+   corpus pre-seeded with required keywords).
+   Locator: "What about Fuzzing?" section, paragraph 2.
+
+5. No CVE assigned to this bug: the post assigns no CVE ID anywhere; bug fixed pre-release.
+   Locator: whole post (negative observation).
+
+6. Prior-art link to AIxCC: "Earlier this year at the DARPA AIxCC event, Team Atlanta discovered
+   a null-pointer dereference in SQLite, which inspired us to use it for our testing."
+   Locator: Introduction paragraph 3. -> direct competition->industrial coupling datum for I2.
+
+7. Author humility qualifier (must preserve in any capability claim):
+   "these are highly experimental results ... it's likely that a target-specific fuzzer would be
+   at least as effective".
+   Locator: Conclusion paragraph 2.
+
+8. Method framing: variant analysis seeded by commit message+diff of recent SQLite commits;
+   agent tools: code browser, debugger, Python sandbox, reporter (Naptime toolset).
+   Locator: Methodology section.
+
+## Interpretation guardrails
+- Do NOT claim "autonomous zero-day hunting at scale" from this single result: single target,
+  seeded variant-analysis setup, human-curated commit list.
+- A2 autonomy evidence (bounded task, human-chosen starting point), not A3.

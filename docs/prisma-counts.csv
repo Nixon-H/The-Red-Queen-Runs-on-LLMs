@@ -1,0 +1,15 @@
+stream,stage,note,count
+stream_A_academic,identified,arXiv Q1-Q8 raw hits,973
+stream_A_academic,identified,DBLP D1-D4 hits,214
+stream_A_academic,screened,dedup union first-page IDs + seed/chaining academic leads,339
+stream_A_academic,fulltext_assessed,OA PDFs downloaded+converted+validated,23
+stream_A_academic,included,academic works incl 2 background anchors + R5 upgraded full-text,23
+stream_A_academic,restricted_metadata_included,R4 CSUR + R6 TOSEM (positioned via metadata/repo only),2
+stream_B_competition_industrial,identified,targeted searches + repo changelogs + citation mining,~40 candidates reviewed
+stream_B_competition_industrial,fulltext_assessed,official/team/vendor/foundation pages with quote-level extracts,10
+stream_B_competition_industrial,included,PZ/XBOW/DARKNAVY/Anthropic/OpenSSF/ToB/TA-ASC/TA-AFC/blog.google/OSS-Fuzz,10
+stream_C_registry_documentary,fulltext_assessed,NVD CVE-2025-6965 full record,1
+stream_C_registry_documentary,included,registry records,1
+combined,total_included,,36
+combined,excluded_records,,4
+combined,conversion_failures,,0

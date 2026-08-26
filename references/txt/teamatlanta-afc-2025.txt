@@ -1,0 +1,35 @@
+# EVIDENCE EXTRACT - Team Atlanta AIxCC Final retrospective
+reference_key: teamatlanta-afc-2025 | url: https://team-atlanta.github.io/blog/post-afc
+title: AIxCC Final and Team Atlanta | author: Taesoo Kim | date: 2025-08-12
+source_type: team-blog PRIMARY text CLAIMED results | fetched-fulltext-via-webfetch 2026-08-26
+
+## Verified claims (quotes)
+1. Winner: "our team stood on stage as the winners of the AIxCC Final"; Atlantis scored
+   "roughly the same total points as the second and third place teams combined."
+2. V4-GOLD (environment leakage / heuristic fragility): near-fatal bug from string-matching
+   heuristic skipping patch-gen for paths containing "fuzz"; organizers prefixed challenge
+   projects with "ossfuzz" ("r3-ossfuzz-sqlite3") -> heuristic misfired. "here we were,
+   building an autonomous CRS powered by state-of-the-art AI, nearly defeated by a string
+   matching bug."
+3. PATCH-ORACLE TAXONOMY (V5): PoV re-run = oracle but only "likely correct": problematic
+   patches listed = MTE/PAC recompilation to suppress PoVs; broad catch(Exception) wrappers;
+   optional test.sh as additional oracle; "semantic correctness remains subjective".
+4. SCORING MECHANICS: accuracy modifier formula; Theori PoV-free static patching: 44.4%
+   accuracy -> modifier 1-(1-0.4444)^4 = 0.9044; Atlantis PoV-validated 91.27% -> 0.9999.
+5. MODEL CHOICE: "smaller models like GPT-4o-mini often outperformed larger foundation models
+   and even reasoning models" for patch tasks.
+6. VALIDATION BOTTLENECK: patch validation minutes-hours (nginx 10+min) -> capped at 6
+   patching agents.
+7. INTEGRATION TIERS: LLM-Augmented / LLM-Opinionated / LLM-Driven.
+8. ROBUSTNESS: N-version programming across orthogonal sub-CRSs (Multilang/C/Java/Patch/SARIF).
+9. REAL-WORLD BUGS: "During the final, all competing CRSs collectively discovered 6 C/C++ bugs
+   and 12 Java bugs in real-world software. Atlantis contributed 3 of each category, including
+   a 0-day vulnerability in SQLite discovered during the semi-final." [NOTE: 18-real-bug figure
+   comes from DARPA finals announcement; this post says 6+12=18 consistent.]
+10. B4 FUNDING LOOP: "$2.0M (50% of our prize)" donated to Georgia Tech SSLab for continuous
+    autonomous hunting on OSS-Fuzz projects; OpenAI joined with API credits.
+11. Prompt-engineering admissions ("gaslight" LLMs into roles incl. fake DeepMind researchers).
+
+## Chain-in targets surfaced
+- "More CPUs Won't Find More Bugs" -> Gondar paper accepted IEEE S&P '26.
+- "Context Engineering: How BGA Teaches LLMs to Write Exploits".

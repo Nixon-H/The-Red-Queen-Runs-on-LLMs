@@ -1,0 +1,39 @@
+# EVIDENCE EXTRACT - Team Atlanta Atlantis: ASC real SQLite bug found+patched autonomously
+reference_key: teamatlanta-sqlite-asc2024
+canonical_url: https://team-atlanta.github.io/blog/post-asc-sqlite/
+title: Autonomously Uncovering and Fixing a Hidden Vulnerability in SQLite3 with an LLM-Based System
+author: Hanqing Zhao | date: 2024-08-28 | source_type: team-blog (competition participant) PRIMARY text CLAIMED results
+fetch: opencode webfetch full text 2026-08-26
+
+## Verified claims
+1. "Atlantis secured six first-bloods and autonomously identified and patched a real bug in
+   SQLite3, earning us a $2 million prize and a place in the grand finals of AIxCC."
+2. System claim: "Atlantis is an end-to-end LLM-based bug-finding and fixing system designed to
+   function entirely without human intervention." (vendor design claim; challenge-bounded)
+3. Bug detail: FTS5 trigram tokenizer off-by-one read azArg[i+1] when nArg odd -> NULL deref;
+   PoCs: CREATE VIRTUAL TABLE t USING fts5(s, tokenize='trigram case_sensitive'); (etc.)
+   Heap-confined off-by-one -> MallocZero -> zero-pointer-deref.
+4. Atlantis auto-patch: bound check zArg=(i+1<nArg)?azArg[i+1]:NULL + rc=SQLITE_ERROR;
+   "~15 minutes for the entire building, patch generation, iteration, correctness-validation".
+5. OFFICIAL FIX cross-ref: SQLite commit e9b919d550262076d1b8453c3d6852b88822b922 (drh,
+   2024-08-06) fixed fts5Tri/Unicode/AsciiCreate loop bounds; refined in b651084 after
+   unnecessary checks noted. => MAINTAINER VARIANT ANALYSIS RESPONSE (I2 coupling datum).
+6. Scoring footnote: "Discovering previously unknown bugs does not count as a valid score";
+   finalist spot came from intended artificial bugs.
+7. Zero-shot baseline comparison recorded: Claude-3.5-Sonnet patch mitigates w/o root cause;
+   GPT-4o patch misses remove_diacritics branch -> naive prompting insufficient (V5-relevant).
+8. Maintainer-patch imperfection admitted ("human-write patches are not perfect") -> patch-
+   quality adjudication noise exemplar.
+9. SCORING INCENTIVES: related post "Ensembles of Agents..." states AIxCC awards 6 points for
+   PATCHING vs 2 points for DISCOVERING (competition-induced B3 emphasis).
+10. CHAIN-IN TARGET discovered: blog post "Patching Vulnerabilities with Coding Agents in
+    2026" - 10 agent configurations (4 frameworks x 5 frontier models) on 63 REAL CRASHES FROM
+    THE AIxCC FINAL COMPETITION. [fetch queued - B3 anchor]
+11. Reconciliation hint for C19: "63 real crashes from the DARPA AIxCC final competition"
+    (related post) vs ToB/DARPA "48 challenges" -> distinct referents plausible (challenges vs
+    crash instances); definitive resolution at R7 close-read.
+
+## Guardrails
+- Real-bug find was UNSCORED side-effect; do not conflate with competition performance.
+- "without human intervention" = system design intent during scored operation within
+  challenge environment; NOT production-autonomy evidence.

@@ -1,0 +1,20 @@
+# EVIDENCE EXTRACT - Google OSS-Fuzz AI-powered fuzzing milestone
+reference_key: ossfuzz-levelingup-2024 | url: https://security.googleblog.com/2024/11/leveling-up-fuzzing-finding-more.html
+authors: Oliver Chang, Dongge Liu, Jonathan Metzman (Google Open Source Security Team) | date: 2024-11-20
+source_type: corporate-official-blog PRIMARY | fetched-fulltext-via-webfetch 2026-08-26
+
+## Verified claims (verbatim)
+1. "OSS-Fuzz reported 26 new vulnerabilities to open source project maintainers, including one
+   vulnerability in the critical OpenSSL library (CVE-2024-9143)... each was found with AI,
+   using AI-generated and enhanced fuzz targets." -> C21 CLOSED.
+2. CVE-2024-9143: reported Sep 16 2024, fix published Oct 16 2024; "likely been present for two
+   decades and wouldn't have been discoverable with existing fuzz targets written by humans."
+   Context: >11,000 vulns reported by OSS-Fuzz over 8 years.
+3. Coverage scale: AI targets across "272 C/C++ projects" (+370k lines); top single-project
+   coverage 77->5434 lines (~7000%).
+4. AUTONOMY BOUNDARY: LLM executes workflow steps 1-4 (draft target, fix compilation, fix
+   runtime issues, run+TRIAGE crashes incl. driver-vs-project attribution); step 5 (FIXING)
+   explicitly future: "We don't have anything we can share here today". Agent-based
+   architecture with tools/debuggers = roadmap item; triage-without-human-review = goal.
+   => A1 pipeline classification anchored here.
+5. Cross-link: cites PZ Big Sleep SQLite stack-buffer-underflow discovery.

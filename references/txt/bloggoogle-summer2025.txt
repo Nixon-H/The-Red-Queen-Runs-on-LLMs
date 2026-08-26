@@ -1,0 +1,25 @@
+# EVIDENCE EXTRACT - Google official CVE-2025-6965 / Big Sleep announcement
+reference_key: bloggoogle-summer2025
+canonical_url: https://blog.google/innovation-and-ai/technology/safety-security/cybersecurity-updates-summer-2025/
+title: "A summer of security: empowering cyber defenders with AI"
+author: Kent Walker (President of Global Affairs, Google & Alphabet) | date: 2025-07-15
+source_type: corporate-official-blog | PRIMARY text, CLAIMED narrative
+fetch: opencode webfetch 2026-08-26 (output archived at tool-output/tool_03cf2bf23001kK5o3uaJ0Vatag;
+verified by local grep - exact strings below)
+
+## Verified claims (exact strings from fetched page)
+1. "Big Sleep agent discovered an SQLite vulnerability (CVE-2025-6965) - a critical security
+   flaw, and one that was known only to threat actors and was at risk of being exploited."
+   -> C23 CLOSED: the contested phrase IS verbatim in the official post.
+2. "We believe this is the first time an AI agent has been used to directly foil efforts to
+   exploit a vulnerability in the wild." (vendor belief-claim; preserve qualifier)
+3. Discovery pipeline disclosed as threat-intel-seeded: "based on intel from Google Threat
+   Intelligence" -> NOT purely autonomous code-scanning; intel-driven variant/hypothesis hunt.
+4. Big Sleep also "being deployed to help improve the security of widely used open-source
+   projects" -> B4-ish industrial redeployment signal.
+
+## Interpretation guardrails
+- "known only to threat actors" is a vendor threat-intelligence assertion; no IOCs shared;
+  not independently verifiable. Must remain attributed + qualified in paper.
+- The foiling claim is counterfactual ("was at risk"); treat as documented-response evidence
+  of coupling between offense preparation and AI-defense deployment, not proven attack.

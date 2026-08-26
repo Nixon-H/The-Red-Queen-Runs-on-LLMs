@@ -1,0 +1,1469 @@
+                                         Fixing Security Vulnerabilities with AI in OSS-Fuzz
+                                         YUNTONG ZHANG, National University of Singapore
+                                         JIAWEI WANG, National University of Singapore
+arXiv:2411.03346v2 [cs.CR] 21 Nov 2024
+
+
+
+
+                                         DOMINIC BERZIN, National University of Singapore
+                                         MARTIN MIRCHEV, National University of Singapore
+                                         DONGGE LIU, Google
+                                         ABHISHEK ARYA, Google
+                                         OLIVER CHANG, Google
+                                         ABHIK ROYCHOUDHURY, National University of Singapore
+                                         Critical open source software systems undergo significant validation in the form of lengthy fuzz campaigns.
+                                         The fuzz campaigns typically conduct a biased random search over the domain of program inputs, to find inputs
+                                         which crash the software system. Such fuzzing is useful to enhance the security of software systems in general
+                                         since even closed source software may use open source components. Hence testing open source software
+                                         is of paramount importance. Currently OSS-Fuzz is the most significant and widely used infrastructure for
+                                         continuous validation of open source systems. Unfortunately even though OSS-Fuzz has identified more
+                                         than 10,000 vulnerabilities across 1000 or more software projects, the detected vulnerabilities may remain
+                                         unpatched, as vulnerability fixing is often manual in practice.
+                                            In this work, we rely on the recent progress in Large Language Model (LLM) agents for autonomous
+                                         program improvement including bug fixing. This is also the first such study with large-scale vulnerability
+                                         fixing on real projects to the best of our knowledge. We customise the well-known AutoCodeRover agent for
+                                         fixing security vulnerabilities. This is because LLM agents like AutoCodeRover fix bugs from issue descriptions,
+                                         via code search. Instead for security patching, we rely on the test execution of the exploit input to extract
+                                         code elements relevant to the fix. Our experience with the vulnerability data from OSS-Fuzz leads us to many
+                                         observations. We note that having autonomy in the LLM agent is useful for successful security patching, as
+                                         opposed to approaches like Agentless where the control flow is fixed. More importantly our findings show that
+                                         we cannot measure quality of patches by code similarity of the patch with reference codes (as in CodeBLEU
+                                         scores used in VulMaster), since patches with high CodeBLEU scores still fail to pass given the given exploit
+                                         input. Our findings indicate that security patch correctness needs to consider dynamic attributes like test
+                                         executions as opposed to relying of standard text/code similarity metrics.
+                                         Additional Key Words and Phrases: Software security, Program repair, Large Language Model, OSS-Fuzz
+                                         ACM Reference Format:
+                                         Yuntong Zhang, Jiawei Wang, Dominic Berzin, Martin Mirchev, Dongge Liu, Abhishek Arya, Oliver Chang,
+                                         and Abhik Roychoudhury. 2024. Fixing Security Vulnerabilities with AI in OSS-Fuzz. 1, 1 (November 2024),
+                                         21 pages. https://doi.org/10.1145/nnnnnnn.nnnnnnn
+
+                                         Authors’ Contact Information: Yuntong Zhang, yuntong@comp.nus.edu.sg, National University of Singapore; Jiawei
+                                         Wang, wangjw@comp.nus.edu.sg, National University of Singapore; Dominic Berzin, dominic.berzin@u.nus.edu, National
+                                         University of Singapore; Martin Mirchev, mmirchev@comp.nus.edu.sg, National University of Singapore; Dongge Liu,
+                                         donggeliu@google.com, Google; Abhishek Arya, aarya@google.com, Google; Oliver Chang, ochang@google.com, Google;
+                                         Abhik Roychoudhury, abhik@comp.nus.edu.sg, National University of Singapore.
+
+                                         Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee
+                                         provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the
+                                         full citation on the first page. Copyrights for components of this work owned by others than the author(s) must be honored.
+                                         Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires
+                                         prior specific permission and/or a fee. Request permissions from permissions@acm.org.
+                                         © 2024 Copyright held by the owner/author(s). Publication rights licensed to ACM.
+                                         ACM XXXX-XXXX/2024/11-ART
+                                         https://doi.org/10.1145/nnnnnnn.nnnnnnn
+
+
+                                                                                                            , Vol. 1, No. 1, Article . Publication date: November 2024.
+2                                                                                          Zhang et al.
+
+
+1   Introduction
+Security vulnerabilities are one of the major threats to modern software systems. Once exploited
+by malicious attackers, security vulnerabilities can cause significant damage to the software and its
+users, incurring financial loss, data breaches, and more. In 2023, 30,927 new Common Vulnerabilities
+and Exposures (CVEs) are recorded by the National Vulnerability Database (NVD), and half of
+these vulnerabilities were classified as high or critical severity [38]. The number of new CVEs has
+increased by 17% compared to the previous year, underscoring the accelerated pace of vulnerability
+detection and the critical need for timely remediation. The recent advancement in automatic
+programming with generative AI could further exacerbate the security issues, since some parts of
+the application code could come from Large Language Models (LLMs) with little security assurance.
+   To safeguard the software systems, researchers and practitioners have made advances in both
+vulnerability detection and remediation. To detect security vulnerabilities before they are discov-
+ered/exploited by attackers, various techniques from static analysis [12, 36] to fuzzing [33, 44] have
+been developed and also adopted in the industry. Static analysis techniques can be applied to detect
+a wide range of vulnerabilities. However, they are known to report false-positive warnings since
+they are often based on abstraction and conservative approximation of the program semantics [19].
+Fuzzing, on the other hand, employs a biased random search in the program’s input space and
+dynamically executes the program. The dynamic nature of fuzzing ensures that a reported bug is
+a true positive. Fuzzing has been employed by major software companies to continuously scan
+for vulnerabilities in their development process [8, 22]. Google’s OSS-Fuzz, announced in 2016,
+provides continuous fuzzing for various core open-source software [2]. As of August 2023, OSS-Fuzz
+has identified over 10,000 vulnerabilities across 1,000 projects [31].
+   While vulnerability detection techniques like fuzzing have shown to be both mature and effective,
+detection is only the first step in comprehensive software protection. A detected bug should be
+patched as soon as possible to reduce the time of exposure and the risk of being exploited. A
+previous study in 2021 has shown that the median time-to-fix (i.e. time from bug reporting to patch
+verification) to be 5.3 days for bugs detected by OSS-Fuzz [9], and 10% of the reported bugs are not
+fixed within the 90-day disclosure deadline. The rising number of detected vulnerabilities in recent
+years may require developers to invest even more time and effort in manually patching them. There
+is an urgent need for automated vulnerability remediation in continuous fuzzing pipelines to both
+ease the developers’ workload and minimize the window of vulnerability exposure.
+   Recent advancements in generative AI and LLM agents have shown promise in autonomous
+vulnerability remediation in programs [35, 41, 43, 46]. These LLM agents are designed for general
+software engineering tasks, including bug fixing and feature development. They operate in real-
+world scenarios where tasks are described by users in natural language. Using the task description
+and the software codebase as inputs, the agents generate code modification suggestions to fulfill
+the specified requirements. Since repairing security vulnerabilities is a specialized software engi-
+neering task, we hypothesize that with appropriate adaptation, general-purpose LLM agents for
+software engineering can be repurposed for this task. These repurposed agents can potentially be
+integrated into existing vulnerability detection pipelines such as fuzzing, where they can provide
+the remediation after detection and complete the software protection cycle.
+  CodeRover-S. In this paper, we present a large scale real-world study on using LLM agents for
+security vulnerability repair. To enhance the realism of our effort, we use as dataset the OSS-Fuzz
+projects, which seek to enhance the state of practice of open source security [31]. We repurposed
+the open-source LLM agent AutoCodeRover [35, 46] to repair security vulnerabilities, and imple-
+mented a version named CodeRover-S (i.e. AutoCodeRover for security). With the vulnerability
+report and an exploit input produced by a fuzzing campaign, CodeRover-S autonomously generates
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                            3
+
+
+patches that fix the detected vulnerability. In the process of adapting LLM agents for vulnerability
+repair, we identified that one of the main challenge was the insufficient information contained in
+the auto-generated vulnerability report. Unlike human-written issue report for general software
+engineering tasks, vulnerability reports are often auto-generated by the fuzzer and only contain
+information like the bug type and crash stacktrace. To enrich the vulnerability report, we extract
+dynamic call graph information from the exploit input found by fuzzing, which is then used to
+augment the report generated by the fuzzer. In addition, we perform a type-based analysis at the
+program locations identified as faulty by the agent, and use the additional type information to
+improve the compilation rate of generated patches. With these adaptation, we built CodeRover-S
+which can autonomously repair security vulnerabilities detected in a fuzzing pipeline.
+   To evaluate the efficacy of CodeRover-S in a real-world setup, we conducted experiments on
+real C/C++ vulnerabilities previously detected by OSS-Fuzz. Each detected vulnerability comes
+with an exploit input that resulted in a crash from sanitizers (e.g. AddressSanitizer [16], Memo-
+rySanitizer [17]), and the crash report generated by the sanitizer. Experiments on 588 real-world
+vulnerabilities from a previously curated dataset [27] show that CodeRover-S can repair 52.4% of
+these vulnerabilities by resolving the crash from the exploit input. We also comparatively study the
+efficacy of other deep learning or LLM-based systems in this realistic vulnerability repair scenario.
+Firstly, we apply a general-purpose LLM coding agent directly to the vulnerability repair setting
+and observe a lower repair efficacy. Secondly, we evaluate the state-of-the-art deep learning based
+vulnerability repair system VulMaster [47] in the OSS-Fuzz dataset. Existing deep learning based
+vulnerability repair techniques often make strong assumptions such as the perfect fix location is
+provided at either function- or line-level. This localization assumption is too strong for real-world
+vulnerability repair, and we observe a low repair efficacy when they are used in a realistic repair
+setup. Furthermore, current evaluation of vulnerability repair tools often focus on how closely the
+generated patches match the developer’s patch, using metrics like exact match or similarity scores
+such as BLEU [32] or CodeBLEU [34]. However, we find that these metrics may not accurately
+reflect the true efficacy of the repairs. Therefore, it is important to assess vulnerability repair
+systems on datasets with executable inputs in future research.
+   In summary, our contributions are as follows:
+
+
+    • We explore the feasibility of adapting general-purpose LLM programming agents for the
+      repair of security vulnerabilities. We integrate call graph information and type-based analysis
+      to provide richer context for LLM agent-based vulnerability repair, resulting in improved
+      patch quality. Our approach is implemented as a new agent CodeRover-S which is specialized
+      for security vulnerability repair.
+    • We conduct an empirical study on the use of LLM agents to repair real-world security
+      vulnerabilities identified by the industrial fuzzing service OSS-Fuzz. Our findings indicate that
+      leveraging LLM agents for vulnerability remediation is a promising approach to complement
+      existing detection pipelines and complete the software protection life cycle.
+    • We present empirical evidence suggesting that similarity scores may not accurately mea-
+      sure the effectiveness of vulnerability repair systems. To better evaluate learning-based
+      vulnerability repair systems, future research should consider test-based validation methods.
+
+
+2   The OSS-Fuzz Case Study
+We discuss background on the OSS-Fuzz project and LLM agents for software engineering.
+
+
+                                                      , Vol. 1, No. 1, Article . Publication date: November 2024.
+4                                                                                               Zhang et al.
+
+
+
+
+                                               Median= 6
+                                      12   6               18        Mean= 22.88
+
+
+
+
+                                  0             10              20          30     40
+
+
+Fig. 1. The boxplot represents the distribution of the number of bugs identified through fuzzing since 2016.
+The median and mean values are highlighted in the diagram with some outlier data points are removed for
+better presentation.
+
+
+2.1    Overview of OSS-Fuzz project
+Fuzz testing [5] is a popular method for detecting software security vulnerabilities, via a biased
+random search over the domain of program inputs. Launched by Google in 2016, OSS-Fuzz is
+an open-source initiative designed to continuously detect security vulnerabilities across more
+than 1250 open-source software projects. The participating projects provide a fuzzing harness to
+test specific API functions. OSS-Fuzz monitors the reliability of software projects’ repositories
+by continuously testing them with a wide range of fuzzers (e.g. AFL++, libfuzzer, Hongfuzz) and
+sanitizers (e.g. AddressSanitizer [16] and UndefinedBehaviorSanitizer [39]). It automatically reports
+any crashes identified by the fuzzers and periodically verifies whether the project has resolved the
+reported issues. As of September 2024, the OSS-Fuzz cluster has discovered over 12,000 bugs across
+all projects. As shown in Figure 1, on average, OSS-Fuzz has reported 22 bugs for each participating
+project, with some projects such as ffmpeg having over 400 bugs reported. In this work, we focus
+on vulnerability remediation for C/C++ vulnerabilities detected by OSS-Fuzz.
+
+2.2    LLM Agents for Software Engineering
+Recent advances in Large Language Models’ (LLMs) context windows have significantly improved
+their ability to process complex text sequences. This enhancement, combined with their capacity
+for task planning, has led to the development of agent-based systems designed to tackle a broad
+spectrum of problems. The model solves the task by decomposing it into smaller, manageable steps
+that another model or tool can handle.
+   One area where notable success was demonstrated is software engineering. Here, an agentic
+system is provided with a natural language description of a task, such as issue descriptions in
+software repositories like GitHub. The issue can describe a bug or new features to be added to
+a codebase. To solve the issue, the LLM can invoke external tools, allowing it to interact with
+the environment and gather more data before presenting a solution in the form of a patch. These
+tools encompass actions fundamental to software engineering, such as Abstract Syntax Tree (AST)
+search, e.g., getting a function or class definition, file system navigation, and executing commands
+such as compiling the project or running the test suite. By integrating such tools, the agent can
+analyze the codebase, invoke tools to gather additional information about the failure, and make
+modifications while keeping track of the original task. Examples of state-of-the-art LLM Agents
+are AutoCodeRover [46], SWE-Agent [43], and Agentless [41].
+   The approach and the system prototype used in our research is the autonomous program
+improvement agent AutoCodeRover [46],[35]. The work of AutoCodeRover shows that natural
+language specifications such as GitHub issue reports are sufficient for driving an autonomous agent
+to fix bugs or add features. AutoCodeRover coordinates a group of agents to achieve context
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                                                                     5
+
+
+
+
+                                                Buggy locations
+                        Context Retrieval                              Patch Generation
+
+
+                                                         Candidate
+                                                           patch
+      Codebase
+
+                                                                                                        Yes           Yes
+                                            Candidate
+                          Reproducer        reproducer    Patch/Reproduce          Review    No                 No                 No
+                                                                                                   Can retry          Can retry         Workflow Ends
+                          Generation                          Review               passed?        generation?         main loop?
+
+      Issue report                                                                 Yes
+
+
+
+
+        Input
+                                                                                                                     Final patch
+                                                               Main Loop
+
+
+
+
+Fig. 2. Workflow of AutoCodeRover for resolving GitHub issues. Dotted lines are back edges in the workflow.
+
+
+retrieval, following which a patch writer (known as Patch Agent) will produce the final patch. If a
+test suite is available, AutoCodeRover will execute the test suite to validate whether the proposed
+patch satisfies the test suite. When tests are not available, AutoCodeRover employs a Test Agent to
+construct a test case reproducing the issue. By delegating specific tasks to dedicated agents within
+the workflow, the system can efficiently utilize LLMs’ strengths in natural language understanding
+and code generation.
+   Significance. Repairing vulnerabilities detected by fuzzing is vital for enhancing software
+security and reliability, as evidenced by the efforts from both software engineering research [6, 11,
+45] and industry [23]. According to a recent study by Mei et al. [27], the number of vulnerabilities
+identified by OSS-Fuzz is growing steadily despite the gap between reproducible vulnerabilities
+and their fixes, posing a significant security risk. Furthermore, the rising number of unpatched
+vulnerabilities over time implies that some vulnerabilities might not receive immediate attention.
+Therefore, it is essential to propose reliable solutions for vulnerability remediation.
+
+3     CodeRover-S
+To study whether LLM agents for general software engineering tasks can be specialized for vulner-
+ability remediation, we adapted the open-source agent AutoCodeRover for security vulnerability
+repair. In this section, we first provide an overview of AutoCodeRover, and subsequently discuss
+how we repurposed it for vulnerability repair.
+
+3.1     Overview of AutoCodeRover
+AutoCodeRover [46] is an LLM agent designed for software engineering tasks like bug fixing and
+feature addition. It aims to resolve software engineering issues in a realistic setup, where only a
+natural-language description of the issue/requirement is available. One such setup is GitHub issues,
+in which users submit bug reports or feature addition requests to a software project.
+   Figure 2 illustrates the workflow of AutoCodeRover in resolving GitHub issues. Given a
+codebase C and a natural-language (NL) issue report R, AutoCodeRover autonomously produces
+a patch that aims to resolve the issue described in R. From the issue report R, AutoCodeRover
+begins the main loop with context retrieval and reproducer generation. Since an issue typically only
+contains NL descriptions and no executable test to reproduce the issue, AutoCodeRover first
+attempts to generate a candidate reproducer test for the given issue. This reproducer test serves
+as an additional specification for the patch generation later on. Other than the reproducer test,
+
+                                                                                  , Vol. 1, No. 1, Article . Publication date: November 2024.
+6                                                                                                                               Zhang et al.
+
+
+
+                                                               AddressSanitizer Report
+                                                               ==24==ERROR: AddressSanitizer: heap-buffer-overflow on address
+                                                               0x60e000000293 ...
+                                                               READ of size 1 at 0x60e000000293 thread T0
+                                                               #0 0xe7763d in q_memchr src/core/parser/../ut.h:422:7
+                                                               #1 0xe771e8 in parse_quoted_param src/core/parser/parse_param.c:305:14
+                                                               #2 0xe7175a in parse_param_body src/core/parser/parse_param.c:450:6
+                                                               #3 0xe6b2d8 in parse_param2 src/core/parser/parse_param.c:496:13
+                                                               #4 0xe6d274 in parse_params2 src/core/parser/parse_param.c:599:10
+                                                               #5 0xe6ce56 in parse_params src/core/parser/parse_param.c:561:9
+                                                               #6 0xeb16b2 in parse_contacts src/core/parser/contact/contact.c:243:8
+                                                               #7 0xe4a638 in contact_parser src/core/parser/contact/parse_contact.c:55:7
+                                                               #8 0xe49405 in parse_contact src/core/parser/contact/parse_contact.c:84:6
+                                                               #9 0x87e4f4 in parse_contact_header src/core/select_core.c:234:9
+                                                               ...
+
+
+              (a) An example GitHub issue.1                   (b) Example of sanitizer report for Kamailio-380652 .
+
+                       Fig. 3. Examples of GitHub issues and sanitizer-generated reports.
+
+
+
+AutoCodeRover also starts the context retrieval stage from the issue report R. The goal of context
+retrieval is to extract code snippets relevant to the issue R from a large codebase, enabling the
+LLM to better understand the issue in relation to the code. AutoCodeRover performs context
+retrieval by designing a set of program structure-aware search APIs, and allowing the LLM to
+interact with a local codebase through these APIs. Specifically, AutoCodeRover provides a set
+of API specifications such as search_class(...), search_method_in_class(...), etc., to the
+LLM. The LLM is instructed to invoke some of these APIs with appropriate arguments based on
+what is described in the issue report R. For example, given the example issue shown in Figure 3a,
+the LLM would likely invoke the API search_class("Colorbar") to obtain more context about
+this class. Upon receiving such an API request, the backend of AutoCodeRover searches for the
+actual code/signature of the class Colorbar from an Abstract Syntax Tree (AST) representation
+of the codebase, and returns the code/signature back to the LLM. This process of invoking search
+APIs and enriching code context happens iteratively, until the LLM deems that the current code
+context is sufficient for understanding the issue. At the end of the context retrieval stage, the LLM
+decides on a few buggy locations from the current code context. These buggy locations are provided
+to a patch generation module to craft candidate patches that aim to resolve the issue.
+   After a candidate patch is generated, AutoCodeRover attempts to examine whether it resolves
+the issue in a review module. If the patch is deemed to resolve the issue, the workflow ends with it
+being the final patch. Otherwise, a natural-language “suggestion” on how to improve the current
+patch is sent back to the patch generation module to iteratively improve the patch. A natural
+way to decide whether a patch resolves the issue is to execute the reproducer test on the patched
+program. The review module in AutoCodeRover takes in both the generated candidate patch and
+test, execute them, and decide on (1) whether the test successfully reproduce the issue, and (2)
+whether the patch successfully resolves the issue. Both the test and patch are subject to iterative
+refinement since both of them are generated by the LLM and can be incorrect. If no acceptable
+patches were generated after several rounds of review, AutoCodeRover goes back to the context
+retrieval stage to re-discover buggy locations and a new set of patches. This process continues up
+to a pre-defined number of rounds.
+
+1 Issue #22864 from the matplotlib project. https://github.com/matplotlib/matplotlib/issues/22864
+2 Bug #38065 from the Kamalio project, detected by OSS-Fuzz. https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=38065
+
+
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                                                                       7
+
+
+
+
+                                                  Buggy locations
+                              Context Retrieval                          Patch Generation
+         Codebase
+
+                                                       Candidate
+                                                         patch
+
+                                                                                                          Yes           Yes
+          Sanitizer
+         bug report
+                                                                                     Review    No    Can retry
+                                                                                                                  No    Can retry
+                                                                                                                                     No
+                                                            Patch Review                                                                  Workflow Ends
+                                                                                     passed?        generation?         main loop?
+
+                                                                                     Yes
+
+
+
+        Exploit input
+
+           Input                                                    Main Loop                                          Final patch
+
+
+
+
+                        Fig. 4. Workflow of CodeRover-S for repairing security vulnerabilities.
+
+
+3.2   CodeRover-S for Security Vulnerability Repair
+The AutoCodeRover workflow presented in Section 3.1 is designed for resolving software engineer-
+ing issues with natural language descriptions. We next discuss the adaptation of AutoCodeRover
+into the context of repairing vulnerabilities detected by fuzzing campaigns such as in OSS-Fuzz. This
+adaptation results in an LLM agent for security vulnerability repair, which we call CodeRover-S.
+   We observe two main differences between the scenario of resolving GitHub issues and repairing
+vulnerabilities detected by fuzzers:
+   (1) Although GitHub issues sometimes contain steps to reproduce, these steps are usually pro-
+       vided by the user and may not be fully executable in the environment where the repair
+       workflow is run. Therefore, agents targeting GitHub issues often employ an LLM to extract
+       an executable reproducer test from the issue report. In contrast, vulnerabilities detected by
+       fuzzing always come with a Proof-of-Vulnerability exploit input. This exploit input is gener-
+       ated by the fuzzer to prove the existence of the vulnerability, and can be used to reproduce
+       the vulnerability in the fuzzing environment (assuming the vulnerability has been confirmed
+       and is not flaky).
+   (2) GitHub issue reports are usually human-written and contain natural-language descriptions of
+       the issue. These natural language descriptions typically cover the program components that
+       are related to the issues and some additional details, as shown in the example in Figure 3a.
+       In contrast, vulnerabilities found by fuzzers usually come with a bug report generated by
+       sanitizers such as AddressSanitizer. An example of sanitizer-generated report is shown in
+       Figure 3b. These auto-generated vulnerability reports contain the error type and a stack
+       trace of executing the exploit input, but does not contain more elaborated natural language
+       description of the root cause.
+   Based on these observations, we propose CodeRover-S, an LLM agent built on top of Au-
+toCodeRover but tailored for security vulnerability repair. Figure 4 presents the workflow of
+CodeRover-S for repairing vulnerabilities found by fuzzing. Compared to AutoCodeRover,
+CodeRover-S additionally takes in the fuzzer-generated exploit input, and uses this input for
+candidate patch validation within the workflow. Since the exploit input can reliably reproduce the
+vulnerability (c.f. Observation (1)), CodeRover-S does not attempt to generate reproducer inputs
+from the bug report. This exploit input is used during the Patch Review stage, in which the exploit
+input is executed against the generated candidate patches to examine whether the patches can
+resolve the crash from the exploit input. Similar to AutoCodeRover, if a candidate patch does
+not pass the review, CodeRover-S iteratively refines the generated patch until a pre-defined limit
+
+                                                                                   , Vol. 1, No. 1, Article . Publication date: November 2024.
+8                                                                                        Zhang et al.
+
+
+of retries is reached. In contrast to AutoCodeRover where the review judges the correctness of
+both test and patch, the review stage in CodeRover-S assumes the test is correct and examines
+the patch correctness based on the test execution result. The rest of the workflow follows that
+of AutoCodeRover: if the candidate patch is rejected at the review stage, retries will happen at
+both the patch generation and context retrieval level, depending on the pre-defined retry limits.
+CodeRover-S will output a final patch if the patch passes the review stage, or output the best patch
+so far (based on heuristics such as whether the patch can be compiled) if no patches have passed
+the review.
+   We now elaborate in the next subsection, how to tackle the challenge of creating security patches
+from sanitizer reports.
+
+3.3    Vulnerability Repair from Sanitizer Report
+In addition to adapting the agent workflow to security vulnerability repair, another challenge
+is to augment the bug report since the auto-generated report contains limited information (c.f.
+Observation (2)). Auto-generated bug reports from fuzzing are typically the output from sanitizers
+when executing the exploit input on the buggy program. Security sanitizers instrument the original
+program, and turns buggy executions that exhibit certain types of vulnerabilities into program
+crashes. For example, AddressSanitizer [16] and UndefinedBehaviorSanitizer [39] are widely used
+sanitizers that turn memory errors and undefined behaviors into crashes.
+   Figure 3b shows an example of bug report generated by AddressSanitizer for a vulnerability found
+by OSS-Fuzz in the Kamailo project. The sanitizer report includes the bug type (e.g. heap-buffer-
+overflow) and the stack trace when the crash happens. Though the bug type captures the requirement
+for the agent (i.e. “fix the heap-buffer-overflow in the program”), the crashing stack trace may not
+provide sufficient context for the agent to perform context retrieval. Agents like AutoCodeRover
+and CodeRover-S explore the codebase and extract the code context based on the information in the
+issue/bug report. They may invoke search APIs such as search_method_in_file(...) to initiate
+the context retrieval process and progressively search for other code elements as needed. However,
+the sanitizer report only includes the lines and functions in the crash stack trace, which is only a
+small part of the entire execution and may not serve as a good starting point for context retrieval.
+For example, the bug Kamailio-38065 shown in Figure 3b was patched by the developer with the
+changes shown in Figure 5. The developer patch modifies the skip_name function, which does not
+appear in the stack trace but is invoked in other parts of the execution. It could be challenging
+for the agent to use the sanitizer report as the starting point of context retrieval and navigate
+to this function in the codebase. This may restrict the retrieved context and affect the quality of
+the final patch. To address the challenge of limited information in the sanitizer report, we enrich
+the auto-generated report with additional context of the buggy execution. Specifically, we take
+advantage of the available exploit input, and generate a dynamic call graph from the execution of
+the exploit input. This dynamic call graph is used to augment the sanitizer report and provides
+more contextual information for the agent to navigate the codebase.
+   Dynamic Call Graph Construction. To construct a dynamic call graph from the buggy execution,
+we instrument the buggy program during compile time to insert hooks at every function entry
+and exit points. These hooks record the memory addresses of the functions, as well as the calling
+relationships between callers and callees. The instrumented program is then executed with the
+exploit input to trigger the vulnerability. During the execution, the function entry/exit hooks log
+an edge list comprising pairs of function call addresses. Following this procedure, we map the
+memory addresses to their original function names and source code locations (e.g. filename and line
+3 https://github.com/kamailio/kamailio/commit/20db418f1e35f31d7a90d7cabbd22ae989b7266c
+
+
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                                                        9
+
+
+              1   index 8 c6ebdd6bb . . 3 4 5 1 6 7 0 2 2 f 100644
+              2   −−− a / s r c / c o r e / p a r s e r / c o n t a c t / c o n t a c t . c
+              3   +++ b / s r c / c o r e / p a r s e r / c o n t a c t / c o n t a c t . c
+              4   @@ − 1 4 7 , 1 0 + 1 4 7 , 1 0 @@ s t a t i c i n l i n e i n t skip_name ( s t r ∗ _ s )
+              5         return 0;
+              6         }
+              7   − i f ( ∗ p == ' : ' ) {
+              8   + i f ( ∗ p == ' : ' | | ∗ p == ' ; ' ) {
+              9          i f ( last_wsp ) {
+             10   −              _s −> s = l a s t _ w s p ;
+             11                  _ s −> l e n −= l a s t _ w s p − _s −> s + 1 ;
+             12   +              _s −> s = l a s t _ w s p ;
+             13         }
+             14         return 0;
+             15     }
+
+
+
+                                 Fig. 5. The developer’s patch for fixing Kamailio-38065.3
+
+
+                             parse contact header                               skip name
+
+                                   parse contact                              trim trailling
+
+                                  contact parser                                  skip uri           trim trailling
+
+                                  parse contacts                                     trim
+
+                                   parse params                                trim leading              trim trailling
+
+                                  parse params2
+                                                                               trim leading
+
+
+Fig. 6. An example of enhancing the bug report using a dynamical call graph. The dashed lines represent the
+order of function calls on stack trace and the solid lines augment them to show the actual dynamical call
+graph. The red colored function call is the fix location selected by the developer.
+
+
+number). In practice, we utilize addr2line [13], gdb [14], and nm [15] to accomplish such mappings.
+Since the call graph size of real software project executions can be substantial, we performed the
+following post-processing to enhance the clarity of the information extracted from call graph:
+• Filtering functions: Invocation of standard libraries and internal functions that are not part of the
+  codebase were removed, to focus the analysis on functions directly involved in the vulnerability.
+  For example, calls to standard C library functions like malloc(), free(), and memcpy(), or
+  logging functions such as log_debug(), were filtered out.
+• Demangling function Names: For languages that utilize name mangling (e.g. C++), the function
+  names were de-mangled to the original, human readable identifiers in the source code. For
+  example, the name _ZL28demangling_terminate_handlerv would be de-mangled to
+  demangling_terminate_handler.
+  Figure 6 shows an example of the constructed dynamic call graph for the bug Kamailo-38065.
+The red and blue-colored function calls display the part of the dynamic call graph beyond the
+crash stack trace. These function calls serve as additional starting points for the agent to explore
+the codebase. To make the call graph available to the LLM, we concatenate the list of additional
+function calls to the sanitizer bug report as “other functions executed by the bug-triggering input”.
+The functions invoked closer to the crash location are presented earlier in this list. The additional
+
+                                                                                  , Vol. 1, No. 1, Article . Publication date: November 2024.
+10                                                                                                                    Zhang et al.
+
+
+              Repair Prompt
+              To ensure the patch is compilable, please use only existing variables at the specified bug locations.
+              Here’s a list of available variables and their types:
+              ...
+              variables in method: parse_param_body
+              Variables declarations:
+              - name: p , type: param_t*
+                     typedef: param_t originaltype:struct param ...
+              - name: _s , type: str*
+                     typedef: str original_type:* json_key
+                     ...
+              - name: separator , type: char
+              - name: _c , type: pclass_t
+                     typedef: pclass_t original_type:enum pclass ...
+             When writing your patch, make sure to:
+             1. Use variables in a way that’s consistent with their types.
+              2. Do not introduce imaginary variables that do not exist within the existing code snippet or
+              the provided context.
+             Write a patch for the vulnerability, based on the relevant code context. First explain the reasoning,
+              and then write the actual patch. When writing the patch, remember the following:
+             - You do not have to modify every location provided - just make the necessary changes.
+             - Other than the vulnerability to fix, your patch should preserve the program functionality as
+              much as possible. ...
+
+
+                           Fig. 7. Augmented repair prompt using context information.
+
+
+
+list of function calls enriches the auto-generated bug report from sanitizers, and provides more
+context for code retrieval in CodeRover-S.
+
+3.4    Type-assisted Patch Generation
+The context retrieval stage of CodeRover-S outputs a list of buggy locations (e.g. functions). With
+the code snippets at the buggy program locations, the patch generation stage attempts to craft
+patches that fixes the vulnerability. However, a generated patch may not be always compilable. This
+is because the code of the buggy function itself may not contain the necessary patch ingredient. For
+example, if the type definition of a struct variable s is not within the buggy function, the LLM may
+hallucinate some field names of s and use those names in the patch, which will make the patch
+not compilable. A straightforward solution is to provide the entire file content around the buggy
+functions to the LLM. However, code files can be large in real-world C/C++ projects, and may not
+fit in the context window of the LLM. Even if the entire file fits within the context window, the
+relevant type definitions might be absent, as they could be defined in separate header files.
+   To ensure the relevant context is present for patch generation, we introduce a type-assisted patch
+generation prompt that includes all existing variables and their types in the scope of the buggy
+function. To compose such a prompt, we parse the C/C++ source files to capture important language
+constructs such as structs, classes, typedefs, and enums. Using this information, we construct a
+type graph representing the relationships between types and variables. This step handles complex
+type relationships, including type aliases through typedefs, while maintaining information about
+structs, unions, and enums. This constructed type graph is added to the patch generation prompt
+so that the LLM can refer to these type information when writing a patch, thereby improving the
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                            11
+
+
+compilation rate of the patches. An example patch generation prompt for the example vulnerability
+Kamailio-38065 is shown in Figure 7.
+
+3.5    Language-specific Features
+Since the original AutoCodeRover was implemented for resolving GitHub issues in Python
+repositories, we implemented additional support for C/C++ projects in CodeRover-S.
+  Parsing of C/C++ code. AutoCodeRover and CodeRover-S parse the project source code into an
+AST to facilitate future code retrieval from the search APIs. We implemented the parsing of C/C++
+source files for the search index of CodeRover-S using tree-sitter 4 . To improve the search accuracy
+for identifying entities such as functions and structures, we process the standard C/C++ code
+patterns and some uncommon ones, such as function definitions through macros and structures
+defined via typedefs.
+   Search APIs. We also modify the search API in CodeRover-S to explore the codebase with a
+higher success rate. One notable feature of C/C++ is forward declarations, i.e., defining a function
+or class without providing an implementation for it. This leads to implementations scattered across
+the codebase. To handle this, we constrain the search API by removing tools that may confuse the
+model when the search is unsuccessful, such as seach_class_in_file. Furthermore, the stack
+trace in the sanitizer report does not contain information about the structure of qualified identifiers
+in C++. For example, there can be a method identifier of the form A::B, but it is unclear whether A
+refers to a class or a namespace. To handle this, we modify the search functionality to search across
+namespaces, classes, and structures when searching for a method containing such an identifier.
+
+4     Evaluation
+To study the effectiveness of automated tools in real-world vulnerability remediation, we evaluate
+various systems on real vulnerabilities detected by OSS-Fuzz. We aim to examine the efficacy
+of LLM agents and learning-based vulnerability repair systems in a realistic vulnerability repair
+scenario. Specifically, we would like to answer the following research questions:
+• RQ1: What is the efficacy of CodeRover-S in repairing real-world security vulnerabilities
+  compared to other tools?
+• RQ2: What are the strength and weakness of CodeRover-S in vulnerability repair?
+• RQ3: What are the suitable metrics for patch evaluation in security vulnerability repair?
+   Benchmark Selection. To study the effectiveness in repairing vulnerabilities detected by OSS-
+Fuzz, we utilize the recently introduced reproducible benchmark dataset, ARVO [27]. The ARVO
+dataset contains 5,001 C/C++ vulnerabilities detected by OSS-Fuzz across 273 projects, and each
+vulnerability comes with an environment to rebuild the buggy project and a bug-triggering exploit
+input. Since a large number of vulnerabilities have been discovered by OSS-Fuzz in the past years
+and are contained in the ARVO dataset, we employ a widely adopted sampling strategy [3] to
+construct a subset of vulnerabilities as our dataset.
+   Specifically, we use the 5,001 vulnerabilities in the ARVO dataset as the population, and apply a
+sampling method to create a representative subset. After applying a sampling methodology with a
+99% confidence level and a margin of error of 5%, we select an initial subset of 588 bug samples for
+further in-depth analysis. From the initial subset, we repeatedly filter out bugs based on the following
+criteria and re-sampled more bugs to eventually obtain a final subset of 588 vulnerabilities: (1) the
+reported vulnerability should be reproducible in our experiment environment; (2) the compilation
+4 https://tree-sitter.github.io/tree-sitter/
+
+
+
+                                                       , Vol. 1, No. 1, Article . Publication date: November 2024.
+12                                                                                                                                                                                                                                     Zhang et al.
+
+
+time of the buggy project should be under 15 minutes. This is to ensure the builds during the
+repair/validation process can finish within a reasonable time.
+  Figure 8 presents the distribution of vulnerabilities in our dataset based on the year and CWE
+type they were detected. The most common CWE type are buffer overflows (CWE-121 heap-
+based overflow and CWE-122 stack-based overflow), segmentation faults (CWE-476), use-after-free
+(CWE-416), and use of uninitialized value (CWE-457).
+
+
+                                                                                                            250
+                                                                                                                        244
+          140
+                                                                  138
+
+          120                                                                                               200
+                                                                                   108
+          100                                               91
+                                                                                                   Number
+                                                                             80                             150
+ Number
+
+
+
+
+           80
+                                                                                                                                   105
+                                        59        57                                                        100
+           60
+                                                                                                                                              67
+                                                                                                                                                        55
+           40                 30                                                              24             50
+                                                                                                                                                                  47
+           20                                                                                                                                                               20         12            12        11        9         5
+                     1                                                                                                                                                                                                                       1
+            0                                                                                                 0
+                                                                                                                        1
+
+
+
+                                                                                                                                   6
+
+
+
+                                                                                                                                              2
+
+
+
+                                                                                                                                                        6
+
+
+
+                                                                                                                                                                  7
+
+
+
+                                                                                                                                                                            5
+
+
+
+                                                                                                                                                                                       6
+
+
+                                                                                                                                                                                                 20
+
+
+
+                                                                                                                                                                                                               0
+
+
+
+                                                                                                                                                                                                                         5
+
+
+
+                                                                                                                                                                                                                                   0
+
+
+
+                                                                                                                                                                                                                                             0
+                                                                                                                       12
+
+
+
+                                                                                                                                 47
+
+
+
+                                                                                                                                            12
+
+
+
+                                                                                                                                                       41
+
+
+
+                                                                                                                                                                 45
+
+
+
+                                                                                                                                                                           12
+
+
+
+                                                                                                                                                                                     62
+
+
+
+
+                                                                                                                                                                                                           12
+
+
+
+                                                                                                                                                                                                                        41
+
+
+
+                                                                                                                                                                                                                                  59
+
+
+
+                                                                                                                                                                                                                                            77
+                 16
+
+
+                          17
+
+
+                                    18
+
+
+                                              19
+
+
+                                                        20
+
+
+                                                                  21
+
+
+                                                                         22
+
+
+                                                                                   23
+
+
+                                                                                          24
+
+
+
+
+                                                                                                                                                                                                E−
+                                                                                                                   E−
+
+
+
+                                                                                                                              E−
+
+
+
+                                                                                                                                         E−
+
+
+
+                                                                                                                                                   E−
+
+
+
+                                                                                                                                                             E−
+
+
+
+                                                                                                                                                                       E−
+
+
+
+                                                                                                                                                                                 E−
+
+
+
+
+                                                                                                                                                                                                          E−
+
+
+
+                                                                                                                                                                                                                    E−
+
+
+
+                                                                                                                                                                                                                              E−
+
+
+
+                                                                                                                                                                                                                                        E−
+                20
+
+
+                         20
+
+
+                                   20
+
+
+                                             20
+
+
+                                                       20
+
+
+                                                                 20
+
+
+                                                                        20
+
+
+                                                                                  20
+
+
+                                                                                         20
+
+
+
+
+                                                                                                                                                                                            W
+                                                                                                                   W
+
+
+
+                                                                                                                             W
+
+
+
+                                                                                                                                        W
+
+
+
+                                                                                                                                                   W
+
+
+
+                                                                                                                                                             W
+
+
+
+                                                                                                                                                                       W
+
+
+
+                                                                                                                                                                                 W
+
+
+
+
+                                                                                                                                                                                                       W
+
+
+
+                                                                                                                                                                                                                    W
+
+
+
+                                                                                                                                                                                                                              W
+
+
+
+                                                                                                                                                                                                                                        W
+                                                                                                                                                                                            C
+                                                                                                                  C
+
+
+
+                                                                                                                            C
+
+
+
+                                                                                                                                       C
+
+
+
+                                                                                                                                                  C
+
+
+
+                                                                                                                                                            C
+
+
+
+                                                                                                                                                                      C
+
+
+
+                                                                                                                                                                                C
+
+
+
+
+                                                                                                                                                                                                      C
+
+
+
+                                                                                                                                                                                                                   C
+
+
+
+                                                                                                                                                                                                                             C
+
+
+
+                                                                                                                                                                                                                                       C
+                                                                                                                                                                                 CWE
+
+
+
+
+                                             Fig. 8. The number of bugs detected by years and CWEs, respectively.
+
+
+   Baseline tools. We compare the efficacy of CodeRover-S with two baseline tools:
+(1) Agentless [41]: Agentless is the state-of-the-art LLM-based agentic system designed for
+    general-purpose software engineering tasks, as of August 2024 [29]. Agentless employs a fixed
+    two-phase workflow of localization and repair. The localization phase happens on multiple
+    granularities, such as classes, methods, and file names. The repair phase generates multiple
+    patches at the identified fix locations, and a patch selection process is employed to pick the
+    final patch. Agentless was originally designed for Python codebases. To use Agentless for
+    the C/C++ projects in OSS-Fuzz, we have re-implemented the project structure generation,
+    class/function parsing, and edit location mapping for C/C++. Moreover, some prompts are
+    adjusted from Python filenames or Python code snippet to that of C/C++. We use the sanitizer-
+    generated bug report for each vulnerability as its input. For patch selection, since there is an
+    exploit input available for each vulnerability, we use the following rule to select the final patch:
+    A plausible patch is strictly preferred to implausible one, and an implausible patch is strictly
+    preferred to the one with compilation issue. If there are multiple plausible patches, the first one is
+    picked as the final patch.
+(2) VulMaster [47]: VulMaster is a learning-based vulnerability repair tool. VulMaster fine-
+    tunes a CodeT5 model using vulnerability repair data such as CWE identifiers, vulnerability
+    descriptions, exemplar repairs and the vulnerable program fragment to be repaired. The output
+    of VulMaster is the repaired version of the vulnerable fragment. Learning-based vulnerability
+    repair tools like VulMaster usually assume perfect localization where the vulnerable program
+    statement/expression is given. They require the input program fragment to mark the to-be-fixed
+    statement/expression with two special tokens <start-vul> and <end-vul>. To use VulMas-
+    ter in a realistic vulnerability repair scenario, we employ the standard Spectrum-based Fault
+    Localization (SBFL) to obtain a few candidate fix locations, and run VulMaster over these
+    locations. This SBFL process takes in the exploit input as the failing test, and other non-crashing
+    inputs generated from the OSS-Fuzz fuzzing campaign as the passing tests, and computes a list
+    of suspicious locations using the Ochiai metric [1]. We use the top-five suspicious locations
+    (line-level) from SBFL as the fix locations, and use VulMaster to generate a patch at each
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                                      13
+
+
+    of these locations. Since the trained model of VulMaster is not publicly released, we follow
+    the same procedure to finetune the CodeT5 model using the same training dataset used in the
+    original paper. Since there are multiple patches produced (one at each location), we select the
+    final patch by following the same process as that in Agentless (i.e. always select the plausible
+    patches first).
+   For each vulnerability in the setup, the inputs to CodeRover-S and Agentless are:
+(1) An exploit input that triggers the vulnerability.
+(2) The sanitizer-generated bug report for this vulnerability. This is obtained by executing the
+    exploit input on the program built with sanitizers.
+   For VulMaster, we follow its original setup [47] and give it the following inputs:
+(1) CWE identifier extracted from the sanitizer-generated report.
+(2) A few exemplar fixes for the corresponding CWE type, extracted from the CVEFixes dataset [4].
+(3) The function containing the fix location identified from SBFL.
+   Tool Setup. For agent systems (CodeRover-S and Agentless) used in our evaluation, we used the
+OpenAI gpt-4o-2024-08-06 as the backend LLM. We set the model temperature to 0.2, following
+previous works [46]. For CodeRover-S, we set the maximum rounds of main loop to be 3, following
+the same experimental setup in [35].
+   We evaluate the final patch generated by a tool by applying it to the buggy program, compiling
+the patched program, and executing the exploit input on the patched program. We then classify
+the patches into the following categories: (1) No Patch (NP): A patch is not generated by the tool.
+(2) Compilation error (CE): A patch is generated, but caused compilation errors when building
+the program. (3) Implausible (IP): The generated patch compiles without errors, but the original
+exploit input still triggers the vulnerability. (4) Plausible (P): The patch compiles successfully, and
+the original exploit input can no longer trigger the bug.
+
+4.1   RQ1: Repair Efficacy of Various Tools
+In this research question, we aim to evaluate the capabilities of the LLM- and learning-based repair
+systems in repairing vulnerabilities detected by OSS-Fuzz in real-world projects.
+
+
+
+                                                       30.9%
+           52.6%                P (309)                                  P (182)                                    P(1)
+                                IP (209)                                                   63.6%           5.8%
+                                                                         IP (290)                                   IP(34)
+                                CE (30)                                                                     0.2%    CE(374)
+                       6.8%                    49.3%                     CE (68)
+                                NP (40)                        8.2%      NP (48)                                    NP(179)
+         35.5%        5.1%                                                                         30.4%
+                                                         11.6%
+
+
+
+       CodeRover-S                               Agentless                                 VulMaster
+
+
+                   Fig. 9. Comparison of results from CodeRover-S, Agentless and VulMaster.
+
+   Results. The pie charts in Figure 9 provide a comparative analysis of the patches for the three
+systems: CodeRover-S, Agentless and VulMaster, respectively. All three charts categorize
+patches based on the aforementioned criteria, which are plausible (P), implausible (IP), compilation
+errors (CE), and No Patch (NP). As can be seen from the left figure, CodeRover-S generated plausible
+patches for over half (52.6%) of the vulnerabilities, showing the potential of CodeRover-S being
+used in real-world vulnerability remediation. For the other 35% of the vulnerabilities, CodeRover-S
+
+                                                                 , Vol. 1, No. 1, Article . Publication date: November 2024.
+14                                                                                                                  Zhang et al.
+
+
+generated compilable but implausible patches. The non-compilable patches account for a low
+percentage of the dataset (5.1%), suggesting that the LLM can generated compilable patches to a
+large extent if it is given sufficient code context and type information. For the remaining 6.8% of the
+bugs, CodeRover-S did not generate a patch due to errors in the code search or other exceptions
+happened during the execution.
+   In comparison, the results from Agentless demonstrate that 49.3% of the patches are implausible,
+which is higher than that from CodeRover-S. In addition, 30.9% of the patches are plausible (P),
+which is substantially lower than the plausible patch rate in CodeRover-S. Furthermore, 11.6%
+(68) of the patches result in compilation errors (CE), another clearly higher percentage compared
+to CodeRover-S. Lastly, for the remaining 8.2% of bugs, Agentless fails to produce a patch. In a
+nutshell, we observe that CodeRover-S achieves better efficacy than Agentless in all categories.
+To some extent, this is expected since CodeRover-S is targeted for security patching.
+   Unlike the agent systems that generated plausible patches for around 30-50% of the vulnerabilities,
+VulMaster could not generate plausible patches for most of the vulnerabilities. The results from
+VulMaster demonstrate that 63.6% of the bugs do not have a compilable patch, the highest of all
+tools. In addition, 30.4% of the bugs do not have a patch that can be applied to the program. Only 5.8%
+of the subjects have an implausible patch. Finally, there is a single plausible patch, which is a function
+call removal. This suggests that VulMaster is not
+capable of generating plausible patches in realistic
+repair setups like OSS-Fuzz vulnerability remedia-
+tion.                                                          39 143 165                  Agentless
+   Furthermore, we examine to what extent plau-                    0 10                    CodeRover-S
+sible patches generated from the tools overlap. As                                         VulMaster
+seen in Figure 10, the overlap between CodeRover-                     0
+S and Agentless is significant, with most of the
+patches (78.6%) found by Agentless also present in
+that of CodeRover-S. In summary, CodeRover-S Fig. 10. The Venn diagram for plausible patches
+demonstrates more consistency in producing plausi- from the three tools.
+ble patches with fewer compilation errors, making it more reliable for generating useful security
+patches.
+
+4.2     RQ2: Further Analysis of CodeRover-S Results
+
+
+            CWE        # Samples    Name                                                   CodeRover-S   Agentless
+            CWE-121    244          Stack-based Buffer Overflow                            140 (57%)     77 (32%)
+            CWE-476    105          NULL Pointer Dereference                               42 (40%)      16 (15%)
+            CWE-122    67           Heap-based Buffer Overflow                             46 (69%)      32 (48%)
+            CWE-416    55           Use After Free                                         19 (35%)      15 (27%)
+            CWE-457    47           Use of Uninitialized Variable                          16 (34%)      15 (32%)
+            CWE-125    20           Out-of-bounds Read                                     18 (90%)      13 (65%)
+            CWE-20     12           Improper Input Validation                              8 (67%)       6 (50%)
+            CWE-626    12           Null Byte Interaction Error                            6 (50%)       2 (17%)
+            CWE-120    11           Buffer Copy without Checking Size of Input             7 (64%)       4 (36%)
+            CWE-415    9            Double Free                                            4 (44%)       2 (22%)
+            CWE-590    5            Free of Memory not on the Heap                         3 (67%)       0 (0%)
+            CWE-770    1            Allocation of Resources Without Limits or Throttling   0 (0%)        0 (0%)
+                          Table 1. Analysis of plausible patches according to CWE Type.
+
+
+
+     In this section, we provide further analysis of patches generated by CodeRover-S.
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                                            15
+
+
+  Year                   # Samples   CodeRover-S      Agentless
+  2016                      1          1 (100%)        1 (100%)                                  Time (mins)     Cost (USD)
+  2017                     30          15 (50%)        12 (40%)              No Patch            8.25 (8.53)     1.65 (1.63)
+  2018                     59          27 (46%)        17 (28%)              Compilation issue   44.58 (33.38)   0.78 (0.63)
+  2019                     57          30 (53%)        10 (18%)              Implausible         75.32 (51.88)   1.53 (1.37)
+  2020                     91          48 (53%)        34 (37%)              Plausible           23.23 (11.86)   0.51 (0.26)
+  2021                     138         75 (54%)        45 (33%)
+  2022                     80          44 (55%)        21 (26%)              All patches         43.5 (24.83)    0.93 (0.69)
+  2023 (Up-to-October)     86          43 (50%)        23 (27%)
+  2023 (Post-October)      22          11 (50%)         8 (36%)           Table 3. The mean and median for execu-
+  2024                     24          15 (63%)        11 (46%)
+                                                                          tion time and costs. Data in each cell are in
+Table 2. Analysis of plausible patches according to the year              the format of “mean (median)”.
+of bug detection.
+
+
+
+
+   Fix rate across different categories. For the vulnerabilities that CodeRover-S can find a plausible
+patch, we further examine how they are distributed across different bug types and years. Table 1
+provides a breakdown of the plausible patch rate by the CWE types. CodeRover-S performs
+better on buffer-related vulnerabilities, specifically CWE-121, CWE-122, and CWE-125, on which
+CodeRover-S achieved fix rates of 57%, 69% and 90% respectively. These success rates suggest
+that CodeRover-S is adept at patching buffer-overflow and bounds-checking issues, which usually
+have well-defined patterns and remediation strategies. In contrast, CodeRover-S struggles with
+other memory management-related vulnerabilities such as CWE-416 and CWE-457, where the
+fix rates drop to 35% and 34% respectively. These lower success rates may be attributed to the
+context-dependent nature of these vulnerabilities, as uninitialized variables and use-after-free may
+require a deeper semantic understanding of the program and the relationship between various
+variables, which could be a challenge for automated tools.
+   Table 2 presents the yearly distribution of CodeRover-S’s plausible patch rates against the year
+of bug discovery, from 2016 to 2024. The analysis reveals that CodeRover-S’s efficacy fluctuates
+within the range of 46% to 63% across vulnerabilities detected in different years (with 2016 being
+the outlier with only one vulnerability). We further split the vulnerabilities detected in 2023 to
+“Up-to-October” and “Post-October”, since the underlying gpt-4o-2024-08-06 model used by
+CodeRover-S is only trained on data up to October 2023 [30]. Despite the underlying LLM has a
+knowledge cutoff date of October 2023, CodeRover-S still achieves similar efficacy in repairing
+vulnerabilities detected after October 2023 compared to previous years. Notably, CodeRover-S
+achieves a higher efficacy of 63% on vulnerabilities detected in 2024 compared to other years.
+CodeRover-S’s effectiveness on vulnerability remediation extends to vulnerabilities whose ground
+truth patches are certainly not included in the LLM’s training data.
+
+   Time and cost. We examine the average cost for an execution of CodeRover-S and the average
+time needed. The analysis in Table 3 shows the average and median time and cost for CodeRover-
+S’s execution across different patch outcomes. For cases where a plausible patch was generated,
+the average time was significantly lower (23.23 minutes) compared to cases that resulted in an
+implausible (75.32 minutes) or non-compilable patch (44.58 minutes).
+   In terms of cost, plausible patches are also the most economical, with an average cost of $0.51
+and a median cost of $0.26. In contrast, implausible patches are more costly, averaging $1.53, with a
+median of $1.37, while non-compilable patches have an average cost of $0.78 and a median of $0.63.
+This indicates that CodeRover-S is more efficient in terms of cost and time when it successfully
+generates plausible patches, and this is likely due to fewer retry attempts, since the workflow stops
+once a plausible patch has been generated.
+
+                                                                  , Vol. 1, No. 1, Article . Publication date: November 2024.
+16                                                                                                              Zhang et al.
+
+
+
+
+                        250
+                                222
+
+                        200
+No. Plausible Patches
+
+
+
+
+                        150
+
+
+                        100
+
+                                            51
+                         50                              36
+
+
+                          0
+                              Round 1     Round 2      Round 3
+
+(a) Number of bugs whose plausible patch is found                        (b) The heat-map of when the plausible patches are
+                      Retry Rounds
+in which round of the main loop.                                         found, in more details.
+
+                                        Fig. 11. Distribution of when the plausible patches are found.
+
+
+
+   Furthermore, Figure 11 provide insight into the distribution of when the plausible patch for each
+vulnerability was found. In our experiments, CodeRover-S is configured to retry at most 6 times
+for patch generation and 3 times for the main loop (c.f. Figure 4). Figure 11a shows that most of the
+plausible patches are generated in the first round of main loop, with diminishing results in later
+rounds. The heat-map in Figure 11b highlights that successful patches are primarily concentrated in
+the first few patch generation attempts of each round. While most plausible patches are identified
+during the first patching attempt in the initial round, a substantial number of plausible patches are
+still generated during the second attempt in both the first and second rounds. This highlights the
+effectiveness of the patch review process in refining the initial implausible patches. In summary,
+both the plausible patch distribution and the time/cost analysis suggests that plausible patches are
+usually found at early stages in the CodeRover-S execution. In potential real-world deployments,
+users can balance the efficacy and cost of CodeRover-S by establishing appropriate retry limits
+and execution timeouts.
+
+4.3                       RQ3: Patch Validation Metric
+Other than the plausibility validation by executing tests, BLEU [32] and CodeBLEU [34] has been a
+popular metric for evaluating patch quality in AI-based vulnerability repair systems [20, 40, 47].
+BLEU score computes n-gram similarity between two input sequences, and CodeBLEU additionally
+considers code syntax (via Abstract Syntax Tree, or AST) and semantics (via data-flow) of the two
+input code snippets. Both of them were often used to estimate the quality of an auto-generated
+patch against the ground truth developer patch in previous studies, especially when executable
+tests are not available in the studied benchmark. In this research question, we examine the extent
+to which high CodeBLEU scores can predict the actual quality of a patch, including factors like
+patch plausibility in vulnerability repair. Therefore, our hypothesis formulation becomes:
+• The null hypothesis 𝐻 0 : There is no significant association between CodeBLEU scores and the
+  plausibility of code patches.
+• Alternative hypothesis 𝐻 1 : Higher CodeBLEU scores are significantly associated with plausi-
+  bility of code patches.
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                                    17
+
+
+   To ensure the CodeBLEU score computation is meaningful, the generated solution and reference
+solution (i.e. developer patch) should modify similar locations in the program.
+   Furthermore, since the CodeBLEU computation involves parsing the input sequence into AST,
+the input sequence should be a parsable code fragment. To this end, we selected 124 vulnerabilities
+from the dataset used in RQ1, whose developer patch is single-hunk and is within a function. We
+then pass in the developer patch location (which is a function) to CodeRover-S and instruct it
+to only generate patches at this location. As a result, we obtain pairs of auto-generated patches
+and ground truth patches that only modify the same function. For these 124 vulnerabilities under
+perfect localization conditions, CodeRover-S generated 111 compilable patches, of which 86 are
+plausible and 25 are implausible. We compute CodeBLEU score for these 111 patches (i.e. 86 + 25)
+by extracting the patched functions after applying the auto-generated patch and the developer
+patch respectively.
+
+
+
+
+                                   Plausible
+                                   Implausible
+                               0.4     0.5     0.6       0.7        0.8       0.9       1.0
+                                                       Score
+                   Fig. 12. Point-Biserial Correlation coefficient is -0.008 and p-value is 0.94.
+
+
+   To test our hypothesis, we calculated the Point-Biserial correlation coefficient to assess the
+strength and direction of the monotonic relationship between the CodeBLEU scores and the
+categorical variable of plausibility. We choose this statistical method because the the plausibility of
+a patch is dichotomous in our definition.
+   Results. First of all, our results indicate no significant difference in the mean CodeBLEU scores
+between the implausible and plausible groups. The mean score for implausible patches is 0.878,
+and the mean score for plausible patches is 0.873. These scores suggest that CodeBLEU does not
+effectively distinguish between plausible and implausible patches in this context. Then, we obtained
+a Point-Biserial correlation coefficient of -0.008 with a P-value of 0.94. This indicates that there
+is no statistically significant evidence of a linear relationship between CodeBLEU scores and the
+plausibility of patches. Specifically, we fail to reject the null hypothesis that no association exists
+between CodeBLEU and plausibility at the conventional significance level of 0.05. Furthermore,
+as shown in Figure 12, the visualization of the data points reveals that even at lower CodeBLEU
+scores, there are many plausible patches, and at higher scores, there is a significant number of
+implausible patches. These results indicate that, in the context of vulnerability repair, CodeBLEU
+does not reliably capture patch quality. Metrics like patch plausibility should be prioritized when
+executable tests are available.
+
+5 Related Works
+Automated Program Repair (APR) techniques [18] seek to heal faulty programs by automatically
+generating patches for developers. With the advent of AI-based coding, attention on these techniques
+have further accentuated. In this section, we describe AI-based repair and program analysis based
+repair, both of which are closely aligned with our work.
+
+                                                               , Vol. 1, No. 1, Article . Publication date: November 2024.
+18                                                                                           Zhang et al.
+
+
+5.1    Deep Learning and LLM-based Approach
+Various machine learning and deep learning based approaches have been proposed for program
+repair in the recent years. The core idea is to model APR as neural machine translation (NMT)
+problem. For instance, SequenceR [7] uses neural networks to learn patterns from pairs of buggy
+and fixed code, enabling it to generate fixes end-to-end. CoCoNuT [25] combines multiple neural
+network models for better representing the context of a bug. Jiang et al. [21] further advance
+context-aware learning models by designing CURE. CURE handles the out-of-the-vocabulary
+issue and employs a code-aware search strategy (so that only valid identifiers are selected during
+inference). Other than the general-purpose repair tools, several systems have been proposed for
+repairing security vulnerabilities. VRepair [6] is a vulnerability repair tool that is based on transfer
+learning. It is first trained on a large bug fix corpus, and then finetuned on a smaller vulnerability
+fix dataset. Instead of training a model and adapting it to vulnerability repair with transfer learning,
+VulRepair [10] finetunes a pre-trained CodeT5 model for repairing vulnerabilities. VulMaster [47]
+is a recently proposed tool that integrates diverse information such as code structure and expert
+knowledge for vulnerability repair, and it is studied in our work.
+   In the era of LLMs, researchers have investigated using LLMs for program repair. For example,
+ChatRepair [42] proposed a conversational program repair workflow by interacting with ChatGPT.
+Recently, various LLM agents have been proposed for autonomous program improvements and
+program repair. AutoCodeRover [46] uses a set of program structure aware search APIs for
+gathering relevant code context for the problem. SWE-Agent [43] designs an agent-computer
+interface which defines the possible actions taken by the agent for code viewing and editing.
+Agentless [41] employs a fixed two-phase approach for localization and repair. Agentless is
+studied in our work, and our tool CodeRover-S is built on top of AutoCodeRover. In this work,
+we present an experience of adapting autonomous agents for vulnerability repair on a large scale
+real-world dataset.
+
+5.2    Program Analysis based Approach
+A wide range of analysis-based approaches have been explored to repair software vulnerabilities [11,
+24, 26, 37, 45]. GenProg [24] is one of the pioneering tools in APR. It uses genetic programming to
+evolve program variants and applies mutation and crossover operations to a program’s abstract
+syntax tree (AST) to generate candidate patches. Moreover, SemFix by Nguyen et al. [28] combines
+symbolic execution with constraint solving to repair programs. It identifies program locations
+causing failures and generates patches by solving constraints that represent the desired program
+behavior. Gao et al. [11] explore the use of crash-free constraints to bootstrap the repair process.
+The work leverages data-dependency localization to identify a precise location within the program’s
+control flow graph, ensuring the vulnerability is effectively mitigated. Zhang et al. [45] propose a
+counter-example guided inductive inference approach to define likely invariants at potential bug fix
+locations in a program. Instead of relying on heavy symbolic analysis, VulnFix investigates using
+light-weight input/state generation to verify the candidate invariants, allowing good scalability.
+These approaches provide strong correctness guarantees due to the rigorous program analysis
+foundations. However, they often suffer from scalability issues, especially with large codebases or
+complex software systems. Furthermore, the effort to move from one programming language to
+another is high in the analysis based approaches (as compared to LLM agent based approaches).
+
+6     Perspectives
+Automated program repair technologies typically involve search, semantic reasoning and machine
+learning to automatically rectify bugs and vulnerabilities. Typically such techniques are driven
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                                        19
+
+
+by a given test-suite as an indicator of correctness, and hence are difficult to apply for security
+vulnerabilities where only one test (the exploit) may be available. Recent emergence of Large
+Language Models (LLMs) have put the focus on fixing “issues” where natural language bug reports
+may be used to produce rectifying program modifications via LLM agents. In this work, we have
+demonstrated the feasibility of using a repurposed LLM agent AutoCodeRover [46] for rectify-
+ing security vulnerabilities found by continuous fuzzing taken from the widely used OSS-Fuzz
+infrastructure [31]. The main experience gained point us to the feasibility of using LLM agents as
+back-ends to fuzzers for zero-day patching of security vulnerabilities. Furthermore, such integration
+of fuzzers with LLM agents need to come with qualitative or quantitative measures of confidence
+in the fidelity of the patch. Recent work [35] have pointed to qualitative measures of confidence
+via explanations of patch generated from LLM agents. In future, one may also explore quantitative
+measures of confidence in the patch by the agent’s analysis of consistency of the different artifacts
+available to it, namely: tests, bug reports, method level specifications and patch candidates.
+
+Data Availability
+Our experimental artifacts can be found at
+https://github.com/nus-apr/code-rover-s-artifacts.
+
+Acknowledgments
+This work is partially supported by the Singapore Ministry of Education (MoE) Tier3 research
+grant "Automated Program Repair" MOE-MOET32021-0001. This work is partially supported by
+the National Research Foundation, Singapore, and Cyber Security Agency of Singapore under its
+National Cybersecurity R&D Programme (Fuzz Testing <NRF-NCR25-Fuzz-0001>). Any opinions,
+findings and conclusions, or recommendations expressed in this material are those of the author(s)
+and do not reflect the views of Singapore Ministry of Education, National Research Foundation,
+Singapore, and Cyber Security Agency of Singapore.
+
+References
+ [1] Abreu, R., Zoeteweij, P., and Van Gemund, A. J. An evaluation of similarity coefficients for software fault localization.
+     In 2006 12th Pacific Rim International Symposium on Dependable Computing (PRDC’06) (2006), IEEE, pp. 39–46.
+ [2] Aizatsky, M., Serebryany, K., Chang, O., Arya, A., and Whittaker, M. Announcing oss-fuzz: Continuous fuzzing
+     for open source software. https://testing.googleblog.com/2016/12/announcing-oss-fuzz-continuous-fuzzing.html.
+     Accessed: 2024-10-03.
+ [3] Baltes, S., and Ralph, P. Sampling in software engineering research: A critical review and guidelines. Empirical
+     Software Engineering 27, 4 (2022), 94.
+ [4] Bhandari, G., Naseer, A., and Moonen, L. CVEfixes: Automated Collection of Vulnerabilities and Their Fixes from
+     Open-Source Software. In Proceedings of the 17th International Conference on Predictive Models and Data Analytics in
+     Software Engineering (PROMISE ’21) (2021), ACM, p. 10.
+ [5] Böhme, M., Cadar, C., and Roychoudhury, A. Fuzzing: Challenges and reflections. IEEE Software 38, 3 (2021).
+ [6] Chen, Z., Kommrusch, S., and Monperrus, M. Neural transfer learning for repairing security vulnerabilities in C
+     code. CoRR abs/2104.08308 (2021).
+ [7] Chen, Z., Kommrusch, S., Tufano, M., Pouchet, L.-N., Poshyvanyk, D., and Monperrus, M. Sequencer: Sequence-
+     to-sequence learning for end-to-end program repair. IEEE Transaction on Software Engineering (2019).
+ [8] Chromium. The chromium projects - security bugs. https://www.chromium.org/Home/chromium-security/bugs/.
+     Accessed: 2024-10-03.
+ [9] Ding, Z. Y., and Le Goues, C. An empirical study of oss-fuzz bugs. In 2021 IEEE/ACM 18th International Conference on
+     Mining Software Repositories (MSR) (2021), IEEE, pp. 131–142.
+[10] Fu, M., Tantithamthavorn, C., Le, T., Nguyen, V., and Phung, D. Vulrepair: a t5-based automated software
+     vulnerability repair. ESEC/FSE 2022, Association for Computing Machinery, p. 935–947.
+[11] Gao, X., Wang, B., Duck, G. J., Ji, R., Xiong, Y., and Roychoudhury, A. Beyond tests: Program vulnerability repair
+     via crash constraint extraction. ACM Trans. Softw. Eng. Methodol. 30, 2 (Feb. 2021).
+[12] GitHub. Codeql. https://codeql.github.com/. Accessed: 2024-10-03.
+
+                                                                  , Vol. 1, No. 1, Article . Publication date: November 2024.
+20                                                                                                               Zhang et al.
+
+
+[13] GNU Project. addr2line (GNU Binutils), 2024. Version 2.40.
+[14] GNU Project. Gnu debugger (gdb). https://sourceware.org/gdb/, 2024. Accessed: 2024-10-02.
+[15] GNU Project. nm - list symbols from object files (gnu binutils). https://linux.die.net/man/1/nm, 2024. Accessed:
+     2024-10-02.
+[16] Google. Addresssanitizer. https://github.com/google/sanitizers/wiki/AddressSanitizer. Accessed: 2024-10-04.
+[17] Google. Memorysanitizer. https://github.com/google/sanitizers/wiki/memorysanitizer. Accessed: 2024-10-04.
+[18] Goues, C. L., Pradel, M., and Roychoudhury, A. Automated program repair. Communications of the ACM 62 (2019).
+[19] Guo, Z., Tan, T., Liu, S., Liu, X., Lai, W., Yang, Y., Li, Y., Chen, L., Dong, W., and Zhou, Y. Mitigating false positive
+     static analysis warnings: Progress, challenges, and opportunities. IEEE Transactions on Software Engineering (2023).
+[20] Islam, N. T., Karkevandi, M. B., and Najafirad, P. Code security vulnerability repair using reinforcement learning
+     with large language models. arXiv preprint arXiv:2401.07031 (2024).
+[21] Jiang, N., Lutellier, T., and Tan, L. Cure: Code-aware neural machine translation for automatic program repair. In
+     2021 IEEE/ACM 43rd International Conference on Software Engineering (ICSE) (2021), pp. 1161–1173.
+[22] Justin Campbell, M. W. Microsoft announces new project onefuzz framework, an open source developer tool to find
+     and fix bugs at scale. https://www.microsoft.com/en-us/security/blog/2020/09/15/microsoft-onefuzz-framework-open-
+     source-developer-tool-fix-bugs/. Accessed: 2024-10-03.
+[23] Keller, J., and Nowakowski, J. Ai-powered patching: the future of automated vulnerability fixes. Tech. rep., 2024.
+[24] Le Goues, C., Nguyen, T., Forrest, S., and Weimer, W. Genprog: A generic method for automatic software repair.
+     Ieee transactions on software engineering 38, 1 (2011), 54–72.
+[25] Lutellier, T., Pham, H. V., Pang, L., Li, Y., Wei, M., and Tan, L. Coconut: combining context-aware neural translation
+     models using ensemble for program repair. In Proceedings of the 29th ACM SIGSOFT international symposium on
+     software testing and analysis (2020), pp. 101–114.
+[26] Mechtaev, S., Yi, J., and Roychoudhury, A. Angelix: Scalable multiline program patch synthesis via symbolic
+     analysis. In Proceedings of the 38th international conference on software engineering (2016), pp. 691–701.
+[27] Mei, X., Singaria, P. S., Del Castillo, J., Xi, H., Bao, T., Wang, R., Shoshitaishvili, Y., Doupé, A., Pearce, H.,
+     Dolan-Gavitt, B., et al. Arvo: Atlas of reproducible vulnerabilities for open source software. arXiv preprint
+     arXiv:2408.02153 (2024).
+[28] Nguyen, H. D. T., Qi, D., Roychoudhury, A., and Chandra, S. Semfix: Program repair via semantic analysis. In 2013
+     35th International Conference on Software Engineering (ICSE) (2013), IEEE, pp. 772–781.
+[29] OpenAI. Introducing swe-bench verified. https://openai.com/index/introducing-swe-bench-verified/. Accessed:
+     2024-10-31.
+[30] OpenAI. Models - openai api. https://platform.openai.com/docs/models. Accessed: 2024-10-31.
+[31] OSS-Fuzz. Oss-fuzz. https://google.github.io/oss-fuzz/. Accessed: 2024-10-03.
+[32] Papineni, K., Roukos, S., Ward, T., and Zhu, W.-J. Bleu: a method for automatic evaluation of machine translation. In
+     Proceedings of the 40th annual meeting of the Association for Computational Linguistics (2002), pp. 311–318.
+[33] Project, L. libfuzzer – a library for coverage-guided fuzz testing. https://llvm.org/docs/LibFuzzer.html. Accessed:
+     2024-10-03.
+[34] Ren, S., Guo, D., Lu, S., Zhou, L., Liu, S., Tang, D., Sundaresan, N., Zhou, M., Blanco, A., and Ma, S. Codebleu: a
+     method for automatic evaluation of code synthesis. CoRR abs/2009.10297 (2020).
+[35] Ruan, H., Zhang, Y., and Roychoudhury, A. Specrover: Code intent extraction via llms. In International Conference
+     on Software Engineering (ICSE), arXiv preprint arXiv:2408.02232 (2025).
+[36] Semgrep. Semgrep. https://semgrep.dev/. Accessed: 2024-10-03.
+[37] Shariffdeen, R., Noller, Y., Grunske, L., and Roychoudhury, A. Concolic program repair. In Proceedings of the
+     42nd ACM SIGPLAN International Conference on Programming Language Design and Implementation (New York, NY,
+     USA, 2021), PLDI 2021, Association for Computing Machinery, p. 390–405.
+[38] Skybox. Vulnerability & threat trends report 2024, 2024.
+[39] Team, T. C. Undefinedbehaviorsanitizer. https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html. Accessed:
+     2024-10-25.
+[40] Wang, R., Li, Z., Wang, C., Xiao, Y., and Gao, C. Navrepair: Node-type aware c/c++ code vulnerability repair. arXiv
+     preprint arXiv:2405.04994 (2024).
+[41] Xia, C. S., Deng, Y., Dunn, S., and Zhang, L. Agentless: Demystifying llm-based software engineering agents, 2024.
+[42] Xia, C. S., and Zhang, L. Keep the conversation going: Fixing 162 out of 337 bugs for $0.42 each using chatgpt. arXiv
+     preprint arXiv:2304.00385 (2023).
+[43] Yang, J., Jimenez, C. E., Wettig, A., Lieret, K., Yao, S., Narasimhan, K., and Press, O. Swe-agent: Agent-computer
+     interfaces enable automated software engineering, 2024.
+[44] Zalewski, M. Technical "whitepaper" for afl-fuzz. https://lcamtuf.coredump.cx/afl/technical_details.txt. Accessed:
+     2024-10-03.
+
+
+, Vol. 1, No. 1, Article . Publication date: November 2024.
+Fixing Security Vulnerabilities with AI in OSS-Fuzz                                                                    21
+
+
+[45] Zhang, Y., Gao, X., Duck, G. J., and Roychoudhury, A. Program vulnerability repair via inductive inference. In
+     Proceedings of the 31st ACM SIGSOFT International Symposium on Software Testing and Analysis (New York, NY, USA,
+     2022), ISSTA 2022, Association for Computing Machinery, p. 691–702.
+[46] Zhang, Y., Ruan, H., Fan, Z., and Roychoudhury, A. Autocoderover: Autonomous program improvement. In
+     Proceedings of the 33rd ACM SIGSOFT International Symposium on Software Testing and Analysis (New York, NY, USA,
+     2024), ISSTA 2024, Association for Computing Machinery, p. 1592–1604.
+[47] Zhou, X., Kim, K., Xu, B., Han, D., and Lo, D. Out of sight, out of mind: Better automatic vulnerability repair by
+     broadening input ranges and sources. In Proceedings of the IEEE/ACM 46th International Conference on Software
+     Engineering (New York, NY, USA, 2024), ICSE ’24, Association for Computing Machinery.
+
+
+
+
+                                                               , Vol. 1, No. 1, Article . Publication date: November 2024.
+
