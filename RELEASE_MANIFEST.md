@@ -17,9 +17,9 @@
 
 ### PDF Metadata
 - **Page count:** 17 pages
-- **File size:** 260,922 bytes
-- **Build hash:** 5caaaea (git commit)
-- **Build status:** Successful; no fatal compilation errors observed
+- **File size:** 261,233 bytes
+- **Build hash:** HEAD (git commit)
+- **Build status:** Successful; BibTeX zero errors, no fatal compilation errors
 
 ---
 
@@ -29,8 +29,8 @@
 | File | SHA-256 Hash |
 |------|--------------|
 | main.tex | bbded9e25cdd3cf6b1c1cec8a14cd9cc6c4bc6e30658c764281f6128c99b84b8 |
-| refs.bib | 8517d2c79f4998a40d6b3906e10ded9fc9ad7db30d838c2b66de7f22cc5ea423 |
-| main.pdf | 0b85cff6cabd53032067d32e1a9b169bf69ca3ae325c39456487a6fd60957716 |
+| refs.bib | edab8319201b7d905efea7e13e6efb24a79cf0f55cf0a8f0b98d626c0bc75cc4 |
+| main.pdf | 6475bcb1914a62e9922f336f9f557d7b3e51759df035b94908e9be55602a5bff |
 | evidence/autonomy-loop-assignments.csv | e95da24dfd24d6ec8d90e5e40a51bb42fb4d849c89a169b5e60d7deb535e7259 |
 
 ### Verification Command
