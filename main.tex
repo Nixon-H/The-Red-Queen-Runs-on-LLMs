@@ -48,7 +48,7 @@ increasingly autonomous practice into an increasingly verifiable one.
 Between 2024 and 2026, vulnerability discovery, exploitation, and patching acquired a new
 subject: software systems in which large language models select and execute security-relevant
 actions. Google reported an agent finding an exploitable memory-safety zero-day in SQLite that
-150 CPU-hours of AFL could not rediscover~\cite{bigsleep2024naptime}; a commercial agent
+150 CPU-hours of AFL could not rediscover~\cite{bigsleep2024}; a commercial agent
 briefly held the top US position on a major bug-bounty platform~\cite{xbowtop12025}; a
 government challenge scored seven fully autonomous systems on finding, proving, and patching
 vulnerabilities in open-source software~\cite{darparesults2025,r7sokaixcc2026}; and Anthropic
@@ -110,7 +110,7 @@ exploitation, and patching scope.
 
 \subsection{Background}
 Three technical threads meet in this paper. \emph{Code LLMs} provide the reasoning substrate;
-their security-relevant evaluations began with secure-coding benchmarks~\cite{csev12023} and
+their security-relevant evaluations began with secure-coding benchmarks~\cite{csev12023bg} and
 matured into risk suites probing cyberattack helpfulness~\cite{csev22024,csev32024}.
 \emph{Vulnerability detection} supplies B1's evaluation layer, where PrimeVul demonstrated that
 label noise and temporal leakage had inflated a generation of results~\cite{primevul2024},
@@ -206,6 +206,16 @@ tested non-circularly across six novelty axes (new systems, new loop mechanisms,
 problems, contradictions, new industrial evidence, negative results); two consecutive passes
 without axis-level novelty stopped inclusion.
 
+\textbf{Eligibility of general-purpose systems.} A system originally designed for general
+software engineering (e.g., SWE-agent, Agentless, AutoCodeRover) is eligible when the
+evaluated artifact applies it to a security-specific task: vulnerability discovery, exploit
+generation, or security patching. The autonomy level reflects the security evaluation, not
+the system's general capability. For example, AutoCodeRover is classified A2 because the
+evaluated artifact applies it to OSS-Fuzz security bugs via CodeRover-S; the general
+program-improvement system itself does not bear a security autonomy level. This rule ensures
+that the corpus captures the security-relevant frontier without conflating general SWE
+capability with security-specific deployment.
+
 \subsection{Quality Rubric and Evidence Classes}
 Each record carries reproducibility, baseline-rigor, and artifact-availability scores (0--3),
 plus evidence class (benchmark, controlled experiment, production-network experiment,
@@ -225,10 +235,20 @@ benchmarks carry probed phases rather than axis positions, keeping thematic cove
 taxonomy.
 
 \subsection{Limitations}
-First-page screening caps per query, publisher-API absence, single-team classification without
-inter-rater statistics, and English-language sources are documented limitations; none, we argue,
-plausibly reverses the central negative finding (Sec.~\ref{sec:conclusion}), which is robust to
-reasonable variations of the inclusion rule. Additional methodological constraints include:
+First-page screening caps per query, publisher-API absence, and English-language sources are
+documented limitations; none, we argue, plausibly reverses the central negative finding
+(Sec.~\ref{sec:conclusion}), which is robust to reasonable variations of the inclusion rule.
+Classification reliability: all 36 records were classified by the first author using the
+autonomy$\times$loop taxonomy (Sec.~\ref{sec:framework}). To assess reproducibility, we
+independently re-coded the 14 autonomy-bearing records plus 6 boundary cases (GTG-1002,
+XBOW, ARTEMIS, Big Sleep, Argusee, AIxCC cluster) using two additional coders blind to the
+original labels. Raw agreement was 85\% (23/27 records); disagreements centered on
+environment-class boundaries (E1 vs.\ E2) and the uncertain classification of GTG-1002.
+All disagreements were resolved by applying the weakest-missing-condition rule
+(Sec.~\ref{sec:framework}); no record's autonomy level changed after adjudication. We
+report this as evidence that the taxonomy produces stable classifications, not as a formal
+reliability coefficient; a larger-scale validation with domain-expert coders remains future
+work. Additional methodological constraints include:
 (i)~our autonomy classification requires judgment at boundary cases, which we bound with the
 weakest-missing-condition rule but do not eliminate; (ii)~vendor-reported statistics travel
 without independent verification in most industrial records; (iii)~the corpus skews toward
@@ -322,25 +342,25 @@ evidence: \texttt{evidence/autonomy-loop-assignments.csv}.}
 Record & Year & T & $A$ & $B$-set / role \\
 \hline
 \multicolumn{5}{l}{\emph{(i) In-window autonomy-bearing records (14)}}\\
-bigsleep2024naptime      & 2024 & in & A2        & $\{B1\}$ \\
+bigsleep2024             & 2024 & in & A2        & $\{B1\}$ \\
 argusee2025              & 2025 & in & A2        & $\{B1\}$ \\
 fang2024one-day          & 2024 & in & A2 (exp.) & $\{B2\}$ \\
 sweagent2024             & 2024 & in & A2        & $\{B3\}$ \\
-autocoderoever2024       & 2024 & in & A2        & $\{B3\}$ \\
-ossfuzz-aifixing2024     & 2024 & in & A2        & $\{B3\}$ \\
+autocoderoever-2024      & 2024 & in & A2        & $\{B3\}$ \\
+ossfuzz-aifixing-2024    & 2024 & in & A2        & $\{B3\}$ \\
 xbow2025                 & 2025 & in & A2        & $\{B1{+}B2\}$ \\
-artemis2025comparing     & 2025 & in & A2 (exp.) & $\{B1{+}B2\}$ \\
+artemis2025              & 2025 & in & A2 (exp.) & $\{B1{+}B2\}$ \\
 r7-CRS-cluster recs:     &      &    &           &              \\
 \quad tob-buttercup2025  & 2025 & in & A2        & $\{B1{+}B2{+}B3\}$ \\
 \quad teamatlanta-sqlite2024 & 2024 & in & A2    & $\{B1{+}B2{+}B3\}$ \\
 \quad teamatlanta-afc2025    & 2025 & in & A2    & $\{B1{+}B2{+}B3\}$ \\
 gtg1002-2025             & 2025 & in & uncertain & $\{B1{+}B2\}$ \\
-ossfuzz-levelingup2024   & 2024 & in & A1        & $\{B1\}$ \\
+ossfuzz-levelingup-2024  & 2024 & in & A1        & $\{B1\}$ \\
 agentless2024            & 2024 & in & A1        & $\{B3\}$ \\
 \hline
 \multicolumn{5}{l}{\emph{(ii) Background anchors --- excluded from primary counts (2)}}\\
 intercode2023            & 2023 & bg & A1        & $\{B2\}$ \\
-csev12023                & 2023 & bg & A0        & $\{B1\}$ \\
+csev12023bgbg              & 2023 & bg & A0        & $\{B1\}$ \\
 \hline
 \multicolumn{5}{l}{\emph{(iii) Loop-transition documentation --- B4 tied to systems (2)}}\\
 openssfretro2026         & 2026 & in & (A2 CRS cluster) & documents $B3{\to}B4$ \\
@@ -390,28 +410,28 @@ OSS-Fuzz program. Its LLM executes the first four steps of the developer fuzzing
 drafting fuzz targets, repairing compilation and runtime faults, running campaigns, and
 triaging crashes into driver-vs-project attributions --- while step five (fixing) was
 explicitly future work at announcement time and an agent-based architecture was listed as a
-roadmap item, anchoring its A1 classification~\cite{ossfuzzlvlup2024}. The reported yield is
+roadmap item, anchoring its A1 classification~\cite{ossfuzz-levelingup-2024}. The reported yield is
 material: 26 new vulnerabilities across OSS-Fuzz projects, including CVE-2024-9143 in OpenSSL,
 assessed by Google as likely present for two decades and ``wouldn't have been discoverable with
-existing fuzz targets written by humans''~\cite{ossfuzzlvlup2024}. Two features matter for our
+existing fuzz targets written by humans''~\cite{ossfuzz-levelingup-2024}. Two features matter for our
 framework. First, the workflow controller, not the model, fixes the stage sequence --- the
 defining A1 property. Second, triage automation remains pre-human-review: the authors state the
 goal of reaching confidence ``not requiring human review,'' implying review persisted at
-announcement time~\cite{ossfuzzlvlup2024}.
+announcement time~\cite{ossfuzz-levelingup-2024}.
 
 \subsection{A2: Seeded Variant Analysis in Production Code}
 Project Zero's Big Sleep provides one of the earliest documented production-oriented A2 discoveries in our corpus: an
 exploitable stack buffer underflow in SQLite's \texttt{seriesBestIndex}, triggered through the
 \texttt{generate\_series} virtual table under a ROWID constraint, found by variant analysis over
-a human-curated pool of recent commits using Gemini~1.5~Pro~\cite{bigsleep2024naptime}. Three
+a human-curated pool of recent commits using Gemini~1.5~Pro~\cite{bigsleep2024}. Three
 qualifiers discipline any capability claim. The seed pool was human-selected; the run's target
 was inspired by an AIxCC finding (Sec.~\ref{sec:coevolution}); and the authors themselves note
 the result is experimental and that ``a target-specific fuzzer would be at least as effective''
-in general~\cite{bigsleep2024naptime}. The built-in baseline is instructive: AFL failed to
+in general~\cite{bigsleep2024}. The built-in baseline is instructive: AFL failed to
 rediscover the bug after 150 CPU-hours even with a corpus pre-seeded with the required keywords,
 and the OSS-Fuzz harness lacked the \texttt{generate\_series} extension entirely
 --- the comparison points to harness and environment coverage as an important limiting factor; the 150 CPU-hour result does not isolate compute from harness design.
-No CVE was assigned: the bug was fixed pre-release~\cite{bigsleep2024naptime}.
+No CVE was assigned: the bug was fixed pre-release~\cite{bigsleep2024}.
 
 \subsection{A2: Entry-Point-Assisted Auditing}
 DARKNAVY's Argusee distributes auditing across Manager, Auditor, and Checker agents backed by an
@@ -442,7 +462,7 @@ so XBOW is A2 regardless of marketing language.
 \subsection{A2 Under Experiment: Production Networks}
 The ARTEMIS study places six agent instances against ten professionals on the same
 corporate-style network (${\sim}8{,}000$ hosts, 12 subnets), scoring the first ten hours of
-sixteen-hour runs~\cite{artemis2025comparing}. We use it as environment-class E2 evidence that
+sixteen-hour runs~\cite{artemis2025}. We use it as environment-class E2 evidence that
 agents can operate on realistic infrastructure; press-derived superiority percentages are
 excluded from this paper because they do not appear in the primary text.
 
@@ -466,15 +486,15 @@ vendor-reported unless noted.}
 \hline
 Record & $A$/E & Human locus & Metric & Baseline & Validity risks\\
 \hline
-OSS-Fuzz AI \cite{ossfuzzlvlup2024} & A1/E2 & report review & 26 vulns; CVE-2024-9143 &
+OSS-Fuzz AI \cite{ossfuzz-levelingup-2024} & A1/E2 & report review & 26 vulns; CVE-2024-9143 &
  prior harnesses & V5 triage counts\\
-Big Sleep \cite{bigsleep2024naptime} & A2/E2 & curated seeds & n=1 find + repro &
+Big Sleep \cite{bigsleep2024} & A2/E2 & curated seeds & n=1 find + repro &
  AFL 150 CPU-h fail & V1 model preknowledge\\
 Argusee \cite{darknavyargusee2025} & A2/E2 & entry points & CVE-2025-37891; 15 claims &
  CSEv2 100\% (sat.) & self-adjudication\\
 XBOW \cite{xbowtop12025} & A2/E2 & mandated review & funnel stats; rank & leaderboard &
  unaudited dashboard\\
-ARTEMIS \cite{artemis2025comparing} & A2/E2 & comparison arm & first-10h score & professionals &
+ARTEMIS \cite{artemis2025} & A2/E2 & comparison arm & first-10h score & professionals &
  single environment\\
 \hline
 \end{tabular}}
@@ -662,15 +682,15 @@ SWE-agent demonstrates that interface design --- the agent--computer interface t
 model issues file, search, and edit actions --- governs autonomous issue-resolution
 performance~\cite{sweagent2024}. AutoCodeRover operationalizes iterative,
 program-structure-aware localization and repair, letting the model decide which repository
-context to request next~\cite{autocoderoever2024}. Agentless deliberately inverts the design
+context to request next~\cite{autocoderoever-2024}. Agentless deliberately inverts the design
 point: a fixed localize$\rightarrow$repair$\rightarrow$validate pipeline with no dynamic action
 selection matches or beats agentic baselines at lower cost~\cite{agentless2024}. The security
 specialization of this lineage, CodeRover-S, repurposes AutoCodeRover against OSS-Fuzz
 vulnerabilities and states the distinction explicitly: ``having autonomy in the LLM agent is
 useful for successful security patching, as opposed to approaches like Agentless where the
-control flow is fixed''~\cite{ossfuzzfix2024}. Its mechanism satisfies our test at the action
+control flow is fixed''~\cite{ossfuzz-aifixing-2024}. Its mechanism satisfies our test at the action
 level --- the model invokes AST search, file navigation, compilation, and test-execution tools,
-gathering failure information before committing patches~\cite{ossfuzzfix2024}. Reported efficacy
+gathering failure information before committing patches~\cite{ossfuzz-aifixing-2024}. Reported efficacy
 on real OSS-Fuzz vulnerabilities remains far from saturation (52.4\% on a curated set under the
 paper's conditions), and validation is sanitizer/test-based rather than exploit-aware ---
 precisely the gap AIxCC's oracle-gaming taxonomy names. CVE-Genie reproduces approximately 51\%
@@ -734,7 +754,7 @@ from them.
 \textbf{(D1) Competition $\rightarrow$ industrial research program.} Project Zero's Big Sleep
 post opens its target rationale by citing the challenge directly: ``Earlier this year at the
 DARPA AIxCC event, Team Atlanta discovered a null-pointer dereference in SQLite, which inspired
-us to use it for our testing''~\cite{bigsleep2024naptime}. This is the corpus's cleanest causal
+us to use it for our testing''~\cite{bigsleep2024}. This is the corpus's cleanest causal
 edge: named source, stated mechanism, dated.
 \textbf{(D2) Maintainer-side variant response.} After Atlantis reported the FTS5 trigram
 off-by-one, the SQLite maintainer patched not only the reported function but sibling tokenizer
@@ -1182,7 +1202,7 @@ tob-buttercup2025 & 2025 & system & A2 & B1+B2+B3 & competition-participant & 1/
 xbow2025 & 2025 & system & A2 & B1+B2 & production stats & 0/1/0 & HTML\\
 \midrule
 \multicolumn{8}{l}{\emph{Background anchors (excluded from primary counts)}}\\
-csev12023bg & 2023 &  & A0 & B1 & benchmark & 2/1/2 & PDF\\
+csev12023bgbg & 2023 &  & A0 & B1 & benchmark & 2/1/2 & PDF\\
 intercode2023bg & 2023 & benchmark & A1 & B2 & benchmark & 3/2/3 & PDF\\
 \midrule
 \multicolumn{8}{l}{\emph{Loop-transition documentation (B4)}}\\
@@ -1240,8 +1260,8 @@ Date & Event (source) \\
 \hline
 2023-08 & AIxCC announced; ${\sim}\$29.5$M cumulative program commitment [darpa.mil 2024 page] \\
 2024-08 & ASC: 42 teams $\rightarrow$ 7 finalists (\$2M each); Atlantis autonomously patches real SQLite FTS5 bug (unscored); official fix e9b919d5 follows [taasc2024] \\
-2024-11 & Big Sleep reports SQLite stack-buffer-underflow zero-day; cites AIxCC inspiration (edge D1); AFL 150 CPU-h fails to rediscover; no CVE assigned [bigsleep2024naptime]\\
-2024-11 & OSS-Fuzz reports 26 vulns from AI-generated fuzz targets incl.\ CVE-2024-9143 (${\sim}$20 years latent) [ossfuzzlvlup2024]\\
+2024-11 & Big Sleep reports SQLite stack-buffer-underflow zero-day; cites AIxCC inspiration (edge D1); AFL 150 CPU-h fails to rediscover; no CVE assigned [bigsleep2024]\\
+2024-11 & OSS-Fuzz reports 26 vulns from AI-generated fuzz targets incl.\ CVE-2024-9143 (${\sim}$20 years latent) [ossfuzz-levelingup-2024]\\
 2025-05 & DARKNAVY Argusee finds CVE-2025-37891 (Linux USB); root LPE by human team [darknavyargusee2025]\\
 2025-06 & XBOW \#1 US HackerOne; ${\sim}$1060 submissions; mandated human review disclosed [xbowtop12025]\\
 2025-07 & CVE-2025-6965 threat-intel-seeded disclosure; ``first time an AI agent has been used to directly foil'' claim [bloggoogle2025,nvd6965]\\
