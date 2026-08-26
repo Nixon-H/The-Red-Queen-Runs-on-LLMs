@@ -1,7 +1,7 @@
 # Release Manifest: SoK Co-Evolution Paper
 
-**Release Date:** 2026-08-26
-**Release Version:** 1.0 (Pre-submission audit complete)
+**Release Date:** 2026-08-27
+**Release Version:** 1.1 (Post-reconciliation audit complete)
 **Status:** Ready for submission after final review
 
 ---
@@ -13,12 +13,12 @@
 - **Bibliography:** BibTeX
 - **Build sequence:** pdflatex → bibtex → pdflatex → pdflatex
 - **Build errors:** 0
-- **Build warnings:** 6 LaTeX warnings (caption, font, balance), 3 overfull boxes, 41 underfull boxes
+- **Build warnings:** 2 overfull vbox, several underfull hbox (cosmetic only)
 
 ### PDF Metadata
-- **Page count:** 18 pages
-- **File size:** 257,769 bytes
-- **Build hash:** 19d8415 (git commit)
+- **Page count:** 17 pages
+- **File size:** 261,548 bytes
+- **Build hash:** 0eebf74 (git commit)
 - **Build status:** Successful; no fatal compilation errors observed
 
 ---
@@ -28,9 +28,9 @@
 ### Core Files
 | File | SHA-256 Hash |
 |------|--------------|
-| main.tex | 1bdef803d2bcf9323c8b7125f1e79e9adbc311879e5e883a3d71b739a7673c30 |
-| refs.bib | ec8df3882ee1e8f945cc36a8087d305cb2698e27f430c491d6a69aa09b4feb3f |
-| main.pdf | 589736ecc220714339915899716a61ebd8bec1cda6abd638f72a023cf77ef574 |
+| main.tex | bbded9e25cdd3cf6b1c1cec8a14cd9cc6c4bc6e30658c764281f6128c99b84b8 |
+| refs.bib | 1db5b2fbdbdaede89c7d882c2067f31d3a14d7cf3628388779e19a57d85e2110 |
+| main.pdf | 0f9389650158ee968f3b3f0e53b9b43cf0bc97ec8cc2ff0e64acd5f069632d36 |
 | evidence/autonomy-loop-assignments.csv | e95da24dfd24d6ec8d90e5e40a51bb42fb4d849c89a169b5e60d7deb535e7259 |
 
 ### Verification Command
@@ -38,67 +38,78 @@
 sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv
 ```
 
-### Expected Output
-```
-1bdef803d2bcf9323c8b7125f1e79e9adbc311879e5e883a3d71b739a7673c30  main.tex
-ec8df3882ee1e8f945cc36a8087d305cb2698e27f430c491d6a69aa09b4feb3f  refs.bib
-589736ecc220714339915899716a61ebd8bec1cda6abd638f72a023cf77ef574  main.pdf
-e95da24dfd24d6ec8d90e5e40a51bb42fb4d849c89a169b5e60d7deb535e7259  evidence/autonomy-loop-assignments.csv
-```
-
 ---
 
-## 3. Audit Trail
+## 3. Reconciliation State
 
-### Completed Audit Steps
+### Cross-Artifact Consistency (Verified 2026-08-27)
+- **Bibliography:** 49 entries, all 49 cited, 0 uncited, 0 missing
+- **Manifest:** 49 bib_key values, matches bibliography exactly
+- **CSV:** 36 records
+- **YAML:** 36 records (CSV = YAML)
+- **Table II:** 36 records (CSV = T2)
+- **Table IV:** 36 records (CSV = T4)
+- **All set differences: EMPTY**
+
+### Audit Trail
 
 1. **Bibliography cleanup** ✓
-   - Removed internal audit notes from refs.bib (23 entries)
-   - Fixed fang2024agents author metadata (Qi Zhan → Akul Gupta)
-   - Verified clean bibliography rendering
+   - Removed internal audit notes from refs.bib
+   - Removed 2 uncited entries (fang2024oneday, bugdar2025)
+   - Double braces removed from person-authors, preserved for corporate authors
+   - All 24 arXiv entries standardized to @misc with eprint/archivePrefix/primaryClass
+   - CVE-Bench: added full PMLR metadata (volume 267, pages 79850-79867)
 
-2. **A3 sensitivity analysis** ✓
+2. **Record ID canonicalization** ✓
+   - CSV is canonical source of truth
+   - All bib keys, Table II, Table IV, YAML match CSV
+   - Fixed: bigsleep2024, artemis2025, autocoderoever-2024, ossfuzz-aifixing-2024, ossfuzz-levelingup-2024, csev12023bg
+   - Fixed: r1slr2024, r2slr2024, r3survey2026, r4csur2025, r6tosem2026, rissebohme-wrongexam2024
+   - Fixed: r5usenix26agentic typo
+
+3. **A3 sensitivity analysis** ✓
    - Defined S0-S4 scenarios
    - Reclassified all borderline records
    - Confirmed A3-negative finding robust across all scenarios
 
-3. **I3 calibration** ✓
+4. **I3 calibration** ✓
    - Replaced "increasingly binding" with "binding methodological"
    - Removed unsupported temporal claim
-   - Updated §1 (Insights) wording
 
-4. **Citation verification** ✓
-   - §1-§3: 26 claims verified
-   - §4-§9: 52 claims verified
-   - Total: 78 claims audited; 77 initially supported and 1 wording overclaim corrected. Final manuscript claims are reconciled with the audit record.
-
-5. **Table/Figure reconciliation** ✓
-   - Table I: All values verified against sources
-   - Table II: All 36 records match CSV
-   - Table III: All 5 systems match CSV and sources
-   - Figure 1-3: All visual elements correct
-
-6. **E1/E2 boundary justification** ✓
+5. **E1/E2 boundary justification** ✓
    - AIxCC: E1 (competition forks, inserted bugs)
    - Big Sleep: E2 (production SQLite, real bug)
    - Argusee: E2 (production projects, real CVE)
    - XBOW: E2 (bug bounty platforms, real submissions)
    - ARTEMIS: E2 (corporate network, real vulnerabilities)
 
+6. **Manifest reconciliation** ✓
+   - 19 missing entries added to manifest.csv
+   - 4 obsolete keys removed
+   - Final: 49 manifest entries = 49 bib entries
+
 ---
 
 ## 4. Files Included in Release
 
 ### Core LaTeX Files
-- `main.tex` — Primary source (1196 lines)
-- `refs.bib` — Bibliography (231 lines, 38 entries)
-- `main.pdf` — Compiled output (18 pages)
+- `main.tex` — Primary source (~1276 lines)
+- `refs.bib` — Bibliography (49 entries)
+- `main.pdf` — Compiled output (17 pages)
 
 ### Evidence Files
 - `evidence/autonomy-loop-assignments.csv` — Classification source of truth (36 records)
 - `evidence/i1-analysis.md` — I1 claim analysis
 - `evidence/i2-analysis.md` — I2 claim analysis
 - `evidence/i3-analysis.md` — I3 claim analysis
+
+### Corpus
+- `corpus/included/` — 36 YAML files (one per record)
+
+### References
+- `references/manifest.csv` — Reference tracking (49 entries)
+- `references/pdf/` — 37 PDFs
+- `references/txt/` — 49 text files
 
 ### Audit Files
 - `CORRECTED_AUDIT_REPORT.md` — Corrected forensic audit
@@ -127,60 +138,67 @@ pdflatex -interaction=nonstopmode main.tex
 pdflatex -interaction=nonstopmode main.tex
 ```
 
-### To Verify Hashes
+### To Verify Reconciliation
 ```bash
-sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv
+cd "/home/nixon/RESEARCH CYBER"
+python3 << 'PYEOF'
+import csv, re, os
+
+# BibTeX keys
+with open('refs.bib', 'r') as f:
+    bib_keys = set(re.findall(r'@\w+\{([^,]+),', f.read()))
+
+# Citations from .aux
+with open('main.aux', 'r') as f:
+    cited = set()
+    for m in re.findall(r'\\citation\{([^}]+)\}', f.read()):
+        for k in m.split(','):
+            cited.add(k.strip())
+
+# Manifest
+with open('references/manifest.csv', 'r') as f:
+    manifest = {r['bib_key'] for r in csv.DictReader(f) if r.get('bib_key')}
+
+# CSV
+with open('evidence/autonomy-loop-assignments.csv', 'r') as f:
+    csv_ids = {r[0] for r in csv.reader(f) if r}
+
+# YAML
+yaml_ids = {fn.replace('.yaml','') for fn in os.listdir('corpus/included') if fn.endswith('.yaml')}
+
+print(f"BIB={len(bib_keys)} CITED={len(cited)} MANIFEST={len(manifest)} CSV={len(csv_ids)} YAML={len(yaml_ids)}")
+print(f"UNCITED={bib_keys - cited or 'NONE'}")
+print(f"MISSING_FROM_BIB={cited - bib_keys or 'NONE'}")
+print(f"CSV=YAML:{csv_ids == yaml_ids}")
+PYEOF
 ```
 
-### To Verify Claims
-- See `CLAIM_LEDGER.md` for claim-level verification framework
-- See `CITATION_VERIFICATION_S1_S3.md` for §1-§3 verification
-- See `CLAIM_VERIFICATION_S4_S9.md` for §4-§9 verification
-
 ---
 
-## 6. Known Limitations
-
-### Acknowledged in Paper
-1. Single-team classification without inter-rater statistics
-2. Publisher APIs unavailable (IEEE, ACM)
-3. English-language sources only
-4. Vendor-reported statistics labeled as CLAIMED
-5. Rapid model churn may affect conclusions
-
-### Addressed in Audit
-1. Bibliography cleaned (internal notes removed)
-2. Author metadata error corrected (fang2024agents)
-3. I3 wording corrected (removed "increasingly")
-4. A3 sensitivity analysis performed
-5. E1/E2 boundary justified explicitly
-
----
-
-## 7. Submission Readiness
+## 6. Submission Readiness
 
 ### Checklist
 
-- [x] Bibliography clean (no internal notes)
-- [x] Author metadata correct
+- [x] Bibliography clean (no internal notes, no uncited entries)
+- [x] Author metadata correct (double-brace only on corporate authors)
+- [x] Record IDs consistent across all artifacts
 - [x] I3 wording calibrated
 - [x] A3 sensitivity analysis complete
 - [x] E1/E2 boundary justified
-- [x] All claims audited (78 claims audited; 77 initially supported, 1 overclaim corrected)
-- [x] All tables/figures reconciled (Tables I-III, Figures 1-3)
+- [x] Manifest-to-bibliography reconciliation proven
+- [x] Cross-artifact set equality verified (CSV=YAML=T2=T4)
 - [x] PDF compiles cleanly (0 errors)
 - [x] SHA-256 hashes generated
-- [x] A3 sensitivity analysis added to paper
-- [x] E1/E2 justification added to paper
+- [x] Inter-rater reliability paragraph added
 - [ ] Final review by authors
-- [ ] Inter-rater reliability (optional but recommended)
+- [ ] Visual PDF QA (figure overflow, caption placement)
 
 ### Status
-**The manuscript has completed its documented internal audit and is ready for final author review. All major methodological clarifications have been incorporated into the manuscript.**
+**The manuscript has completed its documented internal audit and cross-artifact reconciliation. All major methodological clarifications have been incorporated. The paper is ready for final author review.**
 
 ---
 
 *Manifest generated: 2026-08-26*
-*Last updated: 2026-08-26*
-*Git commit: 19d8415*
+*Last updated: 2026-08-27*
+*Git commit: 0eebf74*
 *Status: Release ready*
