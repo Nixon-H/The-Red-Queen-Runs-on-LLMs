@@ -114,7 +114,7 @@ their security-relevant evaluations began with secure-coding benchmarks~\cite{cs
 matured into risk suites probing cyberattack helpfulness~\cite{csev22024,csev32024}.
 \emph{Vulnerability detection} supplies B1's evaluation layer, where PrimeVul demonstrated that
 label noise and temporal leakage had inflated a generation of results~\cite{primevul2024},
-a critique systematized by Risse and B\"ohme~\cite{rissebohme2024}. \emph{Interactive
+a critique systematized by Risse and B\"ohme~\cite{rissebohme-wrongexam2024}. \emph{Interactive
 agent harnesses} descend from execution-feedback benchmarks such as InterCode-CTF
 (pre-2024 background)~\cite{intercode2023} through NYU CTF Bench~\cite{nyuctfbench2024} and
 Cybench~\cite{cybench2024}. PentestGPT established the penetration-testing tree (PTT) as a
@@ -127,16 +127,16 @@ supplies the tool-integration substrate on which A2 autonomy operates.
 
 \subsection{Systematizations We Position Against}
 Table~\ref{tab:positioning} differentiates the seven closest prior efforts. R1's SLR mapped
-300+ LLM$\times$security works but closed before the agentic turn~\cite{zhang2024when}; R2
-covers detection-to-remediation with no exploitation axis~\cite{r2slr2024remediation}; R3 ---
+300+ LLM$\times$security works but closed before the agentic turn~\cite{r1slr2024}; R2
+covers detection-to-remediation with no exploitation axis~\cite{r2slr2024}; R3 ---
 the closest survey chronologically --- organizes pentesting only, treats ``co-evolution'' as an
 architecture--benchmark relationship internal to that subfield, and excludes competition-grade
 systems by corpus design; it is also outside our window (July 2026), so we use it as a
-comparator, not migration evidence~\cite{r3survey2026pentest}. R4 is detection-centric within
-software security~\cite{sheng2025csur}. R5 systematizes the security of agent systems ---
+comparator, not migration evidence~\cite{r3survey2026}. R4 is detection-centric within
+software security~\cite{r4csur2025}. R5 systematizes the security of agent systems ---
 agents as attack surface --- whereas our subject is agents as operators of the vulnerability
 loop~\cite{r5usenix26agentic}. R6's TOSEM SLR contributes 263 detection studies through
-November 2025 but no offense axis and no industrial track~\cite{tosemslr2026}. R7, the AIxCC
+November 2025 but no offense axis and no industrial track~\cite{r6tosem2026}. R7, the AIxCC
 systematization, is our most important predecessor: we cite-and-exceed it by placing CRSs on
 an autonomy gradient, extending analysis to post-competition redeployment (B4), and adding the
 validity critique its design-focused treatment does not attempt~\cite{r7sokaixcc2026}.
@@ -150,12 +150,12 @@ validity critique its design-focused treatment does not attempt~\cite{r7sokaixcc
 \hline
 Work & Window-end & Offense & Defense & Loop & Comp./industr. & Contamination\\
 \hline
-R1 \cite{zhang2024when}        & Aug'24 & P & C & A & A & P\\
-R2 \cite{r2slr2024remediation} & Dec'24 & A & C & A & A & P\\
-R3 \cite{r3survey2026pentest}  & Jul'26$^{\dagger}$ & C & P & P (intra-pentest) & A & A\\
-R4 \cite{sheng2025csur}        & '25    & A & C & A & A & A\\
+R1 \cite{r1slr2024}        & Aug'24 & P & C & A & A & P\\
+R2 \cite{r2slr2024} & Dec'24 & A & C & A & A & P\\
+R3 \cite{r3survey2026}  & Jul'26$^{\dagger}$ & C & P & P (intra-pentest) & A & A\\
+R4 \cite{r4csur2025}        & '25    & A & C & A & A & A\\
 R5 \cite{r5usenix26agentic}    & '26    & P & P & A & P & A\\
-R6 \cite{tosemslr2026}         & Nov'25 & A & C & A & P (repo) & P\\
+R6 \cite{r6tosem2026}         & Nov'25 & A & C & A & P (repo) & P\\
 R7 \cite{r7sokaixcc2026}       & Aug'26 & C & C & P & C & A\\
 Ours                           & Jun'26 & C & C & C (graded) & C & C (measured+protocol)\\
 \hline
@@ -372,20 +372,20 @@ nyuctfbench2024          & 2024 & in & n/a & benchmark; probed $\{B2\}^p$; embed
 csev22024                & 2024 & in & n/a & benchmark; probed $\{B1,B2\}^p$ \\
 csev32024                & 2024 & in & n/a & benchmark; probed $\{B1,B2\}^p$ \\
 primevul2024             & 2024 & in & n/a & dataset; task domain $B1$ detection \\
-rissebohme2024           & 2024 & in & n/a & methodological critique \\
+rissebohme-wrongexam2024           & 2024 & in & n/a & methodological critique \\
 mcpeco2025               & 2025 & in & n/a & MCP ecosystem measurement \\
 mcpgov2025               & 2025 & in & n/a & MCP governance \\
 mcpspec2026              & 2026 & in & n/a & MCP spec analysis \\
 mcppoison2026            & 2026 & in & n/a & MCP tool poisoning \\
 nvdcve20256965           & 2025 & in & n/a & registry record (CVE-2025-6965) \\
-zhang2024when (R1)       & 2024 & in & n/a & survey (SLR) \\
-r2slr2024remediation(R2) & 2024 & in & n/a & survey (SLR) \\
-sheng2025csur (R4)       & 2025 & in & n/a & survey (paywalled; metadata) \\
+r1slr2024 (R1)       & 2024 & in & n/a & survey (SLR) \\
+r2slr2024 (R2) & 2024 & in & n/a & survey (SLR) \\
+r4csur2025 (R4)       & 2025 & in & n/a & survey (paywalled; metadata) \\
 r5usenix26agentic (R5)   & 2026 & in & n/a & survey (agentic-AI security) \\
-tosemslr2026 (R6)        & 2026 & in & n/a & survey (263 studies; repo open) \\
+r6tosem2026 (R6)        & 2026 & in & n/a & survey (263 studies; repo open) \\
 r7sokaixcc2026 (R7)      & 2026 & in & n/a & survey(systematization); documents Atlantis, Buttercup,\\
                          &      &    &     & Theori-SRS, RoboDuck, FuzzingBrain, Lacrosse, Shellphish \\
-r3survey2026pentest (R3) & 2026 & OUT& n/a & survey comparator (out-of-window) \\
+r3survey2026 (R3) & 2026 & OUT& n/a & survey comparator (out-of-window) \\
 \hline
 \multicolumn{5}{l}{\scriptsize Totals: 14 autonomy-bearing ($A1{\times}2$, $A2{\times}11$, uncertain${\times}1$, $A3{=}0$)
 $+$ 2 background $+$ 2 loop-transition $+$ 18 context $=$ 36 records.}\\
@@ -906,7 +906,7 @@ unsound: label noise, near-duplicate pairs across splits, and pre-split public e
 inflated reported performance to the point where paired, chronologically split evaluation
 collapses strong-model accuracy toward chance~\cite{primevul2024}. Risse and B\"ohme reach a
 compatible verdict from measurement theory, arguing that popular vulnerability datasets score
-models on the wrong exam~\cite{rissebohme2024}. The corpus also contains a live saturation
+models on the wrong exam~\cite{rissebohme-wrongexam2024}. The corpus also contains a live saturation
 illustration: Argusee reports 100\% on CyberSecEval~2 buffer-overflow cases while its own
 documentation requires human-supplied entry points~\cite{darknavyargusee2025} --- ceiling
 scores coexisting with bounded autonomy. Agentic CTF suites inherit a further V1 exposure:
