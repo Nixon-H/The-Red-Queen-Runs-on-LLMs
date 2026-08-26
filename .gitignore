@@ -3,3 +3,7 @@
 *.blg
 *.log
 *.out
+
+# External repos (not part of paper)
+academic-research-skills/
+claude-code/

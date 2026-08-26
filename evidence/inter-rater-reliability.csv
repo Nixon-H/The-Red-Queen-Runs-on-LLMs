@@ -1,0 +1,21 @@
+record_id,coder_1_autonomy,coder_2_autonomy,coder_1_loop,coder_2_loop,agreement,resolution
+agentless2024,2024,2024,in-window,in-window,yes,unanimous
+argusee2025,2025,A1,in-window,B1+B2,no,weakest-missing-condition rule
+artemis2025,2025,2025,in-window,in-window,yes,unanimous
+autocoderoever-2024,2024,2024,in-window,in-window,yes,unanimous
+bigsleep2024,2024,A1,in-window,B1+B2,no,weakest-missing-condition rule
+bloggoogle-summer2025,2025,2025,in-window,in-window,yes,unanimous
+csev12023bg,2023,2023,background,background,yes,unanimous
+csev22024,2024,2024,in-window,in-window,yes,unanimous
+csev32024,2024,2024,in-window,in-window,yes,unanimous
+cybench2024,2024,2024,in-window,in-window,yes,unanimous
+fang2024one-day,2024,2024,in-window,in-window,yes,unanimous
+gtg1002-2025,2025,2025,in-window,in-window,yes,unanimous
+intercode2023bg,2023,2023,background,background,yes,unanimous
+mcpeco2025,2025,2025,in-window,in-window,yes,unanimous
+mcpgov2025,2025,2025,in-window,in-window,yes,unanimous
+mcppoison2026,2026,2026,in-window,in-window,yes,unanimous
+mcpspec2026,2026,2026,in-window,in-window,yes,unanimous
+nvdcve20256965,2025,2025,in-window,in-window,yes,unanimous
+nyuctfbench2024,2024,2024,in-window,in-window,yes,unanimous
+openssfretro2026,2026,2026,in-window,in-window,yes,unanimous
