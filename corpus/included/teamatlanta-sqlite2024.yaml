@@ -1,0 +1,26 @@
+bib: Zhao/Team Atlanta - ASC real SQLite bug
+url: https://team-atlanta.github.io/blog/post-asc-sqlite/
+ver: FULL TEXT fetched
+year: 2024
+venue: Team Atlanta blog 2024-08-28
+problem: CRS found+patched real bug during ASC
+result: FTS5 trigram off-by-one->NULL deref; autonomous find+patch ~15min; official fix e9b919d5 (drh 2024-08-06)
+  w/ variant analysis + later refinement b651084; UNSCORED side-effect; zero-shot LLM patches imperfect (root-cause
+  misses)
+autonomy_level: A2
+loop_position: B1+B2+B3
+scope_class: team-blog
+access_status: html-primary
+autonomy_note: '''entirely without human intervention'' design claim within challenge bounds'
+artifacts: 2
+repro: 1
+base: 2
+contam: ''
+claimed_vs: CLAIMED-vendor; official-commit cross-ref strengthens
+eclass: competition-participant
+limits: ''
+reference_key: teamatlanta-sqlite2024
+classification_evidence: Atlantis autonomously identified+patched real ASC bug (~15min cycle); UNSCORED side-effect;
+  challenge-bounded
+temporal_scope: in-window
+unit_type: system(participant-account)

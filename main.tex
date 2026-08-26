@@ -99,7 +99,10 @@ claim to know.
 We cover January 2024--June 2026, with pre-2024 work as background only. We classify
 \emph{documented behavior}, not marketing; we distinguish vendor-reported from independently
 verified results everywhere; and we found it necessary to state plainly that no included
-evidence met our operational definition of an autonomous production hunter (A3).
+evidence met our operational definition of an autonomous production hunter (A3). We explicitly
+exclude the AgentFlow paper~\cite{agentless2024} from our comparison and analysis, as its
+focus on multi-agent orchestration for code generation falls outside our vulnerability discovery,
+exploitation, and patching scope.
 
 % sections/02-related-work.tex — background + R1–R7 differentiation + positioning table.
 \section{Background and Related Work}
@@ -114,7 +117,10 @@ label noise and temporal leakage had inflated a generation of results~\cite{prim
 a critique systematized by Risse and B\"ohme~\cite{rissebohme2024}. \emph{Interactive
 agent harnesses} descend from execution-feedback benchmarks such as InterCode-CTF
 (pre-2024 background)~\cite{intercode2023} through NYU CTF Bench~\cite{nyuctfbench2024} and
-Cybench~\cite{cybench2024}. Finally, the Model Context Protocol ecosystem --- measured at
+Cybench~\cite{cybench2024}. PentestGPT established the penetration-testing tree (PTT) as a
+planning data structure for LLM-empowered automated penetration testing, demonstrating that
+domain-grounded agent architectures outperform raw prompting on real-world
+targets~\cite{pentestgpt2024}. Finally, the Model Context Protocol ecosystem --- measured at
 scale for server-side insecurity~\cite{mcpfirstlook2025} and analyzed for tool-poisoning,
 spec-level, and governance risks~\cite{mcppoisoning2026,mcpspec2026,mcpgovernance2025} ---
 supplies the tool-integration substrate on which A2 autonomy operates.
@@ -222,7 +228,15 @@ taxonomy.
 First-page screening caps per query, publisher-API absence, single-team classification without
 inter-rater statistics, and English-language sources are documented limitations; none, we argue,
 plausibly reverses the central negative finding (Sec.~\ref{sec:conclusion}), which is robust to
-reasonable variations of the inclusion rule.
+reasonable variations of the inclusion rule. Additional methodological constraints include:
+(i)~our autonomy classification requires judgment at boundary cases, which we bound with the
+weakest-missing-condition rule but do not eliminate; (ii)~vendor-reported statistics travel
+without independent verification in most industrial records; (iii)~the corpus skews toward
+organizations that publish, leaving commercial pentesting vendors, state programs, and internal
+red teams structurally invisible; and (iv)~rapid model churn means any conclusion phrased about
+``LLMs'' generally is hostage to a moving baseline. We address (i) by publishing every record's
+behavioral evidence in the artifact CSV, (ii) by labeling all vendor statistics as CLAIMED, and
+(iii)--(iv) by phrasing findings about \emph{records and their conditions}, not about model classes.
 
 % sections/04-framework.tex — conceptual centerpiece (approved CP2-lock state).
 \section{The Autonomy $\times$ Loop Framework}
@@ -475,7 +489,15 @@ The Defense Advanced Research Projects Agency's Artificial Intelligence Cyber Ch
 generation, and patching were integrated, scored, and operated without human intervention --- and it is best
 analyzed not as a benchmark but as a deliberately constructed offense$\leftrightarrow$defense
 instrument whose rules, incentives, and aftermath document how the field's unit of progress was
-administratively redefined (I1).
+administratively redefined (I1). Beyond competition settings, recent benchmarks such as
+CVE-Bench~\cite{cvebench2025} evaluate LLM agents on real-world web application vulnerabilities,
+reporting that state-of-the-art agent frameworks exploit up to 13\% of critical-severity CVEs in
+sandboxed environments. Multi-agent red-teaming frameworks like Co-RedTeam~\cite{coredteam2026}
+demonstrate that orchestrated discovery and exploitation stages, grounded in execution feedback
+and long-term memory, achieve over 60\% success rates on exploitation tasks across multiple
+security benchmarks. CyberGym~\cite{cybergym2025} further scales evaluation to real-world
+vulnerabilities at industrial scale, providing evidence on the computational costs and failure
+modes of agentic exploitation.
 
 \subsection{Design and Incentives}
 Announced in 2023 with ARPA-H participation and support from Anthropic, Google, Microsoft, and
@@ -660,7 +682,15 @@ and agentic workflows. On the security-specific repair side, tree-of-thought pro
 execution-log feedback achieves substantially higher patch correctness than direct generation on
 real-world vulnerability datasets~\cite{logsinpatchesout2025}, suggesting that structured
 reasoning over repair candidates --- rather than single-shot generation --- is an important
-design choice for B3 systems.
+design choice for B3 systems. LLM4CVE~\cite{llm4cve2025} extends this line with an iterative
+pipeline that combines traditional bug repair methods with LLM techniques, demonstrating
+automated vulnerability repair in critical system software with minimal human input.
+RepoAudit~\cite{repoaudit2025} operationalizes autonomous repository-level code auditing,
+demonstrating that LLM-agents can systematically analyze large codebases for security
+vulnerabilities. These systems, together with the agent lineage above, establish that
+B3 capability now spans from pipeline-orchestrated repair (Agentless) through iterative
+agentic workflows (AutoCodeRover, CodeRover-S) to fully autonomous auditing (RepoAudit)
+--- yet exploit-aware validation remains the bottleneck across all approaches.
 
 \subsection{What the Competition Taught About Repair Quality}
 AIxCC provides the corpus's largest competition-based stress test of automated patching. Its lessons
@@ -989,6 +1019,19 @@ classifications therefore track \emph{documented} autonomy floors, not ceilings.
 per-cell counts) derive from one team's inclusion decisions under one protocol; the saturation
 test bounds but does not eliminate corpus-dependence. Where a claim would not survive a
 different reasonable inclusion rule, we say so in place.
+
+\textbf{Benchmark contamination.} Recent work demonstrates that LLM training data often includes
+benchmark tasks and their solutions~\cite{primevul2024,cvebench2025}. Our validity taxonomy
+(V1--V5) names this threat explicitly, and we adopt the five-part contamination-control protocol
+(Sec.~\ref{sec:validity}) as a concrete mitigation recommendation. However, we cannot guarantee
+that any included benchmark result is contamination-free; this limits the strength of capability
+claims derived from benchmark pass rates.
+
+\textbf{Absence of adversarial evaluation.} Our corpus contains no red-team evaluation of the
+systems we classify. We cannot assess whether the A2 systems we describe would survive
+adversarial probing designed to find failure modes, edge cases, or exploitation paths that
+standard benchmarks do not cover. This is a structural limitation of working from published
+artifacts rather than conducting independent evaluation.
 
 % sections/11-roadmap.tex — §11: gap -> RQ -> setup -> controls -> metric -> falsifier.
 \paragraph{Ethics.} This study is documentary: we analyzed published artifacts and did not

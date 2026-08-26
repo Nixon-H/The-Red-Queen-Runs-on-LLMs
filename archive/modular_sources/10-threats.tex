@@ -1,0 +1,47 @@
+% sections/10-threats.tex — §10 threats to validity of the SoK itself.
+\section{Threats to Validity}
+\label{sec:threats}
+
+\textbf{Publication and visibility bias.} Our industrial stream consists of organizations that
+\emph{publish}: Google, Anthropic, XBOW, DARKNAVY, OpenSSF. Systems that operate silently ---
+commercial pentesting vendors, state programs, internal red teams --- are structurally
+invisible, so our A3-empty finding is a statement about documented evidence, not about private
+capability. Proprietary disclosure is incomplete even where marketing is not.
+
+\textbf{Survivor and selection bias.} Vendors report successes; failed autonomous deployments
+rarely generate blog posts. XBOW's funnel (208 duplicates, 209 informative) is published only
+because its denominator was large enough to survive; smaller negative results have no venue.
+
+\textbf{Source-quality asymmetry.} Academic records carry methods sections; vendor records
+carry dashboard screenshots. We mitigate with quote-level extraction, cross-source
+corroboration where possible (AIxCC cost tables agree across participant and systematization
+primaries), and explicit CLAIMED labels --- but asymmetry remains, and one vendor-reported
+incident (GTG-1002) materially shapes the autonomy frontier of our corpus.
+
+\textbf{Rapid model churn.} Capabilities tracked here span Gemini~1.5 Pro through mid-2026
+models; any conclusion phrased about ``LLMs'' generally is hostage to a moving baseline. We
+therefore phrase findings about \emph{records and their conditions}, not about model classes.
+
+\textbf{Incomplete benchmark access.} Publisher APIs (IEEE, ACM) were unavailable during corpus
+construction; coverage leans on arXiv, DBLP, official indexes, and citation chaining. The
+field's center of gravity publishes on those channels, but systematic gaps cannot be excluded,
+and screening operated on first-page result sets per query (documented in
+Sec.~\ref{sec:method}).
+
+\textbf{Subjective classification.} Autonomy assignment under the decision-authority test
+requires judgment at boundaries. We bound it with two rules --- classify by documented behavior
+and by the weakest missing condition --- and we publish every record's behavioral evidence in
+the artifact CSV; inter-rater reliability was not measured, which we flag as a limitation.
+
+\textbf{Temporal ambiguity.} Several artifacts describe systems whose capability changed
+between event and publication (XBOW's leaderboard state; Big Sleep's model version). We date
+claims to their sources' datelines and mark snapshot statistics as such.
+
+\textbf{Undisclosed human assistance.} Platform policies mandate review only where platforms
+exist; nothing prevents undisclosed human effort behind vendor claims of full automation. Our
+classifications therefore track \emph{documented} autonomy floors, not ceilings.
+
+\textbf{Single-corpus induction.} All quantitative distributions (14 autonomy-bearing records;
+per-cell counts) derive from one team's inclusion decisions under one protocol; the saturation
+test bounds but does not eliminate corpus-dependence. Where a claim would not survive a
+different reasonable inclusion rule, we say so in place.

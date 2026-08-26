@@ -1,0 +1,43 @@
+never-cited entries (deliberate-inclusion review): NONE
+AUDIT: ALL GATES PASS 
+harness-exit:0
+=== URL SWEEP TRANSCRIPT (2026-08-26T12:05:13Z) ===
+200  https://arxiv.org/abs/2306.14898
+200  https://arxiv.org/abs/2312.04724
+200  https://arxiv.org/abs/2403.18624
+200  https://arxiv.org/abs/2404.05427
+200  https://arxiv.org/abs/2404.08144
+200  https://arxiv.org/abs/2404.13161
+200  https://arxiv.org/abs/2405.03644
+200  https://arxiv.org/abs/2405.15793
+200  https://arxiv.org/abs/2406.05590
+200  https://arxiv.org/abs/2407.01489
+200  https://arxiv.org/abs/2408.01605
+200  https://arxiv.org/abs/2408.08926
+200  https://arxiv.org/abs/2408.12986
+200  https://arxiv.org/abs/2411.03346
+200  https://arxiv.org/abs/2412.15004
+200  https://arxiv.org/abs/2510.16558
+200  https://arxiv.org/abs/2511.20920
+200  https://arxiv.org/abs/2512.09882
+200  https://arxiv.org/abs/2601.17549
+200  https://arxiv.org/abs/2602.07666
+200  https://arxiv.org/abs/2603.22489
+200  https://arxiv.org/abs/2607.02605
+200  https://blog.google/innovation-and-ai/technology/safety-security/cybersecurity-updates-summer-2025/
+200  https://blog.trailofbits.com/2025/08/09/trail-of-bits-buttercup-wins-2nd-place-in-aixcc-challenge/
+200  https://nvd.nist.gov/vuln/detail/CVE-2025-6965
+200  https://openssf.org/blog/2026/05/12/hack-to-the-future-the-impact-and-legacy-of-the-darpa-aixcc-challenge/
+200  https://projectzero.google/2024/10/from-naptime-to-big-sleep.html
+200  https://security.googleblog.com/2024/11/leveling-up-fuzzing-finding-more.html
+301  https://team-atlanta.github.io/blog/post-afc
+200  https://team-atlanta.github.io/blog/post-asc-sqlite/
+200  https://www-cdn.anthropic.com/d7dd50dd1185f59be051b307150d877f2b82bd2c.pdf
+200  https://www.anthropic.com/news/disrupting-AI-espionage
+200  https://www.darknavy.org/blog/argusee_a_multi_agent_collaborative_architecture_for_automated_vulnerability_discovery/
+200  https://www.darpa.mil/news/2025/ai-cyber-challenge-scoring
+200  https://www.darpa.mil/news/2025/aixcc-results
+200  https://xbow.com/blog/top-1-how-xbow-did-it
+RESOLVED 36/36
+=== COMPILE TAIL (2026-08-26T12:05:26Z) ===
+Output written on main.pdf (15 pages, 247371 bytes).

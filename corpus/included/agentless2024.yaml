@@ -1,0 +1,21 @@
+bib: Zheng et al.(verify) - Agentless
+url: https://arxiv.org/abs/2407.01489
+ver: local PDF
+year: 2024
+venue: arXiv
+problem: 'demystifying SE agents: fixed 3-phase pipeline rivals agents'
+result: '[PENDING-CLOSEREAD]'
+autonomy_level: A1
+loop_position: B3
+scope_class: paper
+access_status: oa-pdf
+artifacts: 3
+repro: 3
+base: 3
+claimed_vs: CLAIMED
+eclass: experiment
+limits: ''
+reference_key: agentless2024
+classification_evidence: deliberate 3-phase fixed pipeline (localize->repair->validate); anti-agent design point
+temporal_scope: in-window
+unit_type: system(experiment-benchmark)

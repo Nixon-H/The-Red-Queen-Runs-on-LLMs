@@ -1,0 +1,25 @@
+reference_key: intercode2023bg
+bib: Wang et al. - InterCode (BACKGROUND)
+url: https://arxiv.org/abs/2306.14898
+ver: local PDF
+year: 2023
+venue: arXiv (pre-window background)
+problem: interactive coding standardization; InterCode-CTF 100 tasks
+autonomy: A1 pipeline
+loop: B2
+result: historical provenance anchor
+artifacts: 3
+repro: 3
+base: 2
+contam: n/a bg
+claimed_vs: CLAIMED
+eclass: benchmark(bg)
+limits: pre-window
+autonomy_level: A1
+loop_position: B2
+scope_class: benchmark-suite
+access_status: oa-pdf
+autonomy_note: BACKGROUND pre-window
+classification_evidence: fixed execute-feedback pipeline wraps model; BACKGROUND pre-window
+temporal_scope: background
+unit_type: benchmark

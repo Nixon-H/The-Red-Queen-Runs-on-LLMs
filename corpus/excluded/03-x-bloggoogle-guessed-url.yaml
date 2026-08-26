@@ -1,0 +1,5 @@
+reference_key: 03-x-bloggoogle-guessed-url
+decision: EXCLUDED
+reason: Guessed canonical URL for CVE-2025-6965 announcement 404s; claim held at SECONDARY-quote
+  level until true primary resolved.
+date: '2026-08-26'

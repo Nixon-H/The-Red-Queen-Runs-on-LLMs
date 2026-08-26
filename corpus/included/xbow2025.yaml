@@ -1,0 +1,35 @@
+reference_key: xbow2025
+bib: Waisman/XBOW - Road to Top 1
+url: https://xbow.com/blog/top-1-how-xbow-did-it
+ver: FULL TEXT fetched
+year: 2025
+venue: XBOW blog 2025-06-24
+problem: autonomous pentester in wild bounty programs
+target: H1 scopes (LLM-parsed)
+models: proprietary stack
+arch: XBOW + validators + targeting infra (SimHash/imagehash)
+autonomy: A2 production (MANDATORY human review per H1 policy - quote recorded)
+loop: B1+B2
+human: security team reviews every submission
+benchmark: HackerOne leaderboard (time-varying)
+metric: '#1 US Q2-2025'
+result: ~1060 subs; 130 resolved; 303 triaged; 33 new; 125 pending; 208 dup; 209 informative; 54c/242h/524m/65l(90d);
+  Palo Alto GlobalProtect unknown bug >2000 hosts (no CVE given)
+artifacts: 0
+repro: 0
+base: 1
+contam: vendor dashboard unaudited
+temporal: snapshot claims
+oracle: program-owner triage = external adjudication
+claimed_vs: CLAIMED-vendor; rank weakly platform-corroborated
+eclass: production stats
+limits: marketing incentive; program selection undisclosed
+autonomy_level: A2
+loop_position: B1+B2
+scope_class: vendor-blog
+access_status: html-primary
+autonomy_note: mandatory human review per platform policy
+classification_evidence: fully automated discover->validate->submit pipeline; MANDATORY human review pre-submission
+  per platform policy
+temporal_scope: in-window
+unit_type: system

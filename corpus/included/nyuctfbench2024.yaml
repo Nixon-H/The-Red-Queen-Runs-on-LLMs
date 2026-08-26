@@ -1,0 +1,39 @@
+reference_key: nyuctfbench2024
+bib: Yang et al. - NYU CTF Bench
+url: https://arxiv.org/abs/2406.05590
+ver: local PDF
+year: 2024
+venue: arXiv+dataset
+problem: scalable offensive eval
+target: 200+ CSAW challenges
+models: GPT-4 etc.
+arch: agentic pipeline
+autonomy: A2
+loop: B2
+env: containers
+human: none
+benchmark: CSAW corpus
+metric: per-category success
+baseline: InterCode-CTF lineage
+result: '[PENDING-CLOSEREAD]'
+artifacts: 3
+repro: 3
+base: 2
+contam: V1 CSAW writeups public
+temporal: V2
+oracle: V4/V5 env reuse + binary success
+claimed_vs: CLAIMED
+eclass: benchmark
+limits: category imbalance
+autonomy_level: n/a
+loop_position: n/a
+scope_class: benchmark-suite
+access_status: oa-pdf
+autonomy_note: ''
+classification_evidence: tool-using CTF agent scaffold with dynamic action selection (A2-class subject), classified
+  at SUBJECT level, not record level
+temporal_scope: in-window
+unit_type: benchmark
+probed_loop_phases: '{B2}'
+embedded_scaffold: tool-using CTF agent scaffold with dynamic action selection (A2-class subject), classified at
+  SUBJECT level, not record level

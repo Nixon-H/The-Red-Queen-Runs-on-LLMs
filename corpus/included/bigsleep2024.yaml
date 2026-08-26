@@ -1,0 +1,37 @@
+reference_key: bigsleep2024
+bib: Big Sleep Team (PZ+DeepMind) - From Naptime to Big Sleep
+url: https://projectzero.google/2024/10/from-naptime-to-big-sleep.html
+ver: FULL TEXT fetched 2026-08-26 (extract file)
+year: 2024
+venue: Project Zero blog 2024-Nov-01
+problem: LLM variant analysis on SQLite HEAD
+target: human-curated recent-commit pool
+models: Gemini 1.5 Pro
+arch: 'Naptime toolset: code browser/debugger/python sandbox/reporter'
+autonomy: A2 production (seeded; human-chosen commit pool)
+loop: B1
+env: debug-build sqlite CLI
+human: humans chose seeds; humans wrote post
+benchmark: real-world n=1
+metric: bug found+reproduced
+baseline: OSS-Fuzz harness missed (no generate_series); AFL 150 CPU-hours FAILED even seeded
+result: seriesBestIndex stack buffer underflow via generate_series ROWID=-1; fixed same day; NO CVE assigned; Team
+  Atlanta AIxCC NPD inspired choice
+artifacts: 0
+repro: 0
+base: 2
+contam: model SQLite preknowledge admitted
+temporal: variant-analysis framing partially mitigates hindsight
+oracle: none beyond seeding
+claimed_vs: CLAIMED-vendor (high credibility; n=1)
+eclass: production discovery
+limits: single bug; authors say fuzzer might match
+autonomy_level: A2
+loop_position: B1
+scope_class: vendor-blog
+access_status: html-primary
+autonomy_note: seeded variant analysis; human-curated commit pool
+classification_evidence: agent chooses tools/steps (debugger/code-browser/sandbox); SEEDS human-curated (commit
+  pool); n=1 production find
+temporal_scope: in-window
+unit_type: system

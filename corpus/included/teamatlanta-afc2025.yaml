@@ -1,0 +1,26 @@
+bib: Kim/Team Atlanta - AFC report
+url: https://team-atlanta.github.io/blog/post-afc
+ver: FULL TEXT fetched
+year: 2025
+venue: Team Atlanta blog 2025-08-12
+problem: winner retrospective + patching-agent design
+result: PoV-rerun oracle='likely correct' only; mitigation-gaming taxonomy (MTE/PAC recompile, catch(Exception));
+  Theori PoV-free static patching 44.4% acc -> modifier 0.9044 vs Atlantis 0.9999; GPT-4o-mini often beat larger
+  models; nginx validation 10+min capped agents at 6; LLM-Augmented/Opinionated/Driven integration tiers; collective
+  18 real bugs at final (Atlantis 6); $2M prize donation to SSLab for continuous hunting + OpenAI credits
+autonomy_level: A2
+loop_position: B1+B2+B3
+scope_class: team-blog
+access_status: html-primary
+autonomy_note: challenge-bounded
+artifacts: 2
+repro: 1
+base: 2
+contam: V4 heuristic fragility ('fuzz'-prefix near-miss)
+claimed_vs: CLAIMED-vendor
+eclass: competition-participant
+limits: ''
+reference_key: teamatlanta-afc2025
+classification_evidence: ensemble CRSs; PoV-rerun patch oracle; validation bottleneck capped agents at 6; challenge-bounded
+temporal_scope: in-window
+unit_type: system(participant-account)

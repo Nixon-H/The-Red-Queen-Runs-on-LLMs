@@ -1,0 +1,70 @@
+% tables/autonomy-loop-matrix.tex — v4 (CP4 blocker fix): body REGENERATED from the frozen
+% CP2-lock schema (14 autonomy-bearing / 2 background / 2 loop-transition-doc / 18 context).
+% Root cause of prior staleness: v3 header comment updated while tabular body stayed v2.
+% Source of truth: evidence/autonomy-loop-assignments.csv + corpus/included/*.yaml.
+\begin{table*}[t]
+\centering
+\caption{Complete record-level classification (36 records). $A$ = autonomy level;
+$B$ = loop-position set; T = temporal scope. Only systems, clearly specified experiments, and
+incident documentation bear $A$-levels; benchmarks report probed phases ($^{p}$); datasets
+report task domains; systematizations are n/a with documented systems. Per-record behavioral
+evidence: \texttt{evidence/autonomy-loop-assignments.csv}.}
+\label{tab:abmatrix}
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllll}
+\hline
+Record & Year & T & $A$ & $B$-set / role \\
+\hline
+\multicolumn{5}{l}{\emph{(i) In-window autonomy-bearing records (14)}}\\
+bigsleep2024naptime      & 2024 & in & A2        & $\{B1\}$ \\
+argusee2025              & 2025 & in & A2        & $\{B1\}$ \\
+fang2024one-day          & 2024 & in & A2 (exp.) & $\{B2\}$ \\
+sweagent2024             & 2024 & in & A2        & $\{B3\}$ \\
+autocoderoever2024       & 2024 & in & A2        & $\{B3\}$ \\
+ossfuzz-aifixing2024     & 2024 & in & A2        & $\{B3\}$ \\
+xbow2025                 & 2025 & in & A2        & $\{B1{+}B2\}$ \\
+artemis2025comparing     & 2025 & in & A2 (exp.) & $\{B1{+}B2\}$ \\
+r7-CRS-cluster recs:     &      &    &           &              \\
+\quad tob-buttercup2025  & 2025 & in & A2        & $\{B1{+}B2{+}B3\}$ \\
+\quad teamatlanta-sqlite2024 & 2024 & in & A2    & $\{B1{+}B2{+}B3\}$ \\
+\quad teamatlanta-afc2025    & 2025 & in & A2    & $\{B1{+}B2{+}B3\}$ \\
+gtg1002-2025             & 2025 & in & uncertain & $\{B1{+}B2\}$ \\
+ossfuzz-levelingup2024   & 2024 & in & A1        & $\{B1\}$ \\
+agentless2024            & 2024 & in & A1        & $\{B3\}$ \\
+\hline
+\multicolumn{5}{l}{\emph{(ii) Background anchors --- excluded from primary counts (2)}}\\
+intercode2023            & 2023 & bg & A1        & $\{B2\}$ \\
+csev12023                & 2023 & bg & A0        & $\{B1\}$ \\
+\hline
+\multicolumn{5}{l}{\emph{(iii) Loop-transition documentation --- B4 tied to systems (2)}}\\
+openssfretro2026         & 2026 & in & (A2 CRS cluster) & documents $B3{\to}B4$ \\
+bloggoogle-summer2025    & 2025 & in & (A2 BigSleep)    & documents $B1{\to}B4$ redeploy \\
+\hline
+\multicolumn{5}{l}{\emph{(iv) Off-axis / context records (18)}}\\
+cybench2024              & 2024 & in & n/a & benchmark; probed $\{B2\}^p$; embedded A2-class scaffold \\
+nyuctfbench2024          & 2024 & in & n/a & benchmark; probed $\{B2\}^p$; embedded A2-class scaffold \\
+csev22024                & 2024 & in & n/a & benchmark; probed $\{B1,B2\}^p$ \\
+csev32024                & 2024 & in & n/a & benchmark; probed $\{B1,B2\}^p$ \\
+primevul2024             & 2024 & in & n/a & dataset; task domain $B1$ detection \\
+rissebohme2024           & 2024 & in & n/a & methodological critique \\
+mcpeco2025               & 2025 & in & n/a & MCP ecosystem measurement \\
+mcpgov2025               & 2025 & in & n/a & MCP governance \\
+mcpspec2026              & 2026 & in & n/a & MCP spec analysis \\
+mcppoison2026            & 2026 & in & n/a & MCP tool poisoning \\
+nvdcve20256965           & 2025 & in & n/a & registry record (CVE-2025-6965) \\
+zhang2024when (R1)       & 2024 & in & n/a & survey (SLR) \\
+r2slr2024remediation(R2) & 2024 & in & n/a & survey (SLR) \\
+sheng2025csur (R4)       & 2025 & in & n/a & survey (paywalled; metadata) \\
+r5usenix26agentic (R5)   & 2026 & in & n/a & survey (agentic-AI security) \\
+tosemslr2026 (R6)        & 2026 & in & n/a & survey (263 studies; repo open) \\
+r7sokaixcc2026 (R7)      & 2026 & in & n/a & survey(systematization); documents Atlantis, Buttercup,\\
+                         &      &    &     & Theori-SRS, RoboDuck, FuzzingBrain, Lacrosse, Shellphish \\
+r3survey2026pentest (R3) & 2026 & OUT& n/a & survey comparator (out-of-window) \\
+\hline
+\multicolumn{5}{l}{\scriptsize Totals: 14 autonomy-bearing ($A1{\times}2$, $A2{\times}11$, uncertain${\times}1$, $A3{=}0$)
+$+$ 2 background $+$ 2 loop-transition $+$ 18 context $=$ 36 records.}\\
+\end{tabular}
+}
+\end{table*}

@@ -1,0 +1,39 @@
+reference_key: cybench2024
+bib: Zhang et al. - Cybench
+url: https://arxiv.org/abs/2408.08926
+ver: local PDF
+year: 2024
+venue: ICLR 2025 Oral (verified abs comment)
+problem: cyber capability eval framework
+target: 40 professional CTF tasks
+models: multiple frontier LLMs
+arch: agent scaffold + subagents
+autonomy: A2
+loop: B2
+env: dockerized
+human: none
+benchmark: Cybench 40
+metric: success rate/time-to-solve
+baseline: prior suites/ablations
+result: '[PENDING-CLOSEREAD]'
+artifacts: 3
+repro: 3
+base: 3
+contam: V1 public writeups for many tasks
+temporal: V2 moderate
+oracle: V5 binary flag
+claimed_vs: CLAIMED
+eclass: benchmark
+limits: CTF!=production
+autonomy_level: n/a
+loop_position: n/a
+scope_class: benchmark-suite
+access_status: oa-pdf
+autonomy_note: ''
+classification_evidence: tool-using CTF agent scaffold with dynamic action selection (A2-class subject), classified
+  at SUBJECT level, not record level
+temporal_scope: in-window
+unit_type: benchmark
+probed_loop_phases: '{B2}'
+embedded_scaffold: tool-using CTF agent scaffold with dynamic action selection (A2-class subject), classified at
+  SUBJECT level, not record level

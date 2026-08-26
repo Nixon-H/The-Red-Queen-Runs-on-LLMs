@@ -1,0 +1,55 @@
+% sections/04-framework.tex — conceptual centerpiece (approved CP2-lock state).
+\section{The Autonomy $\times$ Loop Framework}
+\label{sec:framework}
+
+\subsection{Unit of Analysis}
+Records are typed before classification: only \emph{systems}, \emph{clearly specified
+experiments}, and \emph{incident documentations} receive autonomy levels; benchmarks carry
+\emph{probed loop phases}; datasets carry task domains; surveys and systematizations carry the
+\emph{documented systems} they describe. This prevents a paper about autonomous systems from
+becoming an autonomous-system datapoint --- our corpus contains one such systematization of
+AIxCC~\cite{r7sokaixcc2026}, and it is classified \emph{n/a} on both axes.
+
+\subsection{Axis A: Decision Authority}
+The autonomy gradient is operationalized by one question: \textbf{who chooses the next action?}
+\emph{A0 assistive}: no acting system; a prompted model responds. \emph{A1
+pipeline-orchestrated}: a fixed controller determines the workflow; the model fills stages.
+Tool use does not imply A1$\rightarrow$A2 --- a system invoking ten tools under fixed control
+remains A1. \emph{A2 task agent}: the model dynamically selects actions and tools within a
+bounded task environment. \emph{A3 autonomous production hunter}: independent planning,
+execution, validation, and reporting (\emph{all four verbs}) in environment class E2 ---
+production or production-like external targets (E0=synthetic/benchmark; E1=realistic but
+sandboxed or competition). Two corollaries do heavy lifting: \emph{no human interaction}
+$\neq$ A3, since AIxCC CRSs satisfied execution autonomy inside forked challenge repositories;
+and the \emph{weakest-missing-condition rule}: every autonomy claim is graded by its weakest
+unmet condition, never by headline percentages --- which is how ``fully automated'' XBOW
+classifies A2 (policy-mandated pre-submission review) and how the GTG-1002 incident remains
+\emph{uncertain} rather than A3.
+
+\subsection{Axis B: Loop Position}
+B1 discovery; B2 triage/validation/exploitation; B3 patching/repair; B4
+redeployment/regression/monitoring. Axis B is a set: multi-phase systems are recorded as sets
+(e.g., AIxCC CRSs $\{B1,B2,B3\}$) and drawn with neutral connectors denoting documented
+coverage, not inferred sequencing.
+
+\subsection{The Map}
+Figure~\ref{fig:abmap} places the in-window corpus; Table~\ref{tab:abmatrix} lists all 36
+records individually. The A2 row is populated across all three loop phases; the A3 row is
+empty under the operational definition; B4 exists only as loop-transition documentation tied to
+documented systems. Counts are computed programmatically from per-record YAML evidence files.
+
+\input{figures/autonomy-loop-map}
+
+\subsection{Migration, 2024 $\rightarrow$ June 2026}
+Early in-window records are dominated by benchmarked/prompted capability evaluation, while the
+system-bearing evidence shifts toward A1 pipeline automation (OSS-Fuzz's LLM stages; Agentless)
+and A2 task agents --- arriving first as seeded production research (Big Sleep, November 2024),
+then proliferating across independent industrial (Argusee, May 2025; XBOW, June 2025),
+competition (AIxCC finals, August 2025), and production-network experimental settings (ARTEMIS).
+We emphasize what this phrasing avoids: our corpus contains no in-window A0 systems, so claims
+of a field-wide ``A0$\rightarrow$A1$\rightarrow$A2 migration'' would outrun the evidence; what
+migrated is where humans sit (boundaries: seeds, entry points, review, reporting) and what gets
+scored. The 2026 record adds consolidation --- four systematizations, an infrastructure-risk
+cluster around agent tool protocols, and the first institutionalized B4 documentation.
+
+\input{tables/autonomy-loop-matrix}

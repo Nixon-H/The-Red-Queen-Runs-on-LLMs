@@ -1,0 +1,38 @@
+reference_key: fang2024one-day
+bib: Fang, Bindu, Zhan, Kang - LLM Agents can Autonomously Exploit One-day Vulnerabilities
+url: https://arxiv.org/abs/2404.08144
+ver: arXiv v-final (local PDF)
+year: 2024
+venue: arXiv preprint (influential)
+problem: Can LLM agents autonomously exploit real one-day CVEs?
+target: 15 CVEs w/ public patches
+task: end-to-end exploit given CVE description
+threat: unprivileged web attacker
+models: GPT-4 (+GPT-3.5/OSS baselines)
+arch: agent loop w/ web+shell tools+memory
+autonomy: 'A2 (bounded: description supplied)'
+loop: B2 primary (+B1-lite)
+env: isolated app replicas
+human: none in-loop
+benchmark: 15 one-day CVE set
+metric: '% fully exploited'
+baseline: GPT-3.5/OSS/ZAP/Metasploit all 0%
+result: 87% WITH description vs 7% WITHOUT [locators pending PHASE-8 close-read]
+artifacts: 3
+repro: 2
+base: 3
+contam: V1/V2 descriptions likely pretraining-present
+temporal: V2 strong
+oracle: V3 CVE text = answer key
+claimed_vs: CLAIMED by authors; not independently replicated
+eclass: controlled experiment
+limits: n=15; single model family; description-dependence is THE finding
+autonomy_level: A2
+loop_position: B2
+scope_class: paper
+access_status: oa-pdf
+autonomy_note: 'bounded: CVE description supplied'
+classification_evidence: agent picks actions/tools in bounded task; target+CVE text supplied by researchers; success
+  oracle = exploitation works; no in-loop human
+temporal_scope: in-window
+unit_type: experiment

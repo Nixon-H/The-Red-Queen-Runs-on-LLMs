@@ -1,0 +1,58 @@
+% sections/03-methodology.tex — PRISMA multi-stream methodology (spec §5).
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Study Design}
+We conduct a PRISMA-grounded systematization with one deliberate structural change: because the
+subject spans academic papers, competition artifacts, vendor disclosures, and registry records,
+we maintain \textbf{three evidence streams} rather than forcing all material through a single
+review flow. Stream~A (academic literature) follows the classical funnel; Stream~B
+(competition/industrial/foundation documents) follows targeted acquisition with quote-level
+extraction; Stream~C (registry records, e.g., NVD entries) follows existence verification. The
+streams are reported separately and only summed at the top level.
+
+\subsection{Search Strategy}
+Stream~A searches used arXiv boolean queries (eight formulations over ``large language model''
+/ ``language model'' / ``LLM agent'' crossed with vulnerability discovery, detection,
+penetration testing, CTF, exploit, program repair, cyber reasoning system; total 973 raw hits)
+and four DBLP queries (214 hits), filtered to January~2024--June~2026 submission dates.
+Publisher APIs were unavailable; IEEE/ACM/USENIX coverage came from official indexes and
+citation chaining, a limitation we return to below. Streams B/C used targeted retrieval:
+official program pages, team/vendor blogs, foundation retrospectives, and NVD. The complete
+query log with per-query hit counts is Appendix~B.
+
+\subsection{Selection and Corpus}
+Screening operated on a deduplicated pool (316 distinct arXiv IDs plus seed/chaining records).
+Inclusion required peer-reviewed status, influential preprint status, or documented-system
+evidence relevant to at least one framework cell. The final corpus holds \textbf{36 records}:
+23 academic works with full texts converted and validated locally, 2 restricted-access
+surveys positioned via verified metadata, 10 competition/industrial primaries with verbatim
+quote extraction, and 1 registry record. Four candidate records were excluded (wrong
+identifier, press-only claims, out-of-window scope, unresolvable primary URL). Saturation was
+tested non-circularly across six novelty axes (new systems, new loop mechanisms, new validity
+problems, contradictions, new industrial evidence, negative results); two consecutive passes
+without axis-level novelty stopped inclusion.
+
+\subsection{Quality Rubric and Evidence Classes}
+Each record carries reproducibility, baseline-rigor, and artifact-availability scores (0--3),
+plus evidence class (benchmark, controlled experiment, production-network experiment,
+competition, production discovery, incident report, measurement, registry), unit type, access
+status, and provenance type (PDF+TXT, HTML-extract, metadata-only). Vendor-reported statistics
+are labeled CLAIMED regardless of source authority; third-party reproduction passes are marked
+as such.
+
+\subsection{Classification Protocol}
+Autonomy (A0--A3) is assigned by the decision-authority test --- who chooses the next action? ---
+with A3 additionally requiring independent planning, execution, validation, and reporting in
+environment class E2 (production or production-like external targets; E0=synthetic,
+E1=realistic-sandboxed). Claims are graded by their weakest missing condition. Loop position
+uses the set $\{$B1..B4$\}$, recorded as sets for multi-phase systems. Every assignment's
+behavioral evidence is published in the artifact (\texttt{autonomy-loop-assignments.csv});
+benchmarks carry probed phases rather than axis positions, keeping thematic coverage out of the
+taxonomy.
+
+\subsection{Limitations}
+First-page screening caps per query, publisher-API absence, single-team classification without
+inter-rater statistics, and English-language sources are documented limitations; none, we argue,
+plausibly reverses the central negative finding (Sec.~\ref{sec:conclusion}), which is robust to
+reasonable variations of the inclusion rule.

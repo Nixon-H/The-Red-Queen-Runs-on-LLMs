@@ -1,0 +1,33 @@
+reference_key: artemis2025
+bib: (verify authors) - Comparing AI Agents to Cybersecurity Professionals
+url: https://arxiv.org/abs/2512.09882
+ver: local PDF
+year: 2025
+venue: arXiv
+problem: agents vs humans same network
+target: ~8k hosts / 12 subnets
+models: Claude Sonnet 4 sub-agents + ARTEMIS scaffold
+arch: 10 professionals vs 6 agents+ARTEMIS
+autonomy: A2
+loop: B1/B2
+env: real corporate-style infra
+human: professionals = comparison arm
+benchmark: same-network findings
+metric: findings scored first 10h of 16h
+result: '[PENDING-CLOSEREAD]; press-only ''90%'' EXCLUDED'
+artifacts: 2
+repro: 2
+base: 3
+contam: V4 infra reuse across arms?
+claimed_vs: CLAIMED
+eclass: production-network experiment
+limits: single environment
+autonomy_level: A2
+loop_position: B1+B2
+scope_class: paper
+access_status: oa-pdf
+autonomy_note: production-network experiment
+classification_evidence: agents operate on real corporate-style network; professionals arm provides comparison;
+  findings scored first 10h
+temporal_scope: in-window
+unit_type: experiment

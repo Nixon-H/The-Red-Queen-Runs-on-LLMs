@@ -1,0 +1,23 @@
+bib: Walker/Google - A summer of security
+url: https://blog.google/innovation-and-ai/technology/safety-security/cybersecurity-updates-summer-2025/
+ver: fetched; verified via local grep (exact strings recorded)
+year: 2025
+venue: blog.google 2025-07-15
+result: CVE-2025-6965 'known only to threat actors' VERBATIM; 'first time an AI agent has been used to directly
+  foil efforts to exploit'; threat-intel-seeded discovery; Big Sleep deployed to OSS projects
+autonomy_level: n-a
+loop_position: B4
+scope_class: corporate-blog
+access_status: html-primary
+autonomy_note: program-level announcement
+claimed_vs: CLAIMED-vendor (threat-intel assertion unverifiable)
+eclass: program-announcement
+limits: counterfactual foiling claim
+reference_key: bloggoogle-summer2025
+classification_evidence: 'announcement: Big Sleep redeployed to OSS projects; threat-intel-seeded foiling claim
+  (counterfactual)'
+temporal_scope: in-window
+loop_evidence_role: loop-transition-documentation
+documents_system: bigsleep2024 (A2)
+documented_transition: B1 discovery -> announced B4 redeployment of Big Sleep to OSS projects
+unit_type: program-record

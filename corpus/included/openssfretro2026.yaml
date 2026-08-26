@@ -1,0 +1,31 @@
+reference_key: openssfretro2026
+bib: Woeste/OpenSSF - Hack to the Future (AIxCC legacy)
+url: https://openssf.org/blog/2026/05/12/hack-to-the-future-the-impact-and-legacy-of-the-darpa-aixcc-challenge/
+ver: FULL TEXT fetched
+year: 2026
+venue: OpenSSF blog 2026-05-12
+problem: AIxCC closeout + legacy
+result: $30.5M pot [CONFLICTS ~$29.5M announced]; ASC 42 submissions; 7 finalists; AFC mimicked CI/CD; Ada Logics
+  reproduced 27 real issues (cURL/shadowsocks-libev/healthcare-data-harmonization/hertzbeat/little-cms/mongoose);
+  legacy FuzzingBrain 62v/26p/43conf/36patched; OSS-CRS 25v/16p; 42-b3yond-6ug 12 kernel+10 zero-days; CRS SIG formed
+autonomy: ecosystem program record
+loop: B4 redeployment/regression
+artifacts: 2
+repro: 1
+base: 1
+contam: team-relayed counts unaudited except Ada Logics pass
+claimed_vs: 'MIXED: Ada Logics 27 third-party; rest CLAIMED-relayed'
+eclass: foundation closeout
+limits: single narrative source
+autonomy_level: n-a
+loop_position: B4
+scope_class: foundation-blog
+access_status: html-primary
+autonomy_note: ecosystem program record
+classification_evidence: program closeout documenting redeployment/regression of CRS tooling into OSS ecosystems
+temporal_scope: in-window
+loop_evidence_role: loop-transition-documentation
+documents_system: AIxCC CRS cluster (Atlantis/Buttercup/FuzzingBrain/42-b3yond)
+documented_transition: post-competition B3->B4 institutionalization (SIG hosting, transition funding, ecosystem
+  stats)
+unit_type: program-record

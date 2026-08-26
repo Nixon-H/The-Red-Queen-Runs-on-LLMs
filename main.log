@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2026.6.5)  26 AUG 2026 22:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2026.6.5)  27 AUG 2026 00:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -647,66 +647,66 @@ dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-Underfull \hbox (badness 3492) in paragraph at lines 140--140
+
+
+Underfull \hbox (badness 3492) in paragraph at lines 146--146
 []\T1/ptm/m/n/10.03749 TABLE 1: |Po-si-tion-ing against prior sys-tem-ati-za-ti
 ons.
  []
 
-LaTeX Font Info:    Calculating math sizes for size <7.02625> on input line 157
+LaTeX Font Info:    Calculating math sizes for size <7.02625> on input line 163
 .
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7.02625> on input line 157.
+(Font)              <7.02625> on input line 163.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <4.91833> on input line 157.
+(Font)              <4.91833> on input line 163.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <3.51312> on input line 157.
+(Font)              <3.51312> on input line 163.
 
 
-(./figures/prisma-flow.tex)
-
-[2]
-Underfull \hbox (badness 1783) in paragraph at lines 204--210
+[2] (./figures/prisma-flow.tex)
+Underfull \hbox (badness 1783) in paragraph at lines 210--216
 \T1/ptm/m/n/10.03749 nance type (PDF+TXT, HTML-extract, metadata-only).
  []
 
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 21
-7.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 22
+3.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
-Underfull \hbox (badness 3049) in paragraph at lines 212--220
+Underfull \hbox (badness 3049) in paragraph at lines 218--226
 []\T1/ptm/m/n/10.03749 Autonomy (A0--A3) is as-signed by the decision-
  []
 
 
-Underfull \hbox (badness 2762) in paragraph at lines 212--220
+Underfull \hbox (badness 2762) in paragraph at lines 218--226
 \T1/ptm/m/n/10.03749 recorded as sets for multi-phase sys-tems. Ev-ery as-
  []
 
 
 
-LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 228.
+LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 242.
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12.045> on input line 228.
+(Font)              <12.045> on input line 242.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8.43146> on input line 228.
+(Font)              <8.43146> on input line 242.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6.02249> on input line 228.
+(Font)              <6.02249> on input line 242.
 
-Underfull \hbox (badness 3240) in paragraph at lines 258--262
+
+[3]
+Underfull \hbox (badness 3240) in paragraph at lines 272--276
 []\T1/ptm/m/n/10.03749 B1 dis-cov-ery; B2 triage/validation/exploitation; B3
  []
 
 
-Underfull \hbox (badness 7504) in paragraph at lines 258--262
+Underfull \hbox (badness 7504) in paragraph at lines 272--276
 \T1/ptm/m/n/10.03749 patch-ing/repair; B4 re-de-ploy-ment/regression/monitoring
 .
  []
 
-
-
-[3] (./figures/autonomy-loop-map.tex
+(./figures/autonomy-loop-map.tex
 LaTeX Font Info:    Calculating math sizes for size <5.01874> on input line 64.
 
 
@@ -727,33 +727,33 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <2.50937> on input line 64.
 )
-LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 27
-1.
+LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 28
+5.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <11.04124> on input line 271.
+(Font)              <11.04124> on input line 285.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7.72884> on input line 271.
+(Font)              <7.72884> on input line 285.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5.52061> on input line 271.
+(Font)              <5.52061> on input line 285.
 
-Underfull \hbox (badness 3713) in paragraph at lines 365--365
+
+
+Underfull \hbox (badness 3713) in paragraph at lines 379--379
  \T1/ptm/b/n/12.045 5. Dis-cov-ery: From Ca-pa-bil-ity Probes to
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 373--373
+Underfull \hbox (badness 10000) in paragraph at lines 387--387
  \T1/ptm/b/n/11.04124 5.1. A1: Pipeline-Orchestrated Dis-cov-ery at
  []
 
 
-
-
-Underfull \hbox (badness 2189) in paragraph at lines 389--401
+Underfull \hbox (badness 2189) in paragraph at lines 403--415
 \T1/ptm/m/n/10.03749 our cor-pus: an ex-ploitable stack buffer un-der-flow in
  []
 
 
-Underfull \hbox (badness 4595) in paragraph at lines 389--401
+Underfull \hbox (badness 4595) in paragraph at lines 403--415
 \T1/ptm/m/n/10.03749 SQLite's \T1/pcr/m/n/10.03749 seriesBestIndex\T1/ptm/m/n/1
 0.03749 , trig-gered through the
  []
@@ -761,68 +761,71 @@ Underfull \hbox (badness 4595) in paragraph at lines 389--401
 
 
 [4]
-Underfull \hbox (badness 1377) in paragraph at lines 429--434
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Underfull \hbox (badness 1377) in paragraph at lines 443--448
 \T1/ptm/m/n/10.03749 ten pro-fes-sion-als on the same corporate-style net-work
  []
 
 
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 466--466
-[]\T1/ptm/m/n/7.02625 OSS-Fuzz AI
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 466--466
-[]\T1/ptm/m/n/7.02625 26 vulns;
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 466--466
-\T1/ptm/m/n/7.02625 CVE-2024-
- []
-
-
-Underfull \hbox (badness 2285) in paragraph at lines 466--466
-[]\T1/ptm/m/n/7.02625 V1 model pre-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 466--466
-[]\T1/ptm/m/n/7.02625 CVE-2025-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 466--466
-\T1/ptm/m/n/7.02625 37891; 15
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 466--466
-[]\T1/ptm/m/n/7.02625 CSEv2 100%
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 466--466
-[]\T1/ptm/m/n/7.02625 funnel stats;
- []
-
-
-Underfull \hbox (badness 2253) in paragraph at lines 466--466
-[]\T1/ptm/m/n/7.02625 unaudited dash-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 466--466
-[]\T1/ptm/m/n/7.02625 single
- []
+Underfull \vbox (badness 1394) has occurred while \output is active []
 
 
 
 [5]
+Underfull \hbox (badness 10000) in paragraph at lines 480--480
+[]\T1/ptm/m/n/7.02625 OSS-Fuzz AI
+ []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \hbox (badness 10000) in paragraph at lines 480--480
+[]\T1/ptm/m/n/7.02625 26 vulns;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 480--480
+\T1/ptm/m/n/7.02625 CVE-2024-
+ []
+
+
+Underfull \hbox (badness 2285) in paragraph at lines 480--480
+[]\T1/ptm/m/n/7.02625 V1 model pre-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 480--480
+[]\T1/ptm/m/n/7.02625 CVE-2025-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 480--480
+\T1/ptm/m/n/7.02625 37891; 15
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 480--480
+[]\T1/ptm/m/n/7.02625 CSEv2 100%
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 480--480
+[]\T1/ptm/m/n/7.02625 funnel stats;
+ []
+
+
+Underfull \hbox (badness 2253) in paragraph at lines 480--480
+[]\T1/ptm/m/n/7.02625 unaudited dash-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 480--480
+[]\T1/ptm/m/n/7.02625 single
+ []
+
+
 
 
 
@@ -831,102 +834,105 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [7]
-Underfull \hbox (badness 2512) in paragraph at lines 594--595
+Underfull \hbox (badness 2512) in paragraph at lines 616--617
 []\T1/ptm/m/n/10.03749 the exploit-to-root-privilege demon-stra-tion af-ter-war
 d
  []
 
 
-Underfull \hbox (badness 3302) in paragraph at lines 617--627
+
+
+Underfull \hbox (badness 3302) in paragraph at lines 639--649
 \T1/ptm/m/n/10.03749 cov-ered'' means a scored synthetic-vulnerability PoV,
  []
 
 
-
-
-Underfull \hbox (badness 1675) in paragraph at lines 638--655
-\T1/ptm/m/n/10.03749 cost [35]. The se-cu-rity spe-cial-iza-tion of this lin-ea
-ge,
+Underfull \hbox (badness 2671) in paragraph at lines 660--694
+\T1/ptm/m/n/10.03749 ter-face through which the model is-sues file, search,
  []
 
 
 
 [8]
 
-(./figures/timeline-f3.tex)
 
-[9]
-Underfull \hbox (badness 2573) in paragraph at lines 774--775
+
+[9] (./figures/timeline-f3.tex
+
+)
+Underfull \hbox (badness 2573) in paragraph at lines 813--814
 []\T1/ptm/m/n/10.03749 into con-tin-u-ous au-tonomous hunt-ing of OSS-Fuzz
  []
 
 
 
-
-Underfull \hbox (badness 2486) in paragraph at lines 798--799
+[10]
+Underfull \hbox (badness 2486) in paragraph at lines 837--838
 []\T1/ptm/m/n/10.03749 decomposition and fab-ri-cated defensive-employment
  []
 
 
-Underfull \hbox (badness 4013) in paragraph at lines 804--805
+Underfull \hbox (badness 4013) in paragraph at lines 843--844
 []\T1/ptm/m/n/10.03749 grade stays \T1/ptm/m/it/10.03749 plau-si-ble cou-pling\
 T1/ptm/m/n/10.03749 : no adversary-side
  []
 
 
 
-[10]
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 873--880
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 912--919
 []\T1/ptm/m/n/10.03749 DARPA's close-out cor-rects its own synthetic-
  []
 
 
-Underfull \hbox (badness 2980) in paragraph at lines 873--880
+Underfull \hbox (badness 2980) in paragraph at lines 912--919
 \T1/ptm/m/n/10.03749 vulnerability count from 70 to 63 with an ed-i-tor's
  []
 
 
-Underfull \hbox (badness 2042) in paragraph at lines 873--880
-\T1/ptm/m/n/10.03749 fi-nal pool, $30.5M dis-tributed [28], [32]). These are
+Underfull \hbox (badness 2042) in paragraph at lines 912--919
+\T1/ptm/m/n/10.03749 fi-nal pool, $30.5M dis-tributed [33], [37]). These are
  []
 
 
 
-[11]
-Underfull \hbox (badness 3735) in paragraph at lines 930--935
+
+Underfull \hbox (badness 3735) in paragraph at lines 969--974
 \T1/ptm/m/n/10.03749 no-description con-di-tion), third-party ad-ju-di-ca-tion 
 sur-
  []
 
 
-Underfull \hbox (badness 1776) in paragraph at lines 940--945
+Underfull \hbox (badness 1776) in paragraph at lines 979--984
 \T1/ptm/m/n/10.03749 XBOW, DARK-NAVY, OpenSSF. Sys-tems that op-er-ate
  []
 
 
 
+[12]
 
-Underfull \hbox (badness 10000) in paragraph at lines 991--991
+
+Underfull \hbox (badness 10000) in paragraph at lines 1043--1043
  \T1/ptm/b/n/12.045 11. Open Prob-lems: An Ex-per-i-men-tal
  []
 
 
-
-[12]
-Underfull \hbox (badness 1527) in paragraph at lines 1015--1022
+Underfull \hbox (badness 1527) in paragraph at lines 1067--1074
 \T1/ptm/b/n/10.03749 (Ÿ9 pro-to-col in-stan-ti-ated). \T1/ptm/m/n/10.03749 Gap:
  no in-cluded eval-u-a-
  []
 
 
-Underfull \hbox (badness 2941) in paragraph at lines 1023--1029
+Underfull \hbox (badness 2941) in paragraph at lines 1075--1081
 \T1/ptm/m/n/10.03749 gam-ing). Setup: dif-fer-en-tial test-ing of AIxCC-derived
 
  []
 
 
+
+[13]
 
 (./main.bbl
 LaTeX Font Info:    Calculating math sizes for size <8.03> on input line 29.
@@ -942,38 +948,29 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 Package balance Warning: You have called \balance in second column
 (balance)                Columns might not be balanced.
 
-[13]
+[14]
 
 
 
 
-Overfull \vbox (3.25511pt too high) has occurred while \output is active []
+Overfull \vbox (13.28326pt too high) has occurred while \output is active []
 
 
-[14])
-Underfull \hbox (badness 4205) in paragraph at lines 1104--1162
+[15]
+
+)
+Underfull \hbox (badness 4205) in paragraph at lines 1156--1215
 \T1/ptm/m/n/10.03749 per Sec. IV), qual-ity rubric (reproducibility/baseline-
  []
 
 
-
-
-
-[15] [16]
-
-
-
-
-Overfull \vbox (1.93707pt too high) has occurred while \output is active []
-
-
-[17
-
-]
-Underfull \hbox (badness 2150) in paragraph at lines 1202--1202
+Underfull \hbox (badness 2150) in paragraph at lines 1252--1252
 \T1/ptm/m/n/7.02625 AI agent has been used to di-rectly foil'' claim [blog-
  []
 
+
+
+[16]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -993,9 +990,7 @@ Before submitting the final camera ready copy, remember to:
 Overfull \vbox (105.40245pt too high) has occurred while \output is active []
 
 
-[18
-
-] (./main.aux)
+[17] (./main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -1007,10 +1002,10 @@ LaTeX Font Warning: Size substitutions with differences
 
  ) 
 Here is how much of TeX's memory you used:
- 16046 strings out of 475178
- 333018 string characters out of 5766540
- 739513 words of memory out of 5000000
- 38759 multiletter control sequences out of 15000+600000
+ 16056 strings out of 475178
+ 333174 string characters out of 5766540
+ 757322 words of memory out of 5000000
+ 38769 multiletter control sequences out of 15000+600000
  673914 words of font info for 152 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  102i,13n,107p,766b,1259s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1029,10 +1024,10 @@ re/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
 utmri8a.pfb>
-Output written on main.pdf (18 pages, 257769 bytes).
+Output written on main.pdf (17 pages, 263059 bytes).
 PDF statistics:
- 146 PDF objects out of 1000 (max. 8388607)
- 93 compressed objects within 1 object stream
+ 143 PDF objects out of 1000 (max. 8388607)
+ 91 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 

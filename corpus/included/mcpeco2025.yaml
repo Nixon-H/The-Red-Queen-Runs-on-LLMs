@@ -1,0 +1,24 @@
+reference_key: mcpeco2025
+bib: (verify authors) - First Look MCP Ecosystem Security
+url: https://arxiv.org/abs/2510.16558
+ver: local PDF
+year: 2025
+venue: DSN 2026 accepted
+problem: MCP ecosystem risk measurement
+result: '[PENDING verify 67,057 servers / 833 vulnerable]'
+autonomy: infrastructure
+loop: cross-cutting tool layer
+artifacts: 3
+repro: 2
+base: 2
+claimed_vs: CLAIMED
+eclass: measurement
+limits: snapshot aging
+autonomy_level: n-a
+loop_position: n-a
+scope_class: measurement-study
+access_status: oa-pdf
+autonomy_note: infrastructure layer
+classification_evidence: ecosystem measurement; infrastructure-layer context
+temporal_scope: in-window
+unit_type: measurement-study

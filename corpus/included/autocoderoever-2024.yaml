@@ -1,0 +1,21 @@
+bib: Zhang et al.(verify) - AutoCodeRover
+url: https://arxiv.org/abs/2404.05427
+ver: local PDF
+year: 2024
+venue: arXiv (ISSTA'24 verify)
+problem: 'autonomous program improvement: localization+repair'
+result: '[PENDING-CLOSEREAD]'
+autonomy_level: A2
+loop_position: B3
+scope_class: paper
+access_status: oa-pdf
+artifacts: 3
+repro: 3
+base: 3
+claimed_vs: CLAIMED
+eclass: experiment
+limits: ''
+reference_key: autocoderoever-2024
+classification_evidence: autonomous localization+repair iterations over repo; general-SE
+temporal_scope: in-window
+unit_type: system(experiment-benchmark)

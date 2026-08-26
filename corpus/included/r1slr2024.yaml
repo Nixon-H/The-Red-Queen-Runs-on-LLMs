@@ -1,0 +1,24 @@
+reference_key: r1slr2024
+bib: (verify authors) - When LLMs Meet Cybersecurity SLR
+url: https://arxiv.org/abs/2405.03644
+ver: local PDF
+year: 2024
+venue: arXiv SLR
+problem: map LLM x cybersec literature
+result: 300+ works thru Aug-2024; no agentic era [PENDING-CLOSEREAD]
+autonomy: meta
+loop: meta B1-B3
+artifacts: 0
+repro: 1
+base: 1
+claimed_vs: survey
+eclass: survey
+limits: R1 differentiation row
+autonomy_level: n-a
+loop_position: n-a
+scope_class: survey
+access_status: oa-pdf
+autonomy_note: meta row R1
+classification_evidence: survey meta-row R1
+temporal_scope: in-window
+unit_type: survey

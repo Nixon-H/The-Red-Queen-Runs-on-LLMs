@@ -1,0 +1,61 @@
+% sections/11-roadmap.tex — §11: gap -> RQ -> setup -> controls -> metric -> falsifier.
+\section{Open Problems: An Experimental Roadmap}
+\label{sec:roadmap}
+
+Every gap below is stated with a falsifier: the observation that would disconfirm the
+expected result. We prioritize experiments by how efficiently they resolve load-bearing
+uncertainties identified in Secs.~\ref{sec:discovery}--\ref{sec:validity}.
+
+\textbf{E1 --- Isolating autonomy from model scale (I1's unresolved half).}
+Gap: no included work ablates autonomy-level contribution from base-model improvement.
+Setup: fix a task suite and environment; evaluate the same base model across A1-style fixed
+pipelines and A2-style dynamic agents, repeated across successive model releases.
+Controls: identical tools, prompts budgets, and scoring; release-pinned checkpoints.
+Metric: marginal success attributable to decision authority vs.\ model generation.
+Falsifier: if fixed pipelines close the gap to agents as models improve, ``autonomy'' is
+re-branding of scale, weakening I1's substantive reading.
+
+\textbf{E2 --- Quantifying write-up exposure in agentic CTF suites (V1).}
+Gap: public-solution contamination is asserted everywhere, measured nowhere for multi-step
+agents. Setup: time-split evaluation on challenges disclosed after each model's cutoff, against
+a matched pre-cutoff set. Controls: difficulty matching via human solve rates; retrieval
+audits. Metric: within-model success delta across the disclosure boundary.
+Falsifier: near-zero delta implies CTF benchmarks measure general problem solving, not leaked
+knowledge --- and current headline numbers stand.
+
+\textbf{E3 --- Contamination-controlled agentic benchmark (§9 protocol instantiated).}
+Gap: no included evaluation satisfies all five protocol requirements.
+Setup: build a benchmark under the five-part protocol (temporal firewall, provenance
+screening, information-condition disclosure, category-aware outcomes, adjudication audit).
+Controls: release pipeline auditable from task creation. Metric: fraction of prior-suite
+rankings preserved. Falsifier: high rank correlation with contaminated predecessors would show
+contamination is not distorting conclusions, bounding I3.
+
+\textbf{E4 --- Exploit-aware patch validation.}
+Gap: PoV-passing patches may be semantic non-fixes (mitigation gaming). Setup: differential
+testing of AIxCC-derived patches under alternate exploit inputs, sanitizer diversity, and
+semantic-equivalence checks. Controls: human-expert ground truth on a sample. Metric:
+semantic-repair rate vs.\ PoV-pass rate. Falsifier: if the rates coincide, PoV oracles suffice
+and the gaming taxonomy is a curiosity.
+
+\textbf{E5 --- The patch/retest loop at ecosystem scale (B4).}
+Gap: B4 exists only as foundation-documented transition; regression impact unmeasured.
+Setup: instrument CRS-vs-maintainer workflows on live OSS projects (the OpenSSF-hosted tools
+provide the fleet); track maintainer latency, acceptance, regressions. Controls:
+pre-registration; maintainers blinded to tool origin. Metric: time-to-fix and regression rate
+deltas. Falsifier: null effect would show competition-derived tooling did not alter ecosystem
+patch dynamics, trimming D3's interpretation.
+
+\textbf{E6 --- Measuring adversary-side response.}
+Gap: co-evolution evidence is defender-side; attacker responses are anecdotal. Setup:
+longitudinal measurement of attacker tooling/behavioral markers in incident telemetry
+shared under defense-pact agreements. Controls: differential exposure to defender
+publications. Metric: adoption lag of agentic techniques post-disclosure. Falsifier: absence
+of lag structure supports shared-cause over response-coupling, capping I2 at its current grade.
+
+\textbf{E7 --- Decision-impact audit (upgrading I3).}
+Gap: ``increasingly binding constraint'' lacks a documented case of a decision changing on
+validity correction. Setup: retrospective audit of rankings, funding calls, and procurement
+that consumed pre-PrimeVul-era results; interview plus document tracing. Metric: count of
+decisions reversed or re-scored after validity correction. Falsifier: zero documented cases
+would cap I3 at ``important constraint'' and justify removing ``binding.''

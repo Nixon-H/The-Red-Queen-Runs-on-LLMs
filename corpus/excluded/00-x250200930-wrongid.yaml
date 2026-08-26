@@ -1,0 +1,5 @@
+reference_key: 00-x250200930-wrongid
+decision: EXCLUDED
+reason: 'Spec''s implicit PrimeVul ID resolves to control-theory paper (Event-Triggered
+  Newton Extremum Seeking). REJECTED; correct ID located: arXiv 2403.18624.'
+date: '2026-08-26'

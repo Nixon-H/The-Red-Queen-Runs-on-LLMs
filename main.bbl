@@ -71,6 +71,14 @@
   Available: \url{https://arxiv.org/abs/2404.08144}
 \BIBentrySTDinterwordspacing
 
+\bibitem{agentless2024}
+\BIBentryALTinterwordspacing
+{Xia, Chunqiu Steven and Deng, Yinlin and Dunn, Soren and Zhang, Lingming},
+  ``{Agentless: Demystifying LLM-based Software Engineering Agents},'' arXiv
+  preprint arXiv:2407.01489 (v2), 2024. [Online]. Available:
+  \url{https://arxiv.org/abs/2407.01489}
+\BIBentrySTDinterwordspacing
+
 \bibitem{csev12023}
 \BIBentryALTinterwordspacing
 {Bhatt, Manish and Chennabasappa, Sahana and Nikolaidis, Cyrus and Wan, Shengye
@@ -155,6 +163,16 @@
   of Language Models},'' in \emph{International Conference on Learning
   Representations (ICLR)}, 2025. [Online]. Available:
   \url{https://arxiv.org/abs/2408.08926}
+\BIBentrySTDinterwordspacing
+
+\bibitem{pentestgpt2024}
+\BIBentryALTinterwordspacing
+{Deng, Gelei and Liu, Yi and Mayoral-Vilches, V{\'\i}ctor and Liu, Peng and Li,
+  Yuekang and Xu, Yuan and Zhang, Tianwei and Liu, Yang and Pinzger, Martin and
+  Rass, Stefan}, ``{PentestGPT: Evaluating and Harnessing Large Language Models
+  for Automated Penetration Testing},'' in \emph{33rd USENIX Security Symposium
+  (USENIX Security 24)}, 2024, pp. 847--864. [Online]. Available:
+  \url{https://www.usenix.org/conference/usenixsecurity24/presentation/deng}
 \BIBentrySTDinterwordspacing
 
 \bibitem{mcpfirstlook2025}
@@ -258,6 +276,35 @@
   2025. [Online]. Available: \url{https://arxiv.org/abs/2512.09882}
 \BIBentrySTDinterwordspacing
 
+\bibitem{cvebench2025}
+\BIBentryALTinterwordspacing
+{Zhu, Yuxuan and Kellermann, Antony and Bowman, Dylan and Li, Philip and Gupta,
+  Akul and Danda, Adarsh and Fang, Richard and Jensen, Conner and Ihli, Eric
+  and Benn, Jason and Geronimo, Jet and Dhir, Avi and Rao, Sudhit and Yu,
+  Kaicheng, Stone, Twm and Kang, Daniel}, ``{CVE-Bench: A Benchmark for AI
+  Agents' Ability to Exploit Real-World Web Application Vulnerabilities},'' in
+  \emph{Proceedings of the 42nd International Conference on Machine Learning
+  (ICML)}, 2025. [Online]. Available: \url{https://arxiv.org/abs/2503.17332}
+\BIBentrySTDinterwordspacing
+
+\bibitem{coredteam2026}
+\BIBentryALTinterwordspacing
+{He, Pengfei and Fox, Ash and Miculicich, Lesly and Friedli, Stefan and Fabian,
+  Daniel and Gokturk, Burak and Tang, Jiliang and Lee, Chen-Yu and Pfister,
+  Tomas and Le, Long T.}, ``{Co-RedTeam: Orchestrated Security Discovery and
+  Exploitation with LLM Agents},'' \emph{arXiv preprint arXiv:2602.02164},
+  2026. [Online]. Available: \url{https://arxiv.org/abs/2602.02164}
+\BIBentrySTDinterwordspacing
+
+\bibitem{cybergym2025}
+\BIBentryALTinterwordspacing
+{Wang, Zhijie and Shi, Tianlin and He, Jiawei and Cai, Miaojing and Zhang, Jian
+  and Song, Dacheng}, ``{CyberGym: Evaluating AI Agents' Cybersecurity
+  Capabilities with Real-World Vulnerabilities at Scale},'' \emph{arXiv
+  preprint arXiv:2506.02548}, 2025. [Online]. Available:
+  \url{https://arxiv.org/abs/2506.02548}
+\BIBentrySTDinterwordspacing
+
 \bibitem{openssfaixcc2026}
 \BIBentryALTinterwordspacing
 {Woeste, Helen} and {OpenSSF}, ``{Hack to the Future: The Impact and Legacy of
@@ -311,14 +358,6 @@
   \url{https://arxiv.org/abs/2404.05427}
 \BIBentrySTDinterwordspacing
 
-\bibitem{agentless2024}
-\BIBentryALTinterwordspacing
-{Xia, Chunqiu Steven and Deng, Yinlin and Dunn, Soren and Zhang, Lingming},
-  ``{Agentless: Demystifying LLM-based Software Engineering Agents},'' arXiv
-  preprint arXiv:2407.01489 (v2), 2024. [Online]. Available:
-  \url{https://arxiv.org/abs/2407.01489}
-\BIBentrySTDinterwordspacing
-
 \bibitem{ossfuzzfix2024}
 \BIBentryALTinterwordspacing
 {Zhang, Yuntong and Wang, Jiawei and Berzin, Dominic and Mirchev, Martin and
@@ -326,6 +365,59 @@
   ``{Fixing Security Vulnerabilities with AI in OSS-Fuzz},'' \emph{arXiv
   preprint arXiv:2411.03346 (v2, ACM-format)}, 11 2024. [Online]. Available:
   \url{https://arxiv.org/abs/2411.03346}
+\BIBentrySTDinterwordspacing
+
+\bibitem{cvegenie2025}
+\BIBentryALTinterwordspacing
+{Ullah, Saad and Balasubramanian, Praneeth and Guo, Wenbo and Burnett, Amanda
+  and Pearce, Hammond and Kruegel, Christopher and Vigna, Giovanni and
+  Stringhini, Gianluca}, ``{From CVE Entries to Verifiable Exploits: An
+  Automated Multi-Agent Framework for Reproducing CVEs},'' in \emph{arXiv
+  preprint arXiv:2509.01835}, 2025. [Online]. Available:
+  \url{https://arxiv.org/abs/2509.01835}
+\BIBentrySTDinterwordspacing
+
+\bibitem{llmaprsurvey2026}
+\BIBentryALTinterwordspacing
+{Xu, Qingxiao and Sheng, Ze and Chen, Zhicheng and Huang, Jeff}, ``{A Survey of
+  LLM-based Automated Program Repair: Taxonomies, Design Paradigms, and
+  Applications},'' \emph{arXiv preprint arXiv:2603.01257}, 2026. [Online].
+  Available: \url{https://arxiv.org/abs/2603.01257}
+\BIBentrySTDinterwordspacing
+
+\bibitem{logsinpatchesout2025}
+\BIBentryALTinterwordspacing
+{Kim, Youngjoon and Shin, Sunguk and Kim, Hyoungshick and Yoon, Jiwon}, ``{Logs
+  In, Patches Out: Automated Vulnerability Repair via Tree-of-Thought LLM
+  Analysis},'' in \emph{34th USENIX Security Symposium (USENIX Security 25)},
+  2025. [Online]. Available:
+  \url{https://www.usenix.org/conference/usenixsecurity25/presentation/kim-youngjoon}
+\BIBentrySTDinterwordspacing
+
+\bibitem{llm4cve2025}
+\BIBentryALTinterwordspacing
+{Fakih, Mohamad and Dharmaji, Rahul and Bouzidi, Halima and Araya, Gustavo
+  Quiros and Ogundare, Oluwatosin and Al Faruque, Mohammad Abdullah},
+  ``{LLM4CVE: Enabling Iterative Automated Vulnerability Repair with Large
+  Language Models},'' \emph{arXiv preprint arXiv:2501.03446}, 2025. [Online].
+  Available: \url{https://arxiv.org/abs/2501.03446}
+\BIBentrySTDinterwordspacing
+
+\bibitem{repoaudit2025}
+\BIBentryALTinterwordspacing
+{Guo, Yue and Wang, Chen and Xu, Xiang and Su, Zhiqiang and Zhang, Xuanda},
+  ``{RepoAudit: An Autonomous LLM-Agent for Repository-Level Code Auditing},''
+  \emph{arXiv preprint arXiv:2501.18160}, 2025. [Online]. Available:
+  \url{https://arxiv.org/abs/2501.18160}
+\BIBentrySTDinterwordspacing
+
+\bibitem{patcheval2025}
+\BIBentryALTinterwordspacing
+{Wei, Zichao and Zeng, Jun and Wen, Ming and Yu, Zeliang and Cheng, Kai and
+  Zhu, Yiding and Guo, Jingyi and Zhou, Shiqi and Yin, Le and Su, Xiaodong and
+  Ma, Zhechao}, ``{PATCHEVAL: A New Benchmark for Evaluating LLMs on Patching
+  Real-World Vulnerabilities},'' in \emph{arXiv preprint arXiv:2511.11019},
+  2025. [Online]. Available: \url{https://arxiv.org/abs/2511.11019}
 \BIBentrySTDinterwordspacing
 
 \bibitem{bloggoogle2025}

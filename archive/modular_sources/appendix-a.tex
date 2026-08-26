@@ -1,0 +1,61 @@
+% appendix-a.tex - GENERATED from corpus/included/*.yaml (do not hand-edit body)
+\section{Included Records: Classification, Quality, and Provenance}
+\label{app:records}
+Complete per-record audit artifact: classification (axes per Sec.~IV), quality rubric
+(reproducibility/baseline-rigor/artifact availability, 0--3), evidence class, and access
+provenance. Behavioral evidence per record ships in \texttt{evidence/autonomy-loop-assignments.csv}.
+\begin{table*}[t]
+\centering
+\caption{All 36 included records. $A$=autonomy level; $B$=loop-position set;
+R/B/Ar = rubric scores; Acc = access status.}
+\label{tab:apprecords}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllllccc}
+\toprule
+Record & Year & Unit & $A$ & $B$-set / role & Evidence class & R/B/Ar & Acc \\ \midrule
+\multicolumn{8}{l}{\emph{In-window autonomy-bearing records (14)}}\\
+agentless2024 & 2024 & system(experiment-benchmark) & A1 & B3 & experiment & 3/3/3 & PDF\\
+argusee2025 & 2025 & system & A2 & B1 & production discovery & 0/2/0 & HTML\\
+artemis2025 & 2025 & experiment & A2 & B1+B2 & production-network experiment & 2/3/2 & PDF\\
+autocoderoever-2024 & 2024 & system(experiment-benchmark) & A2 & B3 & experiment & 3/3/3 & PDF\\
+bigsleep2024 & 2024 & system & A2 & B1 & production discovery & 0/2/0 & HTML\\
+fang2024one-day & 2024 & experiment & A2 & B2 & controlled experiment & 2/3/3 & PDF\\
+gtg1002-2025 & 2025 & incident-documentation & uncertain & B1+B2 & incident report & 0/0/0 & HTML\\
+ossfuzz-aifixing-2024 & 2024 & experiment & A2 & B3 & experiment & 2/2/2 & PDF\\
+ossfuzz-levelingup-2024 & 2024 & system(pipeline) & A1 & B1 & industrial-system-report & 1/1/2 & HTML\\
+sweagent2024 & 2024 & system(experiment-benchmark) & A2 & B3 & benchmark/experiment & 3/3/3 & PDF\\
+teamatlanta-afc2025 & 2025 & system & A2 & B1+B2+B3 & competition-participant & 1/2/2 & HTML\\
+teamatlanta-sqlite2024 & 2024 & system & A2 & B1+B2+B3 & competition-participant & 1/2/2 & HTML\\
+tob-buttercup2025 & 2025 & system & A2 & B1+B2+B3 & competition-participant & 1/3/2 & HTML\\
+xbow2025 & 2025 & system & A2 & B1+B2 & production stats & 0/1/0 & HTML\\
+\midrule
+\multicolumn{8}{l}{\emph{Background anchors (excluded from primary counts)}}\\
+csev12023bg & 2023 &  & A0 & B1 & benchmark & 2/1/2 & PDF\\
+intercode2023bg & 2023 & benchmark & A1 & B2 & benchmark & 3/2/3 & PDF\\
+\midrule
+\multicolumn{8}{l}{\emph{Loop-transition documentation (B4)}}\\
+bloggoogle-summer2025 & 2025 & program-record & n-a & B4 — documents B1 discovery -> announced B4 redeployment of Big Sleep to OSS projects & program-announcement & --/--/-- & HTML\\
+openssfretro2026 & 2026 & program-record & n-a & B4 — documents post-competition B3->B4 institutionalization (SIG hosting, transition funding, ecosystem stats) & foundation closeout & 1/1/2 & HTML\\
+\midrule
+\multicolumn{8}{l}{\emph{Off-axis / context records}}\\
+csev22024 & 2024 & benchmark & n/a & n/a — probed {B1,B2} & benchmark & 2/2/2 & PDF\\
+csev32024 & 2024 & benchmark & n/a & n/a — probed {B1,B2} & benchmark & 2/2/2 & PDF\\
+cybench2024 & 2024 & benchmark & n/a & n/a — probed {B2} & benchmark & 3/3/3 & PDF\\
+mcpeco2025 & 2025 & measurement-study & n-a & n-a & measurement & 2/2/3 & PDF\\
+mcpgov2025 & 2025 & documentary-source & n-a & n-a & positional/measurement & 1/1/2 & PDF\\
+mcppoison2026 & 2026 & documentary-source & n-a & n-a & analysis/experiment & 2/2/2 & PDF\\
+mcpspec2026 & 2026 & documentary-source & n-a & n-a & analysis & 2/2/2 & PDF\\
+nvdcve20256965 & 2025 & registry & n-a & n-a & registry & 3/3/3 & HTML\\
+nyuctfbench2024 & 2024 & benchmark & n/a & n/a — probed {B2} & benchmark & 3/2/3 & PDF\\
+primevul2024 & 2024 & dataset & n-a & n/a — B1 detection (dataset standard) & dataset/validity study & 3/3/3 & PDF\\
+r1slr2024 & 2024 & survey & n-a & n-a & survey & 1/1/0 & PDF\\
+r2slr2024 & 2024 & survey & n-a & n-a & survey & 1/1/0 & PDF\\
+r3survey2026 & 2026 & survey & n-a & n-a & survey & 1/2/0 & PDF\\
+r4csur2025 & 2025 & survey & n-a & n-a & survey & 0/0/0 & payw.\\
+r5usenix26agentic & 2026 & survey & n-a & n-a & survey & 0/0/0 & PDF\\
+r6tosem2026 & 2026 & survey & n-a & n-a & survey & 0/0/3 & payw.\\
+r7sokaixcc2026 & 2026 & survey(systematization) & n/a & n/a & competition & 2/3/2 & PDF\\
+rissebohme-wrongexam2024 & 2024 &  & n-a & n-a & validity-critique & --/--/-- & PDF\\
+\bottomrule
+\end{tabular}}
+\end{table*}

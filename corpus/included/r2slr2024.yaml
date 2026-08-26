@@ -1,0 +1,24 @@
+reference_key: r2slr2024
+bib: (verify authors) - Vulnerabilities to Remediation SLR
+url: https://arxiv.org/abs/2412.15004
+ver: local PDF
+year: 2024
+venue: arXiv SLR
+problem: LLM detection+fix mapping
+result: cutoff late-2024 [PENDING-CLOSEREAD]
+autonomy: meta
+loop: B1/B3
+artifacts: 0
+repro: 1
+base: 1
+claimed_vs: survey
+eclass: survey
+limits: R2 differentiation row
+autonomy_level: n-a
+loop_position: n-a
+scope_class: survey
+access_status: oa-pdf
+autonomy_note: meta row R2
+classification_evidence: survey meta-row R2
+temporal_scope: in-window
+unit_type: survey
