@@ -1,0 +1,35 @@
+% figures/prisma-flow.tex — F1: multi-stream PRISMA flow (spec-required figure)
+% Counts from prisma-counts.csv / search-log.md (frozen CP1-final numbers).
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  box/.style={draw,align=center,font=\scriptsize,inner sep=3pt,minimum height=0.85cm,text width=3.6cm},
+  arr/.style={->,thick}, scale=0.95,transform shape]
+\node[box,fill=gray!8] (id) at (0,0)
+ {\textbf{Identified}\\ Stream A: arXiv 973 + DBLP 214\\ Stream B/C: targeted acquisition};
+\node[box,fill=gray!8] (scr) at (0,-1.55)
+ {\textbf{Screened}\\ deduplicated union 316 IDs\\ $+$ seed/chaining records $=$ 339};
+\node[box] (ftx) at (0,-3.10)
+ {\textbf{Full text assessed}\\ Stream A: 23 OA PDFs converted$+$validated\\
+  Stream B: 10 official/team/vendor pages (quote-level)\\
+  Stream C: 1 registry record};
+\node[box,fill=blue!12] (inc) at (0,-4.80)
+ {\textbf{Included} $=$ 36 records\\
+  \emph{A}: 23 academic (incl.\ 2 background anchors) $+$ 2 restricted-metadata rows\\
+  \emph{B}: 10 competition/industrial/foundation primaries\\
+  \emph{C}: 1 registry record};
+\draw[arr] (id)--(scr); \draw[arr] (scr)--(ftx); \draw[arr] (ftx)--(inc);
+\node[font=\tiny,anchor=west,text width=3.9cm] at (2.35,-0.7)
+ {\textbf{Excluded / held out:}\\ wrong identifier (1); press-only claim (1);
+  out-of-window demotions (background band); unresolvable primary URL (1)};
+\node[font=\tiny,anchor=west,text width=3.9cm] at (2.35,-3.1)
+ {Streams are accounted separately (multi-stream architecture, Sec.~III);
+  totals sum only at the top level. Conversion failures: 0.};
+\end{tikzpicture}
+\caption{Multi-stream PRISMA flow. Unlike single-corpus reviews, evidence here arrives in
+three streams with different verification obligations; each stream keeps its own denominators
+and only the included set is summed (36 records). Full query strings, per-query hit counts,
+exclusion reasons, and saturation tests appear in Appendices~\ref{app:search}
+and the repository artifacts.}
+\label{fig:prisma}
+\end{figure}
