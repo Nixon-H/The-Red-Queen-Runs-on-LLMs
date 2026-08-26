@@ -1,8 +1,8 @@
 # Release Manifest: SoK Co-Evolution Paper
 
 **Release Date:** 2026-08-27
-**Release Version:** 1.1 (Post-reconciliation audit complete)
-**Status:** Ready for submission after final review
+**Release Version:** 1.2 (Final verification complete)
+**Status:** Ready for submission
 
 ---
 
@@ -17,8 +17,8 @@
 
 ### PDF Metadata
 - **Page count:** 17 pages
-- **File size:** 261,548 bytes
-- **Build hash:** 0eebf74 (git commit)
+- **File size:** 260,922 bytes
+- **Build hash:** 5caaaea (git commit)
 - **Build status:** Successful; no fatal compilation errors observed
 
 ---
@@ -29,8 +29,8 @@
 | File | SHA-256 Hash |
 |------|--------------|
 | main.tex | bbded9e25cdd3cf6b1c1cec8a14cd9cc6c4bc6e30658c764281f6128c99b84b8 |
-| refs.bib | 1db5b2fbdbdaede89c7d882c2067f31d3a14d7cf3628388779e19a57d85e2110 |
-| main.pdf | 0f9389650158ee968f3b3f0e53b9b43cf0bc97ec8cc2ff0e64acd5f069632d36 |
+| refs.bib | 8517d2c79f4998a40d6b3906e10ded9fc9ad7db30d838c2b66de7f22cc5ea423 |
+| main.pdf | 0b85cff6cabd53032067d32e1a9b169bf69ca3ae325c39456487a6fd60957716 |
 | evidence/autonomy-loop-assignments.csv | e95da24dfd24d6ec8d90e5e40a51bb42fb4d849c89a169b5e60d7deb535e7259 |
 
 ### Verification Command
@@ -200,5 +200,5 @@ PYEOF
 
 *Manifest generated: 2026-08-26*
 *Last updated: 2026-08-27*
-*Git commit: 0eebf74*
+*Git commit: 5caaaea*
 *Status: Release ready*
