@@ -99,10 +99,6 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 - `refs.bib` — Bibliography (50 entries)
 - `main.pdf` — Compiled output (18 pages)
 
-### Submission Package
-- `submission/` — Clean rebuildable copy of the PDF source, local IEEEtran files,
-  active figure sources, `main.pdf`, and submission-support documents
-
 ### Evidence Files
 - `evidence/autonomy-loop-assignments.csv` — Classification source of truth (36 records)
 - `evidence/i1-analysis.md` — I1 claim analysis (archived)
@@ -127,7 +123,7 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 - `audits/2026-08-27-forensic-audit.md` — Dated audit-trail entry
 - `audits/2026-08-27-clean-room-current-head.md` — Exact-current-state clean-room audit
 
-### Archived (not in submission)
+### Archived (not in active repository)
 - `archive/old-audit-notes/` — Superseded audit notes, old CSVs, old iteration plans (13 files)
 
 ### Build History
