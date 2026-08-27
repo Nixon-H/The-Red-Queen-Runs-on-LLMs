@@ -99,6 +99,10 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 - `refs.bib` — Bibliography (50 entries)
 - `main.pdf` — Compiled output (18 pages)
 
+### Submission Package
+- `submission/` — Clean rebuildable copy of the PDF source, local IEEEtran files,
+  active figure sources, `main.pdf`, and submission-support documents
+
 ### Evidence Files
 - `evidence/autonomy-loop-assignments.csv` — Classification source of truth (36 records)
 - `evidence/i1-analysis.md` — I1 claim analysis
@@ -110,8 +114,8 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 
 ### References
 - `references/manifest.csv` — Reference tracking (50 entries)
-- `references/pdf/` — 37 PDFs
-- `references/txt/` — 49 text files
+- `references/pdf/` — 34 PDFs
+- `references/txt/` — 45 text files
 
 ### Audit Files
 - `FORENSIC_AUDIT_FINAL.md` — Final forensic audit report
@@ -121,8 +125,6 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 - `NUMERIC_FACT_AUDIT.csv` — Numerical claim audit
 - `CONTRADICTION_MATRIX.md` — Cross-artifact and source discrepancies
 - `audits/2026-08-27-forensic-audit.md` — Dated audit-trail entry
-- `CORRECTED_AUDIT_REPORT.md` — Corrected forensic audit
-- `CLAIM_LEDGER.md` — Claim-level audit framework
 - `CITATION_VERIFICATION_S1_S3.md` — §1-§3 verification
 - `CLAIM_VERIFICATION_S4_S9.md` — §4-§9 verification
 - `A3_SENSITIVITY_ANALYSIS.md` — A3 robustness testing
@@ -137,7 +139,6 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 
 ### Build History
 - `docs/CHANGES.md` — Build history (10+ iterations)
-- `docs/reference-audit.md` — Prior citation audit
 
 ---
 

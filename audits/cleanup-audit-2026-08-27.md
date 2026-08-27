@@ -1,7 +1,7 @@
 # Repository Cleanup Audit — 2026-08-27
 
 Date: 2026-08-27  
-Git baseline: `master` at `80f6ce263b2ef78e14437752d0f54305c41ae9da`  
+Git baseline: `master` at `4fe7498f68ef17f70a1b5af6b16267322b005470`
 Scope: build dependencies, submission materials, evidence/reproducibility artifacts, historical files, generated files, and unrelated nested repositories.
 
 ## Executive result
@@ -11,7 +11,7 @@ The active manuscript is `main.tex` and the active compiled paper is `main.pdf`.
 - `python3 scripts/verify_final.py`: all checks pass
 - `python3 scripts/scripts_audit_final.py`: all gates pass
 
-The safe cleanup subset described below was executed after the audit. Historical audit Markdown and all active evidence/reproducibility inputs were deliberately preserved because a concurrent clean-room audit is using them.
+The cleanup is complete. A separate `submission/` folder now contains the rebuildable PDF package, while the parent retains the active research evidence and current audit record.
 
 ## Cleanup executed
 
@@ -23,10 +23,15 @@ Removed:
 - stale bundle: `sok-coevolution-release-bundle.tar.gz`
 - obsolete checksum manifests: `docs/MANIFEST.sha256` and `docs/SHA256SUMS.manifest`
 - empty placeholder directories: `build/`, `review/`, and `references/quarantine/`
+- superseded top-level audits: `AUDIT_PLAN.md`, `CITATION_AUDIT_REPORT.md`,
+  `CLAIM_LEDGER.md`, `FORENSIC_AUDIT_REPORT.md`, `CORRECTED_AUDIT_REPORT.md`, and `notes.md`
+- superseded/legacy `docs/` records: `CP1-report.md`, `CVE-REDACTION-MAP.md`,
+  `reference-audit.md`, `audit-final-transcript.txt`, `autonomy-loop-assignments.csv`,
+  `claim-verification.csv`, `corpus-summary.csv`, `corpus.csv`, and `prisma-counts.csv`
 
 The active `main.tex`, `refs.bib`, local LaTeX style files, figure sources, `main.pdf`, evidence, corpus, reference maps, current audit files, and unrelated `CLEANROOM_AUDIT_*`/`CURRENT_HEAD_*` files were preserved.
 
-Post-clean verification passed: `python3 scripts/scripts_audit_final.py` reported all gates pass, and a scratch rebuild of the current edited source produced an 18-page PDF with no fatal errors. `RELEASE_MANIFEST.md` still needs a later refresh because `main.tex` and `references/manifest.csv` have concurrent uncommitted edits, and the reference-directory counts changed after this cleanup.
+Post-clean verification passed before final packaging: `python3 scripts/scripts_audit_final.py` reported all gates pass; the isolated `submission/` package rebuilt to an 18-page PDF with no fatal or undefined-reference diagnostics. `RELEASE_MANIFEST.md` records the package and current reference-directory counts.
 
 ## Files required to build the PDF
 
@@ -42,11 +47,34 @@ Keep these files in the project if the PDF must remain rebuildable:
 
 `main.tex` directly inputs only the three figure files and the `refs.bib` bibliography. The local PDF/TXT sources, YAML corpus, CSV evidence, Markdown audits, and Python scripts are not read by LaTeX during compilation.
 
+## CSV and Markdown disposition
+
+No CSV or Markdown file is required to compile `main.pdf`. The current files kept in the parent repository are retained for one of three reasons:
+
+- **Authoritative evidence/provenance:** `evidence/autonomy-loop-assignments.csv`,
+  `references/manifest.csv`, `references/source-map.csv`,
+  `references/record-id-map.csv`, `corpus/included/`, and the evidence notes.
+- **Current audit/release record:** `CLAIM_EVIDENCE_MATRIX.csv`,
+  `REFERENCE_INVENTORY.csv`, `NUMERIC_FACT_AUDIT.csv`, all four `CURRENT_HEAD_*.csv`
+  files, `FORENSIC_AUDIT_FINAL.md`, `FINAL_FIX_SUMMARY.md`,
+  `CONTRADICTION_MATRIX.md`, the dated `audits/` reports, and the clean-room notes.
+- **Submission or research provenance:** `ai-use-disclosure.md`,
+  `venue-fit-cover-letter.md`, `docs/CP1-final.md`, `docs/research-protocol.md`,
+  `docs/search-log.md`, `docs/CHANGES.md`, `docs/framework-changelog.md`,
+  `docs/outline.md`, `docs/skill-routing.md`, `docs/venue-compliance.md`,
+  `corpus/saturation-rationale.md`, and the reference-access notes.
+
+The deleted CSVs were legacy aggregates or a 26-record snapshot; they were replaced by the 36-record canonical corpus and current audit matrices. The deleted Markdown was superseded, explicitly reversed, or stale. Git retains the deleted tracked files in repository history.
+
+## Clean submission folder
+
+`submission/` contains `main.tex`, `refs.bib`, `IEEEtran.cls`, `IEEEtran.bst`, the three active figure sources, the current compiled `main.pdf`, `README.md`, and the two submission-support Markdown files. It is independent of the parent CSV/evidence tree and can be copied as a PDF-only/rebuildable submission package.
+
 Keep `main.pdf` as the current submission PDF. `ai-use-disclosure.md` and `venue-fit-cover-letter.md` are submission-support documents and should be retained if they are still needed for the venue workflow.
 
-## High-confidence cleanup candidates
+## High-confidence cleanup candidates (executed)
 
-These are not required by the active build and have clear evidence of being generated, duplicated, invalid, stale, or unrelated. They can be deleted from this project after the normal backup/version-control check:
+These were not required by the active build and had clear evidence of being generated, duplicated, invalid, stale, or unrelated. They were deleted after the normal version-control check:
 
 ### Generated LaTeX intermediates
 
@@ -90,9 +118,9 @@ The two `docs/` checksum manifests describe the old bundle, not the current `REL
 
 These should preferably be moved outside this project rather than destroyed, because each has its own Git history and working-tree state.
 
-## Historical Markdown that is not needed for build or basic submission
+## Historical Markdown removed from the active tree
 
-The following files are useful only for audit/history and may be archived or deleted if the goal is a lean paper repository:
+The following files were useful only for audit/history and were removed from the active tree:
 
 - `AUDIT_PLAN.md`
 - `FORENSIC_AUDIT_REPORT.md` — superseded by the corrected/final reports
@@ -153,4 +181,4 @@ These directories currently contain no files and can be removed if they are not 
 5. Archive historical audit Markdown separately; retain the compact current audit set if provenance matters.
 6. Rebuild with the documented four-command sequence and rerun both verification scripts.
 
-The current `RELEASE_MANIFEST.md` lists several audit/evidence files. If any of those are removed, update or replace that manifest so it no longer claims they are part of the release.
+The current `RELEASE_MANIFEST.md` has been updated so it no longer claims the deleted historical files are part of the release.
