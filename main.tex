@@ -27,8 +27,8 @@ We systematize this transition across a 36-record multi-stream corpus --- academ
 competition and industrial documents, and registry records --- using two orthogonal axes: a
 decision-authority gradient (A0 assistive to A3 autonomous production hunter), assigned only by
 documented behavior under the rule that claims are graded by their weakest missing condition,
-and the offense/defense loop positions B1--B4. Fourteen in-window records bear autonomy
-classifications: pipeline automation (A1) already operates at ecosystem scale; task agents (A2)
+and the offense/defense loop positions B1--B4. Fourteen in-window records underwent autonomy
+assessment: pipeline automation (A1) already operates at ecosystem scale; task agents (A2)
 appear in seeded production research, entry-point-assisted auditing, black-box platform
 operation, and the DARPA AI Cyber Challenge's fully autonomous scored rounds; no included
 evidence meets our operational definition of A3. We further grade offense$\leftrightarrow$
@@ -241,7 +241,7 @@ First-page screening caps per query, publisher-API absence, and English-language
  documented limitations; the A3-negative finding remains robust within the documented corpus under the sensitivity scenarios reported in Sec.~\ref{sec:framework}, but cannot exclude undocumented systems outside the observable evidence base.
  Classification reliability: all 36 records were classified by the first author using the
  autonomy$\times$loop taxonomy (Sec.~\ref{sec:framework}). To assess reproducibility, we
- repeated the classification procedure for all 14 autonomy-bearing records, with six boundary
+ repeated the classification procedure for all 14 autonomy-assessed records, with six boundary
  cases (GTG-1002, XBOW, ARTEMIS, Big Sleep, Argusee, AIxCC cluster) receiving additional
  blinded review during initial coding and a blind re-coding pass. The two passes yielded consistent
  classifications, although intermediate uncertainty was concentrated on environment-class
@@ -320,12 +320,14 @@ cluster around agent tool protocols, and the first institutionalized B4 document
 qualifies as A3. This finding is robust to reasonable alternative interpretations: relaxing
 the human-review rule (S1), relaxing the target-selection rule (S2), relaxing the environment
 requirement (S3), and combining all relaxations (S4) each leave the A3 count at zero. The
+no-human-interaction corollary ensures that systems with human review in their reporting
+pipeline (e.g., XBOW) remain non-A3 even when the human-review condition is relaxed. The
 weakest-missing-condition rule ensures that every A2 system fails at least one required condition
 --- typically human-curated seeds, entry points, or pre-submission review --- preventing any
 system from qualifying as A3 merely by headline claims.
 
 % tables/autonomy-loop-matrix.tex — v4 (CP4 blocker fix): body REGENERATED from the frozen
-% CP2-lock schema (14 autonomy-bearing / 2 background / 2 loop-transition-doc / 18 context).
+% CP2-lock schema (14 autonomy-assessed / 2 background / 2 loop-transition-doc / 18 context).
 % Root cause of prior staleness: v3 header comment updated while tabular body stayed v2.
 % Source of truth: evidence/autonomy-loop-assignments.csv + corpus/included/*.yaml.
 \begin{table*}[t]
@@ -389,7 +391,7 @@ r7sokaixcc2026 (R7)      & 2026 & in & n/a & survey(systematization); documents 
                          &      &    &     & Theori-SRS, RoboDuck, FuzzingBrain, Lacrosse, Shellphish \\
 r3survey2026 (R3) & 2026 & OUT& n/a & survey comparator (out-of-window) \\
 \hline
-\multicolumn{5}{l}{\scriptsize Totals: 14 autonomy-bearing ($A1{\times}2$, $A2{\times}11$, unresolved${\times}1$, $A3{=}0$)
+\multicolumn{5}{l}{\scriptsize Totals: 14 autonomy-assessed ($A1{\times}2$, $A2{\times}11$, unresolved${\times}1$, $A3{=}0$)
 $+$ 2 background $+$ 2 loop-transition $+$ 18 context $=$ 36 records.}\\
 \end{tabular}
 }
@@ -797,7 +799,7 @@ The shared-cause objection --- frontier-model releases independently advancing b
 survives globally: it is defeated only for edges D1--D2, where stated mechanisms precede any
 model-release timing argument. We therefore do not generalize from the AIxCC--Google hub to the
 field. Record reliability itself becomes evidence, once accounting scopes are labeled precisely:
-\$29.5M denotes the cumulative program prize commitment announced in 2024, \$8.5M denotes the
+\$29.5M denotes the cumulative program prize commitment announced in 2023~\cite{darpa2023aixcc}, \$8.5M denotes the
 final competition pool per DARPA's scoring guide~\cite{darpascoring2025}, and OpenSSF reports
 \$30.5M ultimately distributed across both rounds~\cite{openssfaixcc2026} --- distinct
 boundaries, not competing totals for one quantity. Separately, DARPA's own closeout corrects
@@ -1274,20 +1276,36 @@ rules. All scenarios yield zero qualifying systems under the paper's strict oper
 definition.
 
 \begin{center}
-\captionof{table}{A3 sensitivity analysis. Each row relaxes one classification condition
-while holding the others fixed; the rightmost column identifies the closest candidate and
-the condition that still prevents A3 qualification.}
+\captionof{table}{A3 sensitivity analysis. A3 requires independent planning, execution,
+validation, and reporting in environment class E2 (Sec.~\ref{sec:framework}). The
+\emph{no-human-interaction corollary} requires that reporting be fully autonomous; this
+corollary is not relaxed in any scenario. Each row relaxes one condition while holding the
+others fixed.}
 \label{tab:sensitivity}
 \centering\scriptsize
-\begin{tabular}{p{1.5cm}p{5.5cm}p{2.5cm}p{5cm}}
+\begin{tabular}{p{1.3cm}p{4cm}p{1cm}p{2.2cm}p{5.5cm}}
 \hline
-Scenario & Relaxation & A3 count & Closest candidate and remaining blocker \\
+Scenario & Condition relaxed & A3 & Closest candidate & Remaining blocker(s) \\
 \hline
-S0 & Baseline (strict four-verb test) & 0 & XBOW: human review before submission; AIxCC CRS: human-selected targets; GTG-1002: unresolved evidence \\
-S1 & Human review relaxed & 0 & XBOW: still requires human security-team review; AIxCC CRS: human-selected targets \\
-S2 & Target-selection autonomy relaxed & 0 & AIxCC CRS: human-selected targets; but B1 still requires human triage \\
-S3 & Production-environment requirement relaxed & 0 & AIxCC CRS: benchmark settings; XBOW: mandated human review \\
-S4 & All relaxations combined & 0 & GTG-1002: unresolved (insufficient public evidence for definitive assignment) \\
+S0 & None (baseline) & 0 & XBOW & XBOW: human review before submission (reporting);
+AIxCC CRS: human-selected targets (planning), E1 environment;
+ARTEMIS: human professionals set scope (planning);
+GTG-1002: insufficient evidence \\
+S1 & Human review relaxed & 0 & XBOW & XBOW: reporting pipeline includes human review
+(no-human-interaction corollary violated);
+AIxCC CRS: human-selected targets, E1;
+ARTEMIS: human professionals in planning and reporting \\
+S2 & Target-selection autonomy relaxed & 0 & AIxCC CRS & AIxCC CRS: E1 environment;
+XBOW: human review (corollary);
+ARTEMIS: human professionals \\
+S3 & E2 environment requirement relaxed & 0 & AIxCC CRS & AIxCC CRS: human-selected targets;
+XBOW: human review (corollary);
+ARTEMIS: human professionals \\
+S4 & All combined & 0 & XBOW & XBOW: reporting pipeline requires human review
+(no-human-interaction corollary);
+ARTEMIS: human professionals in planning and reporting;
+AIxCC CRS: E1 environment;
+GTG-1002: unresolved \\
 \hline
 \end{tabular}
 \end{center}
