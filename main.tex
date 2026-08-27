@@ -34,8 +34,8 @@ operation, and the DARPA AI Cyber Challenge's fully autonomous scored rounds; no
 evidence meets our operational definition of A3. We further grade offense$\leftrightarrow$
 defense coupling, documenting an explicit cross-program edge (Project Zero's SQLite campaign
 citing AIxCC as inspiration) while declining field-wide causal claims, and we systematize
-evaluation validity as a measured constraint: information conditions swing headline exploitation
-rates twelve-fold, dataset reconstruction collapses detection performance, and proof-of-
+evaluation validity as a measured constraint: information conditions change reported exploitation
+rates by more than an order of magnitude, dataset reconstruction collapses detection performance, and proof-of-
 vulnerability oracles admit documented mitigation gaming. We close with a falsifier-specified
 roadmap --- from autonomy-versus-scale ablations to decision-impact audits --- for converting an
 increasingly autonomous practice into an increasingly verifiable one.
@@ -52,7 +52,7 @@ actions. Google reported an agent finding an exploitable memory-safety zero-day 
 briefly held the top US position on a major bug-bounty platform~\cite{xbowtop12025}; a
 government challenge scored seven fully autonomous systems on finding, proving, and patching
 vulnerabilities in open-source software~\cite{darparesults2025,r7sokaixcc2026}; and Anthropic
-reported an intrusion campaign whose execution was 80--90\% autonomous~\cite{anthropicgtg2025}.
+reported (as a single-source threat-intelligence assessment) an intrusion campaign whose execution was 80--90\% autonomous~\cite{anthropicgtg2025}.
 These events are connected neither by a shared benchmark nor by a shared metric, which is
 precisely why existing surveys cannot answer the questions they raise.
 
@@ -778,7 +778,7 @@ prevention.
 
 \subsection{Plausible Coupling}
 \textbf{(P1)} Attacker-side adoption of agentic operation within roughly twelve months of
-defender agentic publicity: Anthropic reports GTG-1002 used Claude Code for 80--90\% of an
+defender agentic publicity: Anthropic reports (as a single-source threat-intelligence assessment) that GTG-1002 used Claude Code for 80--90\% of an
 espionage campaign's execution --- ``the AI autonomously discovered vulnerabilities in targets
 selected by human operators''~\cite{anthropicgtgreport2025,anthropicgtg2025}. Directionality is
 unverifiable without adversary telemetry; shared capability tide remains a live alternative.
@@ -858,7 +858,7 @@ decomposition and fabricated defensive-employment framing, executing reconnaissa
 
 exploit drafting, credential harvesting, and exfiltration with humans selecting targets and
 
-intervening at four to six checkpoints~\cite{anthropicgtg2025,anthropicgtgreport2025}. Its
+retaining strategic authorization at critical escalation points~\cite{anthropicgtg2025,anthropicgtgreport2025}. Its
 
 grade stays \emph{plausible coupling}: no adversary-side telemetry exists to date whether
 
@@ -894,7 +894,7 @@ The cleanest datum in our corpus is controlled. Fang et al.\ measure GPT-4-based
 real one-day vulnerabilities under two information conditions: with the CVE description
 supplied, the agent autonomously exploited 87\%; without it, success fell to 7\%, while every
 baseline (GPT-3.5, eight open-source models, ZAP, Metasploit) scored zero in both
-conditions~\cite{fang2024agents}. The twelve-fold swing is produced by a single
+conditions~\cite{fang2024agents}. This more-than-an-order-of-magnitude difference is produced by a single
 supplied-knowledge variable --- the CVE text functions as a partial answer key --- so any
 capability claim inherits its information condition. We therefore report such results only with
 their conditions attached, and the same discipline applies to temporal leakage: every
@@ -1151,7 +1151,7 @@ the arms-race vernacular: shared-cause explanations survive globally, and attack
 response remains unmeasured.
 
 \textbf{On I3 (observed; binding claim pending E7).} Validity failures here are not rhetorical.
-Information conditions swing headline exploitation rates by twelve-fold; dataset
+Information conditions change reported exploitation rates by more than an order of magnitude; dataset
 reconstruction collapses detection SOTA; oracle gaming has a named taxonomy; environment
 heuristics decide winners; and leaderboard counting conflates outcome categories. Because
 these measures allocate prizes and rank vendors directly --- and inform funding

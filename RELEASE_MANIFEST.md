@@ -1,8 +1,8 @@
 # Release Manifest: SoK Co-Evolution Paper
 
 **Release Date:** 2026-08-27
-**Release Version:** 1.2 (Final verification complete)
-**Status:** Ready for submission
+**Release Version:** 1.3 (Forensic audit round 3 complete)
+**Status:** Ready for submission pending final author review
 
 ---
 
@@ -17,8 +17,8 @@
 
 ### PDF Metadata
 - **Page count:** 17 pages
-- **File size:** 261,254 bytes
-- **Build hash:** 4402a2d (git commit)
+- **File size:** 261,742 bytes
+- **Build hash:** 8c622ef (git commit)
 - **Build status:** Successful; BibTeX zero errors, no fatal compilation errors
 
 ---
@@ -28,14 +28,15 @@
 ### Core Files
 | File | SHA-256 Hash |
 |------|--------------|
-| main.tex | f301aa78f227af08b2e13f89a4617e8bd462ba557483a47ddfff0d09cc8d44e1 |
-| refs.bib | edab8319201b7d905efea7e13e6efb24a79cf0f55cf0a8f0b98d626c0bc75cc4 |
-| main.pdf | f19f587e7b9238e81bc91432c9eb67f251ca9bb8680e456ac85aae3abe26f298 |
+| main.tex | 811087c66ad92a68d76a1c64f0d9727e3f3b811e083cf579fb90c6e1812726c7 |
+| refs.bib | 55016c28e5da04652ec1d0a233f6f33506db0710b04f0c522240b66e732a5bda |
+| main.pdf | e6579a3c973f91b667dce6ed34366110113ce2fac050746f03ef223194197a8f |
 | evidence/autonomy-loop-assignments.csv | e95da24dfd24d6ec8d90e5e40a51bb42fb4d849c89a169b5e60d7deb535e7259 |
+| references/manifest.csv | f11efc1e50d2b0733eadc631ea84304a46b799d7852fc192817ccbf6dec42bae |
 
 ### Verification Command
 ```bash
-sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv
+sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv references/manifest.csv
 ```
 
 ---
@@ -182,23 +183,25 @@ PYEOF
 - [x] Bibliography clean (no internal notes, no uncited entries)
 - [x] Author metadata correct (double-brace only on corporate authors)
 - [x] Record IDs consistent across all artifacts
-- [x] I3 wording calibrated
+- [x] I3 wording calibrated (appears to be binding, pending E7)
 - [x] A3 sensitivity analysis complete
 - [x] E1/E2 boundary justified
 - [x] Manifest-to-bibliography reconciliation proven
 - [x] Cross-artifact set equality verified (CSV=YAML=T2=T4)
 - [x] PDF compiles cleanly (0 errors)
 - [x] SHA-256 hashes generated
-- [x] Inter-rater reliability paragraph added
+- [x] GTG-1002 qualified as single-source vendor assessment
+- [x] "Twelve-fold" replaced with "more than an order of magnitude"
+- [x] "4–6 human checkpoints" removed (not in primary source)
 - [ ] Final review by authors
 - [ ] Visual PDF QA (figure overflow, caption placement)
 
 ### Status
-**The manuscript has completed its documented internal audit and cross-artifact reconciliation. All major methodological clarifications have been incorporated. The paper is ready for final author review.**
+**The manuscript has completed three rounds of forensic audit. All critical bibliographic, methodological, and claim-level issues have been addressed. The paper is ready for final author review.**
 
 ---
 
 *Manifest generated: 2026-08-26*
 *Last updated: 2026-08-27*
-*Git commit: 4402a2d*
-*Status: Release ready*
+*Git commit: 8c622ef*
+*Status: Release ready for final author review*
