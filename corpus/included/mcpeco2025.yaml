@@ -1,11 +1,11 @@
 reference_key: mcpeco2025
-bib: (verify authors) - First Look MCP Ecosystem Security
+bib: mcpfirstlook2025 - First Look MCP Ecosystem Security
 url: https://arxiv.org/abs/2510.16558
 ver: local PDF
 year: 2025
 venue: DSN 2026 accepted
 problem: MCP ecosystem risk measurement
-result: '[PENDING verify 67,057 servers / 833 vulnerable]'
+result: 67,057 MCP servers analyzed; 833 reported with exploitable vulnerabilities in the study snapshot
 autonomy: infrastructure
 loop: cross-cutting tool layer
 artifacts: 3

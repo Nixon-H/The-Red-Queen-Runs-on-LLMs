@@ -15,7 +15,7 @@ human: none
 benchmark: CSAW corpus
 metric: per-category success
 baseline: InterCode-CTF lineage
-result: '[PENDING-CLOSEREAD]'
+result: scalable open-source CTF benchmark with automated external-tool workflow
 artifacts: 3
 repro: 3
 base: 2

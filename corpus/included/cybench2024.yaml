@@ -15,7 +15,7 @@ human: none
 benchmark: Cybench 40
 metric: success rate/time-to-solve
 baseline: prior suites/ablations
-result: '[PENDING-CLOSEREAD]'
+result: 40-task tool-using CTF benchmark with success-rate and time-to-solve evaluation
 artifacts: 3
 repro: 3
 base: 3

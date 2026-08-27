@@ -1,10 +1,10 @@
-bib: (Google et al.) - Fixing Security Vulnerabilities with AI in OSS-Fuzz
+bib: Zhang, Wang, Berzin, Mirchev, Liu, Arya, Chang, and Roychoudhury - Fixing Security Vulnerabilities with AI in OSS-Fuzz
 url: https://arxiv.org/abs/2411.03346
 ver: local PDF
 year: 2024
 venue: arXiv
 problem: LLM-based automatic FIXING of OSS-Fuzz vulns (CodeRover-S)
-result: '[PENDING-CLOSEREAD] 63% efficacy on 2024-detected vulns per HTML snippet'
+result: CodeRover-S repaired 52.4% on the paper's curated real-vulnerability evaluation; 63% is the 2024-detected subset rate
 autonomy_level: A2
 loop_position: B3
 scope_class: paper

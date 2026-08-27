@@ -1,5 +1,5 @@
 reference_key: r7sokaixcc2026
-bib: (verify authors) - SoK DARPA AIxCC
+bib: Zhang et al. - SoK DARPA AIxCC (21-author record verified)
 url: https://arxiv.org/abs/2602.07666
 ver: local PDF camera-ready v5
 year: 2026
@@ -10,7 +10,7 @@ models: heterogeneous per team (Buttercup mid-tier)
 arch: 7 finalist CRS designs tabulated
 autonomy: competition-integrated A1-A2
 loop: B1+B2+B3 integrated
-human: prohibited in scored operation [locator pending]
+human: prohibited in scored operation (participant account and R7 analysis)
 result: 'cost table LOCALLY VERIFIED: totals 103.3/39.6/31.8/75.4/57.8/39.8/7.8 $K + Score-per-$K'
 artifacts: 2
 repro: 2

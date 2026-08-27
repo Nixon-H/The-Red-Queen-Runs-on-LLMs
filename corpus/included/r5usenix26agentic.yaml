@@ -1,7 +1,7 @@
 reference_key: r5usenix26agentic
-bib: (authors TBD) - SoK Attack and Defense Landscape of Agentic AI Systems
+bib: Kim, Guo, and Song - SoK Attack and Defense Landscape of Agentic AI Systems
 url: https://www.usenix.org/conference/usenixsecurity26/technical-sessions
-ver: TITLE verified on official index fetch 2026-08-26 [full text pending]
+ver: title and authors verified in the open proceedings PDF
 year: 2026
 venue: USENIX Security 2026
 result: closest P1 competitor; differentiate by loop depth + industrial evidence base

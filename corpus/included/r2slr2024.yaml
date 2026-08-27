@@ -1,11 +1,11 @@
 reference_key: r2slr2024
-bib: (verify authors) - Vulnerabilities to Remediation SLR
+bib: Basic and Giaretta - Vulnerabilities to Remediation SLR
 url: https://arxiv.org/abs/2412.15004
 ver: local PDF
 year: 2024
 venue: arXiv SLR
 problem: LLM detection+fix mapping
-result: cutoff late-2024 [PENDING-CLOSEREAD]
+result: review covers LLM code-security detection, fixing, prompting, and data-poisoning questions
 autonomy: meta
 loop: B1/B3
 artifacts: 0

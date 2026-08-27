@@ -46,10 +46,9 @@ fetch_method: opencode webfetch; archive: this file
 9. Timing: activity detected mid-September 2025; ten-day investigation; accounts banned;
    authorities coordinated.
 
-## TO-VERIFY / notes
-- Campaign designation "GTG-1002" does NOT appear on this summary page; it names the campaign in
-  the full technical report (linked from page). Verify against report PDF before using the
-  designation in the paper. [TO-VERIFY]
+## Verification update (2026-08-27)
+- Campaign designation "GTG-1002" is confirmed in the mapped full technical report
+  (`references/txt/anthropic-gtg1002-report-2025.txt`, opening section).
 - Date discrepancy guardrail: spec said "Nov 2025" — page confirms Nov 13, 2025 publication.
 
 ## Interpretation guardrails

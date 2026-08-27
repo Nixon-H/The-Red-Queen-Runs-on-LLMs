@@ -1,10 +1,10 @@
 reference_key: mcppoison2026
-bib: (verify authors) - MCP Threat Modeling & Tool Poisoning
+bib: Huang, Huang, Tran, and Milani Fard - MCP Threat Modeling and Tool Poisoning
 url: https://arxiv.org/abs/2603.22489
 ver: local PDF
 year: 2026
 venue: arXiv
-result: '[PENDING]'
+result: threat model and analysis of prompt-injection and tool-poisoning risks in MCP
 autonomy: infrastructure
 loop: cross-cutting
 artifacts: 2

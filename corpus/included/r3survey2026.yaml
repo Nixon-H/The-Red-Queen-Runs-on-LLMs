@@ -1,11 +1,11 @@
 reference_key: r3survey2026
-bib: (verify authors) - Survey LLM-Driven Pentest
+bib: He, Dong, Li, Chen, Deng, Luo, Ji, Cao, and Luo - Survey LLM-Driven Pentest
 url: https://arxiv.org/abs/2607.02605
 ver: local PDF
 year: 2026
 venue: arXiv survey
 problem: 81-paper pentest taxonomy; co-evolution=pentest-internal only
-result: '[verify exclusions at PHASE 9]'
+result: 'Systematic analysis of 81 papers; six-category taxonomy and three linked open challenges (evaluation reliability, multi-stage performance, and training-data scarcity)'
 autonomy: meta
 loop: pentest B1/B2
 artifacts: 0
@@ -20,5 +20,5 @@ scope_class: survey
 access_status: oa-pdf
 autonomy_note: meta row R3
 classification_evidence: survey meta-row R3
-temporal_scope: in-window
+temporal_scope: out-of-window
 unit_type: survey

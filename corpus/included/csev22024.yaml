@@ -15,7 +15,7 @@ human: none
 benchmark: CSEv2 batteries
 metric: refusal/helpfulness rates
 baseline: v1 deltas
-result: '[PENDING-CLOSEREAD]; Naptime used CSEv2 SOTA bump as evidence (PZ post)'
+result: benchmark adds prompt-injection and code-interpreter-abuse areas; Naptime used its security results as contextual evidence
 artifacts: 2
 repro: 2
 base: 2

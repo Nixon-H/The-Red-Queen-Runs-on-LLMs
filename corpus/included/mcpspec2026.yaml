@@ -1,10 +1,10 @@
 reference_key: mcpspec2026
-bib: '(verify authors) - Breaking the Protocol: MCP Spec Security Analysis'
+bib: "Maloyan and Namiot - Breaking the Protocol: MCP Specification Security Analysis"
 url: https://arxiv.org/abs/2601.17549
 ver: local PDF
 year: 2026
 venue: arXiv
-result: '[PENDING]'
+result: protocol-level security analysis of MCP specification and prompt-injection vulnerabilities
 autonomy: infrastructure
 loop: cross-cutting
 artifacts: 2

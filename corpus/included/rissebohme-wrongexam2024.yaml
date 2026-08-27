@@ -4,7 +4,7 @@ ver: local PDF
 year: 2024
 venue: arXiv
 problem: methodological critique of ML vuln-detection benchmarking
-result: '[PENDING-CLOSEREAD]'
+result: contextual and temporal flaws make common function-level vulnerability labels unreliable
 autonomy_level: n-a
 loop_position: n-a
 scope_class: methodological-paper

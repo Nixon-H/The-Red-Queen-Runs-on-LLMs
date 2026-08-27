@@ -11,7 +11,7 @@ loop: B1
 benchmark: PrimeVul vs BigVul/DiverseVul
 metric: F1 drop; paired eval
 baseline: CodeBERT/UniXcoder/GPT-class
-result: prior-set inflation documented; paired eval defeats SOTA [exact numbers PENDING]
+result: state-of-the-art 7B model falls from 68.26% F1 on BigVul to 3.09% on PrimeVul paired evaluation
 artifacts: 3
 repro: 3
 base: 3

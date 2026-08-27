@@ -1,10 +1,10 @@
-bib: Yang et al.(verify) - SWE-agent
+bib: Yang, Jimenez, Wettig, Lieret, Yao, Narasimhan, and Press - SWE-agent
 url: https://arxiv.org/abs/2405.15793
 ver: local PDF
 year: 2024
-venue: arXiv (NeurIPS'24 D&B verify)
+venue: NeurIPS 2024 Datasets and Benchmarks (arXiv v3)
 problem: agent-computer interfaces for automated SE incl. issue resolution
-result: '[PENDING-CLOSEREAD]'
+result: agent-computer interface enables tool-using software-engineering issue resolution
 autonomy_level: A2
 loop_position: B3
 scope_class: paper
@@ -20,4 +20,4 @@ reference_key: sweagent2024
 classification_evidence: agent-computer interface loop; model chooses file/editor actions to resolve issues; general-SE
   not vuln-specific
 temporal_scope: in-window
-unit_type: system(experiment-benchmark)
+unit_type: system

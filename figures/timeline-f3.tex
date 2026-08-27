@@ -9,8 +9,9 @@
   mis/.style={dot,violet!80!black,diamond,inner sep=1.1pt}, gov/.style={dot,green!50!black,shape=regular polygon,regular polygon sides=3,inner sep=1.1pt},
   scale=1.0,transform shape]
 \draw[->,thick] (-0.4,0) -- (15.6,0);
-\foreach \x/\lab in {1.2/{2023-08},4.0/{2024-08},5.6/{2024-10..11},7.6/{2025-05..06},
-                     9.4/{2025-07..08},11.6/{2025-09..11},13.4/{2026-02..05}} {
+% Slash-separated labels denote discrete event months, not continuous intervals.
+\foreach \x/\lab in {1.2/{2023-08},4.0/{2024-08},5.6/{2024-11},7.6/{2025-05/06},
+                     9.4/{2025-07/08},11.6/{2025-09/11},13.4/{2026-02/05}} {
   \node[ev,below] at (\x,-0.12) {\lab}; \node[dot,gray] at (\x,0) {};}
 % above-axis events
 \node[ev,anchor=south] at (1.2,0.55) {AIxCC announced\\ \$29.5M program};

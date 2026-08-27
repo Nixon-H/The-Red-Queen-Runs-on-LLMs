@@ -1,10 +1,10 @@
 reference_key: mcpgov2025
-bib: '(verify authors) - Securing MCP: Risks Controls Governance'
+bib: "Errico, Ngiam, and Sojan - Securing MCP: Risks, Controls, and Governance"
 url: https://arxiv.org/abs/2511.20920
 ver: local PDF
 year: 2025
 venue: arXiv
-result: '[PENDING]'
+result: governance-oriented analysis of MCP risks, controls, and deployment practices
 autonomy: infrastructure
 loop: cross-cutting
 artifacts: 2

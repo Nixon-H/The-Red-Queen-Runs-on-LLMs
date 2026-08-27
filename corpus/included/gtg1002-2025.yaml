@@ -21,7 +21,7 @@ temporal: ''
 oracle: n/a incident report
 claimed_vs: CLAIMED-vendor (no independent verification)
 eclass: incident report
-limits: GTG-1002 designation lives in full PDF [TO-VERIFY]
+limits: designation verified in the full technical report; vendor-only incident evidence and hallucination caveat remain
 autonomy_level: uncertain
 loop_position: B1+B2
 scope_class: incident-report

@@ -25,4 +25,4 @@ reference_key: tob-buttercup2025
 classification_evidence: fully automated find->PoV->patch during scored round; human interaction prohibited; challenge-bounded
   environment -> A2 under four-verb test (fails production-environment condition)
 temporal_scope: in-window
-unit_type: system(participant-account)
+unit_type: system

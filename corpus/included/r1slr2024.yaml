@@ -1,11 +1,11 @@
 reference_key: r1slr2024
-bib: (verify authors) - When LLMs Meet Cybersecurity SLR
+bib: Zhang, Bu, Wen, Liu, Fei, Xi, Li, Yang, Zhu, and Meng - When LLMs Meet Cybersecurity SLR
 url: https://arxiv.org/abs/2405.03644
 ver: local PDF
 year: 2024
 venue: arXiv SLR
 problem: map LLM x cybersec literature
-result: 300+ works thru Aug-2024; no agentic era [PENDING-CLOSEREAD]
+result: review maps more than 300 LLM-by-cybersecurity works through August 2024 and predates the later agentic turn
 autonomy: meta
 loop: meta B1-B3
 artifacts: 0

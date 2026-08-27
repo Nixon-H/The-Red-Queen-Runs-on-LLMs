@@ -1,8 +1,8 @@
 # Release Manifest: SoK Co-Evolution Paper
 
 **Release Date:** 2026-08-27
-**Release Version:** 1.3 (Forensic audit round 3 complete)
-**Status:** Ready for submission pending final author review
+**Release Version:** Forensic audit rebuild (2026-08-27)
+**Status:** Audit artifacts complete; final author review remains required
 
 ---
 
@@ -13,12 +13,12 @@
 - **Bibliography:** BibTeX
 - **Build sequence:** pdflatex → bibtex → pdflatex → pdflatex
 - **Build errors:** 0
-- **Build warnings:** 2 overfull vbox, several underfull hbox (cosmetic only)
+- **Build warnings:** 2 overfull vbox and several underfull hbox warnings; rendered PDF inspected with no visible clipping or overlap
 
 ### PDF Metadata
-- **Page count:** 17 pages
-- **File size:** 261,742 bytes
-- **Build hash:** 8c622ef (git commit)
+- **Page count:** 18 pages
+- **File size:** 276,166 bytes
+- **Build hash:** 2eacec16192b1d2f33238180c11d805526367a5c (baseline HEAD; audit changes remain uncommitted)
 - **Build status:** Successful; BibTeX zero errors, no fatal compilation errors
 
 ---
@@ -28,11 +28,11 @@
 ### Core Files
 | File | SHA-256 Hash |
 |------|--------------|
-| main.tex | 811087c66ad92a68d76a1c64f0d9727e3f3b811e083cf579fb90c6e1812726c7 |
-| refs.bib | 55016c28e5da04652ec1d0a233f6f33506db0710b04f0c522240b66e732a5bda |
-| main.pdf | e6579a3c973f91b667dce6ed34366110113ce2fac050746f03ef223194197a8f |
-| evidence/autonomy-loop-assignments.csv | e95da24dfd24d6ec8d90e5e40a51bb42fb4d849c89a169b5e60d7deb535e7259 |
-| references/manifest.csv | f11efc1e50d2b0733eadc631ea84304a46b799d7852fc192817ccbf6dec42bae |
+| main.tex | b90fa819989a4a24ad8abf0ee712872fd69fca7382cc25d67403b443b2a5a308 |
+| refs.bib | 2f1b0f6835547bb5c4157e16d54e1a1f22efba37ae5ff9a8cf19da92310e484f |
+| main.pdf | 162db28b9157bf04ac036f7164de157872c1273b10cf182c9a2d10711e7c18bb |
+| evidence/autonomy-loop-assignments.csv | 1a8eead4ccc70e8560d6acc609630f1259d6713f36bb0015193eab4c0064b547 |
+| references/manifest.csv | 20be0e96379d9d53548b0aa8cd98adcafa5f62629e52ce82ce124fc21feaa763 |
 
 ### Verification Command
 ```bash
@@ -44,8 +44,9 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 ## 3. Reconciliation State
 
 ### Cross-Artifact Consistency (Verified 2026-08-27)
-- **Bibliography:** 49 entries, all 49 cited, 0 uncited, 0 missing
-- **Manifest:** 49 bib_key values, matches bibliography exactly
+- **Bibliography:** 50 entries, all 50 cited, 0 uncited, 0 missing
+- **Manifest:** 50 bib_key values, matches bibliography exactly
+- **Source map:** 50 source-layer entries; roles are 45 included-record, 3 background-anchor, and 2 loop-transition entries
 - **CSV:** 36 records
 - **YAML:** 36 records (CSV = YAML)
 - **Table II:** 36 records (CSV = T2)
@@ -87,16 +88,16 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 6. **Manifest reconciliation** ✓
    - 19 missing entries added to manifest.csv
    - 4 obsolete keys removed
-   - Final: 49 manifest entries = 49 bib entries
+   - Final: 50 manifest entries = 50 bib entries
 
 ---
 
 ## 4. Files Included in Release
 
 ### Core LaTeX Files
-- `main.tex` — Primary source (~1276 lines)
-- `refs.bib` — Bibliography (49 entries)
-- `main.pdf` — Compiled output (17 pages)
+- `main.tex` — Primary source (1314 lines)
+- `refs.bib` — Bibliography (50 entries)
+- `main.pdf` — Compiled output (18 pages)
 
 ### Evidence Files
 - `evidence/autonomy-loop-assignments.csv` — Classification source of truth (36 records)
@@ -108,11 +109,18 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 - `corpus/included/` — 36 YAML files (one per record)
 
 ### References
-- `references/manifest.csv` — Reference tracking (49 entries)
+- `references/manifest.csv` — Reference tracking (50 entries)
 - `references/pdf/` — 37 PDFs
 - `references/txt/` — 49 text files
 
 ### Audit Files
+- `FORENSIC_AUDIT_FINAL.md` — Final forensic audit report
+- `FINAL_FIX_SUMMARY.md` — Resolved and residual issue summary
+- `CLAIM_EVIDENCE_MATRIX.csv` — Claim-level support classifications
+- `REFERENCE_INVENTORY.csv` — Citation/source inventory
+- `NUMERIC_FACT_AUDIT.csv` — Numerical claim audit
+- `CONTRADICTION_MATRIX.md` — Cross-artifact and source discrepancies
+- `audits/2026-08-27-forensic-audit.md` — Dated audit-trail entry
 - `CORRECTED_AUDIT_REPORT.md` — Corrected forensic audit
 - `CLAIM_LEDGER.md` — Claim-level audit framework
 - `CITATION_VERIFICATION_S1_S3.md` — §1-§3 verification
@@ -188,20 +196,20 @@ PYEOF
 - [x] E1/E2 boundary justified
 - [x] Manifest-to-bibliography reconciliation proven
 - [x] Cross-artifact set equality verified (CSV=YAML=T2=T4)
-- [x] PDF compiles cleanly (0 errors)
+- [x] PDF compiles cleanly (0 errors; nonfatal layout warnings remain)
 - [x] SHA-256 hashes generated
 - [x] GTG-1002 qualified as single-source vendor assessment
 - [x] "Twelve-fold" replaced with "more than an order of magnitude"
 - [x] "4–6 human checkpoints" removed (not in primary source)
 - [ ] Final review by authors
-- [ ] Visual PDF QA (figure overflow, caption placement)
+- [x] Visual PDF QA (representative pages rendered and inspected)
 
 ### Status
 **The manuscript has completed three rounds of forensic audit. All critical bibliographic, methodological, and claim-level issues have been addressed. The paper is ready for final author review.**
 
 ---
 
-*Manifest generated: 2026-08-26*
+*Manifest generated: 2026-08-27*
 *Last updated: 2026-08-27*
-*Git commit: 8c622ef*
-*Status: Release ready for final author review*
+*Baseline Git commit: 2eacec16192b1d2f33238180c11d805526367a5c*
+*Status: Audit rebuild ready for final author review; working tree contains uncommitted audit changes*

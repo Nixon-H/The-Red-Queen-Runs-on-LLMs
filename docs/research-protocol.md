@@ -111,7 +111,7 @@ never support load-bearing claims.
 
 ## AMENDMENTS v3 (2026-08-26, CP2 revision pass — reviewer 14-point correction)
 
-1. TEMPORAL SCOPE FIELD: every record carries temporal_scope = in-window | background.
+1. TEMPORAL SCOPE FIELD: every record carries temporal_scope = in-window | background | out-of-window.
    Primary A x B counts, migration percentages, and center-of-gravity claims use
    temporal_scope = in-window ONLY. Background anchors remain visible in a separate figure band.
 2. LOOP SET REPRESENTATION: Axis B remains strictly {B1,B2,B3,B4}. Multi-phase systems carry

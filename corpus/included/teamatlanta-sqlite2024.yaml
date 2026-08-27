@@ -23,4 +23,4 @@ reference_key: teamatlanta-sqlite2024
 classification_evidence: Atlantis autonomously identified+patched real ASC bug (~15min cycle); UNSCORED side-effect;
   challenge-bounded
 temporal_scope: in-window
-unit_type: system(participant-account)
+unit_type: system

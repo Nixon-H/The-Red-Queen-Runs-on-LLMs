@@ -17,7 +17,7 @@ human: none in-loop
 benchmark: 15 one-day CVE set
 metric: '% fully exploited'
 baseline: GPT-3.5/OSS/ZAP/Metasploit all 0%
-result: 87% WITH description vs 7% WITHOUT [locators pending PHASE-8 close-read]
+result: 87% WITH description vs 7% WITHOUT; baseline systems scored zero in both conditions
 artifacts: 3
 repro: 2
 base: 3

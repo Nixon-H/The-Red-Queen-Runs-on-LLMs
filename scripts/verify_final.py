@@ -116,21 +116,29 @@ def check_manifest():
         bib_content = f.read()
     bib_keys = set(re.findall(r'@\w+\{([^,]+),', bib_content))
 
-    # Parse manifest
+    # Parse manifest and reject malformed rows before comparing keys.
     manifest_bib = set()
-    with open('references/manifest.csv') as f:
-        for row in csv.DictReader(f):
-            if row.get('bib_key'):
-                manifest_bib.add(row['bib_key'])
+    malformed = []
+    with open('references/manifest.csv', newline='') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        for line_no, row in enumerate(reader, 2):
+            if len(row) != len(header):
+                malformed.append((line_no, len(row)))
+                continue
+            record = dict(zip(header, row))
+            if record.get('bib_key'):
+                manifest_bib.add(record['bib_key'])
 
     missing = bib_keys - manifest_bib
     extra = manifest_bib - bib_keys
 
     print(f"   Manifest entries: {len(manifest_bib)}")
+    print(f"   Malformed rows: {malformed if malformed else 'NONE'}")
     print(f"   BIB - MANIFEST: {sorted(missing) if missing else 'NONE'}")
     print(f"   MANIFEST - BIB: {sorted(extra) if extra else 'NONE'}")
 
-    return len(missing) == 0 and len(extra) == 0
+    return len(missing) == 0 and len(extra) == 0 and not malformed
 
 
 def check_record_sets():
@@ -206,7 +214,9 @@ def check_build():
     print(f"   Pages: {pages}")
     print(f"   Size: {size} bytes")
 
-    return int(pages) == 17
+    # The current two-column audit build is 18 pages; treat unexpected drift as
+    # a review trigger rather than silently accepting a stale release baseline.
+    return int(pages) == 18
 
 
 def check_hashes():

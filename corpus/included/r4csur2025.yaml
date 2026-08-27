@@ -2,8 +2,8 @@ reference_key: r4csur2025
 bib: Sheng et al. - CSUR 58(134) LLMs software security survey
 url: https://dl.acm.org/doi/10.1145/3769082
 ver: metadata via DL listing+citing refs [PAYWALLED]
-year: 2025
-venue: ACM Computing Surveys Vol58 Art134
+year: 2026
+venue: ACM Computing Surveys Vol58 No5 Art134
 result: detection-centric; R4 differentiation row
 autonomy: meta
 loop: B1
@@ -12,7 +12,7 @@ repro: 0
 base: 0
 claimed_vs: SECONDARY-metadata
 eclass: survey(restricted)
-limits: issue number TO-VERIFY
+limits: full text unavailable; metadata verified from DOI/index records
 autonomy_level: n-a
 loop_position: n-a
 scope_class: survey

@@ -18,7 +18,7 @@ reference_key: ossfuzz-levelingup-2024
 classification_evidence: LLM executes FIXED workflow steps 1-4 incl crash triage; step-5 fixing explicitly future;
   agents=roadmap => pipeline-orchestrated
 temporal_scope: in-window
-unit_type: system(pipeline)
+unit_type: system
 repro: 1
 base: 1
 artifacts: 2

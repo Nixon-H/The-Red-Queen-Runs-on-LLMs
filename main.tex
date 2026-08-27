@@ -30,8 +30,8 @@ documented behavior under the rule that claims are graded by their weakest missi
 and the offense/defense loop positions B1--B4. Fourteen in-window records underwent autonomy
 assessment: pipeline automation (A1) already operates at ecosystem scale; task agents (A2)
 appear in seeded production research, entry-point-assisted auditing, black-box platform
-operation, and the DARPA AI Cyber Challenge's fully autonomous scored rounds; no included
-evidence meets our operational definition of A3. We further grade offense$\leftrightarrow$
+operation, and the DARPA AI Cyber Challenge's fully autonomous scored rounds. No included
+evidence met our operational definition of A3. We further grade offense$\leftrightarrow$
 defense coupling, documenting an explicit cross-program edge (Project Zero's SQLite campaign
 citing AIxCC as inspiration) while declining field-wide causal claims, and we systematize
 evaluation validity as a measured methodological constraint: information conditions change reported exploitation
@@ -99,8 +99,7 @@ claim to know --- pending the decision-impact audit (E7) that would confirm or r
 \subsection{Scope}
 We cover January 2024--June 2026, with pre-2024 work as background only. We classify
 \emph{documented behavior}, not marketing; we distinguish vendor-reported from independently
-verified results everywhere; and we found it necessary to state plainly that no included
-evidence met our operational definition of an autonomous production hunter (A3). We include
+verified results everywhere. No included evidence met our operational definition of A3. We include
 Agentless~\cite{agentless2024} only as a security-relevant repair baseline where its fixed
 three-stage architecture---localization, repair, and validation---is directly compared with
 agentic vulnerability repair systems; it is classified as A1 because its workflow follows a
@@ -155,7 +154,7 @@ Work & Window-end & Offense & Defense & Loop & Comp./industr. & Contamination\\
 R1 \cite{r1slr2024}        & Aug'24 & P & C & A & A & P\\
 R2 \cite{r2slr2024} & Dec'24 & A & C & A & A & P\\
 R3 \cite{r3survey2026}  & Jul'26$^{\dagger}$ & C & P & P (intra-pentest) & A & A\\
-R4 \cite{r4csur2025}        & '25    & A & C & A & A & A\\
+R4 \cite{r4csur2025}        & '26    & A & C & A & A & A\\
 R5 \cite{r5usenix26agentic}    & '26    & P & P & A & P & A\\
 R6 \cite{r6tosem2026}         & Nov'25 & A & C & A & P (repo) & P\\
 R7 \cite{r7sokaixcc2026}       & Aug'26 & C & C & P & C & A\\
@@ -238,16 +237,18 @@ taxonomy.
 
 \subsection{Limitations}
 First-page screening caps per query, publisher-API absence, and English-language sources are
- documented limitations; the A3-negative finding remains robust within the documented corpus under the sensitivity scenarios reported in Sec.~\ref{sec:framework}, but cannot exclude undocumented systems outside the observable evidence base.
- Classification reliability: all 36 records were classified by the first author using the
- autonomy$\times$loop taxonomy (Sec.~\ref{sec:framework}). To assess reproducibility, we
+ documented limitations; the bounded A3 finding remains robust within the documented corpus under the sensitivity scenarios reported in Sec.~\ref{sec:framework}, but cannot exclude undocumented systems outside the observable evidence base.
+ Classification reliability: all 36 records were coded for unit type, temporal scope, access,
+ evidence, and loop role; the autonomy$\times$loop taxonomy (Sec.~\ref{sec:framework}) was
+ assigned to the 14 autonomy-assessed records. To assess reproducibility, we
  repeated the classification procedure for all 14 autonomy-assessed records, with six boundary
  cases (GTG-1002, XBOW, ARTEMIS, Big Sleep, Argusee, AIxCC cluster) receiving additional
  blinded review during initial coding and a blind re-coding pass. The two passes yielded consistent
  classifications, although intermediate uncertainty was concentrated on environment-class
- boundaries (E1 vs.\ E2) and the unresolved classification of GTG-1002, which the
- weakest-missing-condition rule (Sec.~\ref{sec:framework}) resolved without changing any
- record's autonomy level. We report this as evidence that the taxonomy produces stable
+ boundaries (E1 vs.\ E2); GTG-1002 remains unresolved because the available incident
+ documentation is insufficient to assign a definitive autonomy level. The
+ weakest-missing-condition rule preserved that uncertainty and did not change any
+ assigned record's autonomy level. We report this as evidence that the taxonomy produces stable
  classifications when applied by the same coder; a formal inter-rater reliability study with
  independent domain-expert coders remains future work. Additional methodological constraints include:
 (i)~our autonomy classification requires judgment at boundary cases, which we bound with the
@@ -300,7 +301,8 @@ coverage, not inferred sequencing.
 Figure~\ref{fig:abmap} places the in-window corpus; Table~\ref{tab:abmatrix} lists all 36
 records individually. The A2 row is populated across all three loop phases; the A3 row is
 empty under the operational definition; B4 exists only as loop-transition documentation tied to
-documented systems. Counts are computed programmatically from per-record YAML evidence files.
+ documented systems. Counts are reconciled against the per-record YAML evidence files and the
+ assignment CSV; the table is a frozen audit view rather than a generated data product.
 
 \input{figures/autonomy-loop-map}
 
@@ -316,15 +318,15 @@ migrated is where humans sit (boundaries: seeds, entry points, review, reporting
 scored. The 2026 record adds consolidation --- four systematizations, an infrastructure-risk
 cluster around agent tool protocols, and the first institutionalized B4 documentation.
 
-\textbf{A3 robustness.} Under the paper's strict operational definition, no included system
-qualifies as A3. This finding is robust to reasonable alternative interpretations: relaxing
-the human-review rule (S1), relaxing the target-selection rule (S2), relaxing the environment
-requirement (S3), and combining all relaxations (S4) each leave the A3 count at zero. The
-no-human-interaction corollary ensures that systems with human review in their reporting
-pipeline (e.g., XBOW) remain non-A3 even when the human-review condition is relaxed. The
-weakest-missing-condition rule ensures that every A2 system fails at least one required condition
---- typically human-curated seeds, entry points, or pre-submission review --- preventing any
-system from qualifying as A3 merely by headline claims.
+\textbf{A3 robustness.} No included evidence met our operational definition of A3. The sensitivity analysis makes the counterfactuals explicit: with independent
+planning/target selection ($P$), execution ($X$), validation ($V$), reporting ($R$), and an E2
+target ($E$), the baseline predicate is $P\land X\land V\land R\land E$. Relaxing $R$ alone
+admits XBOW, while relaxing $P$ or $E$ alone admits none; relaxing $P$, $R$, and $E$ together
+admits XBOW and the AIxCC CRS cluster under that altered rule. These are counterfactual
+qualifiers, not A3 findings, and the core conclusion remains bounded to the strict definition.
+The weakest-missing-condition rule prevents a system from qualifying under the strict rule merely
+because of a headline autonomy claim; the remaining blockers are documented per candidate in
+Appendix~\ref{app:sensitivity}.
 
 % tables/autonomy-loop-matrix.tex — v4 (CP4 blocker fix): body REGENERATED from the frozen
 % CP2-lock schema (14 autonomy-assessed / 2 background / 2 loop-transition-doc / 18 context).
@@ -358,7 +360,7 @@ r7-CRS-cluster recs:     &      &    &           &              \\
 \quad tob-buttercup2025  & 2025 & in & A2        & $\{B1{+}B2{+}B3\}$ \\
 \quad teamatlanta-sqlite2024 & 2024 & in & A2    & $\{B1{+}B2{+}B3\}$ \\
 \quad teamatlanta-afc2025    & 2025 & in & A2    & $\{B1{+}B2{+}B3\}$ \\
-gtg1002-2025             & 2025 & in & unresolved & $\{B1{+}B2\}$ \\
+gtg1002-2025             & 2025 & in & uncertain & $\{B1{+}B2\}$ \\
 ossfuzz-levelingup-2024  & 2024 & in & A1        & $\{B1\}$ \\
 agentless2024            & 2024 & in & A1        & $\{B3\}$ \\
 \hline
@@ -384,14 +386,14 @@ mcppoison2026            & 2026 & in & n/a & MCP tool poisoning \\
 nvdcve20256965           & 2025 & in & n/a & registry record (CVE-2025-6965) \\
 r1slr2024 (R1)       & 2024 & in & n/a & survey (SLR) \\
 r2slr2024 (R2) & 2024 & in & n/a & survey (SLR) \\
-r4csur2025 (R4)       & 2025 & in & n/a & survey (paywalled; metadata) \\
+r4csur2025 (R4)       & 2026 & in & n/a & survey (paywalled; metadata) \\
 r5usenix26agentic (R5)   & 2026 & in & n/a & survey (agentic-AI security) \\
 r6tosem2026 (R6)        & 2026 & in & n/a & survey (263 studies; repo open) \\
 r7sokaixcc2026 (R7)      & 2026 & in & n/a & survey(systematization); documents Atlantis, Buttercup,\\
                          &      &    &     & Theori-SRS, RoboDuck, FuzzingBrain, Lacrosse, Shellphish \\
 r3survey2026 (R3) & 2026 & OUT& n/a & survey comparator (out-of-window) \\
 \hline
-\multicolumn{5}{l}{\scriptsize Totals: 14 autonomy-assessed ($A1{\times}2$, $A2{\times}11$, unresolved${\times}1$, $A3{=}0$)
+\multicolumn{5}{l}{\scriptsize Totals: 14 autonomy-assessed ($A1{\times}2$, $A2{\times}11$, uncertain${\times}1$)
 $+$ 2 background $+$ 2 loop-transition $+$ 18 context $=$ 36 records.}\\
 \end{tabular}
 }
@@ -464,8 +466,9 @@ HackerOne's policy on automated tools''~\cite{xbowtop12025} --- independent repo
 so XBOW is A2 regardless of marketing language.
 
 \subsection{A2 Under Experiment: Production Networks}
-The ARTEMIS study (arXiv preprint December 2025) places six agent instances against ten
-professionals on the same corporate-style network (${\sim}8{,}000$ hosts, 12 subnets), scoring the
+The ARTEMIS study was first posted as an arXiv preprint in December 2025; the local evidence
+copy is v2 dated March 2026. It places six agent instances against ten professionals on the same
+large research-university enterprise network (${\sim}8{,}000$ hosts, 12 subnets), scoring the
 first ten hours of sixteen-hour runs~\cite{artemis2025}. We use it as environment-class E2
 evidence that agents can operate on realistic infrastructure; comparative performance figures
 are treated separately because the study's evaluation design does not isolate general agent
@@ -527,7 +530,7 @@ modes of agentic exploitation.
 
 \subsection{Design and Incentives}
 Announced in 2023 with ARPA-H participation and support from Anthropic, Google, Microsoft, and
-OpenAI, the challenge funneled 42 accepted semifinal teams down to seven finalists, each
+OpenAI, the challenge funneled 42 semifinal entrants down to seven finalists, each
 receiving \$2M to harden a Cyber Reasoning System (CRS) for a final round ``set up to mimic a
 real world CI/CD pipeline''~\cite{openssfaixcc2026}. Scoring rewarded finding vulnerabilities,
 proving them via PoVs, and applying correct patches, with speed and accuracy modifiers;
@@ -535,13 +538,18 @@ proving them via PoVs, and applying correct patches, with speed and accuracy mod
 Two incentive details matter for interpretation. Patching was worth three times discovery
 (6 vs.\ 2 points), making B3 capability the rational investment~\cite{taasc2024}; and accuracy
 modifiers penalized incorrect patches quadratically --- Team Atlanta reports its PoV-validated
-91.27\% patch accuracy yielding a modifier of $1-(1-0.9127)^4=0.9999$ against Theori's
-PoV-free $44.4\%$ yielding $0.9044$~\cite{taafc2025}. The scoring mathematics thus priced
+91.27\% patch accuracy yielding a modifier of $1-(1-0.9127)^4=0.9999$ and reports Theori's
+PoV-free $44.4\%$ as $0.9044$~\cite{taafc2025}. Applying the displayed formula independently
+to $0.4444$ gives $0.9047$, so we preserve $0.9044$ only as a source-reported value. The
+scoring mathematics thus priced
 patch-quality adjudication directly into strategy.
 
 \subsection{What the Final Round Measured}
-Participant reporting describes the scored structure as 48 challenges across 23 open-source
-repositories in the final round~\cite{tobbuttercup2025}, operated over what the
+Trail of Bits describes the scored structure as 48 challenges across 23 open-source
+repositories in the final round~\cite{tobbuttercup2025}; the R7 systematization instead counts
+48 scored challenge projects drawn from 24 OSS-Fuzz repositories~\cite{r7sokaixcc2026}. This is
+a source-level discrepancy in the repository denominator, not a reason to merge the counts. The
+final round operated over what the
 systematization records as ``143 hours of fully autonomous operation'' by CRSs from
 all seven finalist teams~\cite{r7sokaixcc2026}. Crucially, the CRSs also surfaced real,
 non-synthetic vulnerabilities --- Team Atlanta reports six C/C++ and twelve Java bugs found
@@ -551,8 +559,8 @@ had \emph{not} been inserted into any challenge~\cite{tobbuttercup2025}. Real-bu
 not score --- Team Atlanta footnotes that their autonomous find-and-patch of a real SQLite bug
 during semifinals earned nothing competitively~\cite{taasc2024} --- yet it is precisely this
 unscored spillover that connects the competition to the production ecosystem. DARPA's official
-closeout reports the remaining aggregates: competitors' systems discovered 54 of 63 synthetic
-vulnerabilities (86\%) and patched 43 (68\%), alongside 11 patches for the real
+closeout reports the remaining aggregates: competitors' systems discovered 54 unique synthetic
+vulnerabilities across 63 final challenges (86\%) and patched 43 (68\%), alongside 11 patches for the real
 vulnerabilities~\cite{darparesults2025}; DARPA's scoring guide separately confirms both the
 three-to-one patching incentive and the \$8.5M final prize pool~\cite{darpascoring2025}. The
 closeout also carries an editor's note correcting its own earlier count of 70 synthetic
@@ -643,7 +651,8 @@ What AIxCC can and cannot establish follows directly. It demonstrates integrated
 
 $\{B1,B2,B3\}$ operation with execution autonomy under active prohibition of human input ---
 
-the strongest documented autonomy evidence in our corpus. It cannot certify A3: challenges
+the strongest documented autonomy evidence in our corpus. It does not satisfy the paper's A3
+predicate: challenges
 
 are forked repositories carrying inserted bugs (environment class E1, not E2), real-bug
 
@@ -993,7 +1002,7 @@ which are precisely the ones that travel furthest.
 \textbf{Publication and visibility bias.} Our industrial stream consists of organizations that
 \emph{publish}: Google, Anthropic, XBOW, DARKNAVY, OpenSSF. Systems that operate silently ---
 commercial pentesting vendors, state programs, internal red teams --- are structurally
-invisible, so our A3-empty finding is a statement about documented evidence, not about private
+invisible, so the bounded A3 finding is a statement about documented evidence, not about private
 capability. Proprietary disclosure is incomplete even where marketing is not.
 
 \textbf{Survivor and selection bias.} Vendors report successes; failed autonomous deployments
@@ -1133,8 +1142,7 @@ pipeline automation (A1) runs at ecosystem scale with humans at review boundarie
 (A2) appear across seeded production research, entry-point-assisted auditing, platform-operated
 pentesting, and competition CRSs integrating discovery, proof, and patching. What the record
 does not contain --- under our four-verb, environment-E2 operational definition --- is a single
-A3 autonomous production hunter. We state the finding only as: no included evidence met our
-operational definition of A3. The nearest candidate is an offensive incident,
+A3 autonomous production hunter. No included evidence met our operational definition of A3. The nearest candidate is an offensive incident,
 vendor-reported with hallucination caveats and human-selected targets.
 
 \textbf{On I2 (documented edges; causality bounded).} Offense and defense are coupled where the
@@ -1222,7 +1230,7 @@ primevul2024 & 2024 & dataset & n/a & n/a — B1 detection (dataset standard) & 
 r1slr2024 & 2024 & survey & n/a & n/a & survey & 1/1/0 & PDF\\
 r2slr2024 & 2024 & survey & n/a & n/a & survey & 1/1/0 & PDF\\
 r3survey2026 & 2026 & survey & n/a & n/a & survey & 1/2/0 & PDF\\
-r4csur2025 & 2025 & survey & n/a & n/a & survey & 0/0/0 & payw.\\
+r4csur2025 & 2026 & survey & n/a & n/a & survey & 0/0/0 & payw.\\
 r5usenix26agentic & 2026 & survey & n/a & n/a & survey & 0/0/0 & PDF\\
 r6tosem2026 & 2026 & survey & n/a & n/a & survey & 0/0/3 & payw.\\
 r7sokaixcc2026 & 2026 & survey(systematization) & n/a & n/a & competition & 2/3/2 & PDF\\
@@ -1264,7 +1272,7 @@ Date & Event (source) \\
 2025-05 & DARKNAVY Argusee finds CVE-2025-37891 (Linux USB); root LPE by human team~\cite{darknavyargusee2025}\\
 2025-06 & XBOW \#1 US HackerOne; ${\sim}$1060 submissions; mandated human review disclosed~\cite{xbowtop12025}\\
 2025-07 & CVE-2025-6965 threat-intel-seeded disclosure; ``first time an AI agent has been used to directly foil'' claim~\cite{bloggoogle2025,nvd6965}\\
-2025-08 & AFC finals: 48 challenges/23 repositories; 143 h fully autonomous operation; 18 real vulns found; Atlanta \$4M / ToB \$3M / Theori \$1.5M; \$200K/team transition funding~\cite{darparesults2025,tobbuttercup2025,taafc2025,darpascoring2025}\\
+2025-08 & AFC finals: 48 challenges/23 repositories in the Trail of Bits account (R7 counts 24 OSS-Fuzz repositories); 143 h fully autonomous operation; 18 real vulns found; Atlanta \$4M / ToB \$3M / Theori \$1.5M; \$200K/team transition funding~\cite{darparesults2025,tobbuttercup2025,taafc2025,darpascoring2025}\\
 2025-09 (detected), 2025-11 (reported) & Anthropic reports GTG-1002 campaign, 80--90\% autonomous execution~\cite{anthropicgtg2025,anthropicgtgreport2025}\\
 2026-02 & R7 AIxCC SoK preprint released; 2026-08 USENIX Security 26 publication; OpenSSF legacy retrospective: CRS SIG, FuzzingBrain 62v/26proj, OSS-CRS 25v/16proj~\cite{r7sokaixcc2026,openssfaixcc2026}\\
 \hline
@@ -1274,32 +1282,30 @@ Date & Event (source) \\
 % appendix-d.tex — A3 sensitivity analysis
 \section{A3 Sensitivity Analysis}
 \label{app:sensitivity}
-Table~\ref{tab:sensitivity} reports the A3 count under progressively relaxed classification
-rules. All scenarios yield zero qualifying systems under the paper's strict operational
-definition.
+Table~\ref{tab:sensitivity} reports counterfactual qualifying-system counts under explicitly
+relaxed predicates. These scenarios do not change the paper's strict operational definition or
+its bounded corpus finding.
 
 \begin{table*}[t]
 \centering
-\caption{A3 sensitivity analysis. A3 requires independent planning, execution, validation,
-and reporting in environment class E2 (Sec.~\ref{sec:framework}). The \emph{no-human-interaction
-corollary} requires that reporting be fully autonomous; this corollary is not relaxed in any
-scenario. Each row relaxes one condition while holding the others fixed.}
+\caption{Counterfactual sensitivity analysis. Let $P$ denote independent planning/target
+selection, $X$ execution, $V$ validation, $R$ reporting, and $E$ an E2 target environment
+(Sec.~\ref{sec:framework}); the strict predicate is $P\land X\land V\land R\land E$.
+S1--S3 relax exactly $R$, $P$, or $E$, respectively; S4 relaxes $P$, $R$, and $E$ together.
+$X$ and $V$ remain mandatory in every scenario. Counts are counterfactual qualifiers, not
+reassignments of the strict taxonomy.}
 \label{tab:sensitivity}
 \scriptsize
 \begin{tabular}{lllll}
 \hline
-Scenario & Condition relaxed & A3 & Closest candidate & Remaining blocker(s) \\
+Scenario & Condition relaxed & Qualifiers & Closest candidate & Remaining blocker(s) \\
 \hline
-S0 & None (baseline) & 0 & XBOW & XBOW: human review (reporting); AIxCC: targets + E1;
-ARTEMIS: human scope (planning); GTG-1002: unresolved \\
-S1 & Human review & 0 & XBOW & XBOW: corollary (human review in pipeline);
-AIxCC: targets + E1; ARTEMIS: human scope + review \\
-S2 & Target selection & 0 & AIxCC CRS & AIxCC: E1 environment; XBOW: corollary;
-ARTEMIS: human scope + review \\
-S3 & E2 environment & 0 & AIxCC CRS & AIxCC: human-selected targets; XBOW: corollary;
-ARTEMIS: human scope + review \\
-S4 & All combined & 0 & XBOW & XBOW: corollary; ARTEMIS: human scope + review;
-AIxCC: E1; GTG-1002: unresolved \\
+S0 & None (baseline) & 0 & XBOW & XBOW: $R$; AIxCC: $P,E$;
+ARTEMIS: $P,V$; GTG-1002: uncertain \\
+S1 & $R$ & 1 & XBOW & AIxCC: $P,E$; ARTEMIS: $P,V$; GTG-1002: uncertain \\
+S2 & $P$ & 0 & AIxCC CRS & AIxCC: $E$; XBOW: $R$; ARTEMIS: $V,R$ \\
+S3 & $E$ & 0 & AIxCC CRS & AIxCC: $P$; XBOW: $R$; ARTEMIS: $P,V$ \\
+S4 & $P,R,E$ & 2 & XBOW; AIxCC CRS & ARTEMIS: $V$; GTG-1002: uncertain \\
 \hline
 \end{tabular}
 \end{table*}

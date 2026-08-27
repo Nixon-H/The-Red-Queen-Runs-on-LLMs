@@ -23,4 +23,4 @@ limits: ''
 reference_key: teamatlanta-afc2025
 classification_evidence: ensemble CRSs; PoV-rerun patch oracle; validation bottleneck capped agents at 6; challenge-bounded
 temporal_scope: in-window
-unit_type: system(participant-account)
+unit_type: system
