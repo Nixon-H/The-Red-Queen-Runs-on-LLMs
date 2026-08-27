@@ -30,7 +30,7 @@
 |------|--------------|
 | main.tex | 54cab114610bc42a80b2142dc9a8cddda82b4fa6850b7fddf514d3881708eddc |
 | refs.bib | 2f1b0f6835547bb5c4157e16d54e1a1f22efba37ae5ff9a8cf19da92310e484f |
-| main.pdf | 72f6d29a3605d4ab34ac818f77560b1c34458251da97efd08733f023ca17039c |
+| main.pdf | 1c781d2987e0dfe1a69bb101292193f8b100811e9643bfd1072776f1b56a1ce3 |
 | evidence/autonomy-loop-assignments.csv | 1a8eead4ccc70e8560d6acc609630f1259d6713f36bb0015193eab4c0064b547 |
 | references/manifest.csv | 05ff31192de6cf669fdfea2ef15945fb37f18d97c47657931fee862b6565a5bf |
 
@@ -105,9 +105,9 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 
 ### Evidence Files
 - `evidence/autonomy-loop-assignments.csv` — Classification source of truth (36 records)
-- `evidence/i1-analysis.md` — I1 claim analysis
-- `evidence/i2-analysis.md` — I2 claim analysis
-- `evidence/i3-analysis.md` — I3 claim analysis
+- `evidence/i1-analysis.md` — I1 claim analysis (archived)
+- `evidence/i2-analysis.md` — I2 claim analysis (archived)
+- `evidence/i3-analysis.md` — I3 claim analysis (archived)
 
 ### Corpus
 - `corpus/included/` — 36 YAML files (one per record)
@@ -125,17 +125,10 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 - `NUMERIC_FACT_AUDIT.csv` — Numerical claim audit
 - `CONTRADICTION_MATRIX.md` — Cross-artifact and source discrepancies
 - `audits/2026-08-27-forensic-audit.md` — Dated audit-trail entry
-- `CITATION_VERIFICATION_S1_S3.md` — §1-§3 verification
-- `CLAIM_VERIFICATION_S4_S9.md` — §4-§9 verification
-- `A3_SENSITIVITY_ANALYSIS.md` — A3 robustness testing
-- `I3_CALIBRATION.md` — I3 wording correction
-- `TABLE_FIGURE_RECONCILIATION.md` — Table/Figure verification
-- `E1_E2_JUSTIFICATION.md` — Environment-class justification
 - `audits/2026-08-27-clean-room-current-head.md` — Exact-current-state clean-room audit
-- `CURRENT_HEAD_REFERENCE_AUDIT.csv` — Fresh 50-entry current-state metadata/access sweep
-- `CURRENT_HEAD_NUMERIC_AUDIT.csv` — Fresh current-state numeric occurrence sweep
-- `CURRENT_HEAD_RECORD_AUDIT.csv` — Fresh 36-record predicate reconciliation
-- `CURRENT_HEAD_AIXCC_GTG_AUDIT.csv` — Fresh AIxCC/GTG-1002 occurrence and scope audit
+
+### Archived (not in submission)
+- `archive/old-audit-notes/` — Superseded audit notes, old CSVs, old iteration plans (13 files)
 
 ### Build History
 - `docs/CHANGES.md` — Build history (10+ iterations)
