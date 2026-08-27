@@ -15,8 +15,8 @@ cvegenie2025,cve-genie-2025,cve-genie-2025.pdf,peer_reviewed_paper,primary,inclu
 cybench2024,cybench-2024,cybench-2024.pdf,peer_reviewed_paper,primary,included_record
 cybergym2025,cybergym-2025,cybergym-2025.pdf,peer_reviewed_paper,primary,included_record
 darknavyargusee2025,darknavy-argusee-2025,,vendor_report,primary_vendor,included_record
-darparesults2025,,,,darpa_official,primary,included_record
-darpascoring2025,,,,darpa_official,primary,included_record
+darparesults2025,,,darpa_official,primary,included_record
+darpascoring2025,,,darpa_official,primary,included_record
 fang2024agents,fang-agents-exploit-one-day-2024,fang-agents-exploit-one-day-2024.pdf,peer_reviewed_paper,primary,included_record
 intercode2023,intercode-ctf-2023-bg,intercode-ctf-2023-bg.pdf,peer_reviewed_paper,primary,background_anchor
 llm4cve2025,llm4cve-2025,llm4cve-2025.pdf,peer_reviewed_paper,primary,included_record

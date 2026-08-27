@@ -13,11 +13,27 @@ RESEARCH CYBER/
 │   ├── pdf/                    # 37 primary source PDFs
 │   ├── txt/                    # 49 extracted source texts
 │   ├── manifest.csv            # Reference tracking
-│   └── source-map.csv          # Bib key → file mapping
+│   ├── source-map.csv          # Bib key → file mapping (49 entries)
+│   └── record-id-map.csv       # Record ID ↔ bib key mapping (36 entries)
 ├── corpus/
 │   └── included/               # 36 YAML record files
 └── audits/                     # Audit reports
 ```
+
+## Important: Record Counts Are Layer-Specific
+
+Different repository artifacts track different units of analysis.
+
+| Artifact | Count | What it tracks |
+|----------|-------|----------------|
+| `corpus/included/` | 36 YAML files | Structured empirical records with autonomy classifications |
+| `references/source-map.csv` | 49 entries | All bibliography entries mapped to source files |
+| `evidence/autonomy-loop-assignments.csv` | 36 rows | Empirical records with A0–A3 and B1–B4 classifications |
+| `references/record-id-map.csv` | 36 entries | Mapping from corpus record IDs to bibliography keys |
+
+**Do not assume that the number of YAML records must equal the number of `included_record` entries in `source-map.csv`.**
+
+When auditing empirical corpus membership, use `corpus/included/` and `references/record-id-map.csv` as the source of truth. When resolving manuscript citations to source material, use `references/source-map.csv`.
 
 ## Source Hierarchy
 
@@ -25,6 +41,22 @@ RESEARCH CYBER/
 2. **Official web page or report** — for non-PDF sources
 3. **Extracted text file** — AI-readable working representation
 4. **BibTeX metadata** — citation only, not evidence
+
+## Agent Operating Rules
+
+1. **Do not infer missing evidence from citation metadata, filenames, abstracts, surrounding prose, or citation proximity.**
+
+2. **Do not silently repair inconsistencies between repository artifacts.** Report the inconsistency and identify which artifact is authoritative for the task being performed.
+
+3. **`refs.bib` is a citation registry, not an evidence database.** It controls rendering, not truth.
+
+4. **`source-map.csv` resolves citations to source artifacts, but corpus membership must be determined from the corpus records and record-ID mapping.**
+
+5. **When source text and PDF disagree due to extraction artifacts, inspect the original PDF before making a support classification.**
+
+6. **Never convert INFERRED or PARTIAL support into DIRECT support merely because the manuscript wording appears plausible.**
+
+7. **Preserve uncertainty in audit outputs.** An unresolved claim is preferable to a fabricated verification result.
 
 ## Claim Verification Procedure
 
@@ -68,14 +100,15 @@ pdftotext references/pdf/{pdf_file}.pdf - | grep -i "claim keywords"
 - [ ] Environmental classification: E0/E1/E2
 - [ ] Autonomy level: A0/A1/A2/A3
 
-## Corpus Roles
+## Corpus Roles in source-map.csv
 
 | Role | Count | Description |
 |------|-------|-------------|
-| included_record | 36 | Core empirical/system records |
-| background_anchor | 2 | Pre-2024 context |
-| loop_transition | 2 | B4 documentation |
-| survey | 7 | Systematizations (not counted in corpus) |
+| included_record | 45 | All bibliography entries associated with included corpus records |
+| background_anchor | 2 | Pre-2024 context sources |
+| loop_transition | 2 | B4 documentation sources |
+
+**Note:** The `source-map.csv` includes 45 `included_record` entries because some bibliography entries map to the same underlying corpus record (e.g., multiple citations to different parts of the same DARPA report). The canonical empirical corpus is the 36 YAML files in `corpus/included/`.
 
 ## Source Types
 
@@ -115,6 +148,12 @@ diff <(grep -oP '\\cite\{[^}]+\}' main.tex | tr ',' '\n' | sed 's/\\cite{//;s/}/
 
 # Search source text
 grep -i "keyword" references/txt/*.txt
+
+# Validate CSV schema
+awk -F',' 'NF != 6 { print "INVALID:", NR, "fields=" NF, $0 }' references/source-map.csv
+
+# Count corpus roles
+tail -n +2 references/source-map.csv | awk -F',' '{print $6}' | sort | uniq -c
 ```
 
 ## Audit Trail
