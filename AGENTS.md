@@ -25,15 +25,21 @@ RESEARCH CYBER/
 Different repository artifacts track different units of analysis.
 
 | Artifact | Count | What it tracks |
-|----------|-------|----------------|
-| `corpus/included/` | 36 YAML files | Structured empirical records with autonomy classifications |
-| `references/source-map.csv` | 49 entries | All bibliography entries mapped to source files |
-| `evidence/autonomy-loop-assignments.csv` | 36 rows | Empirical records with A0–A3 and B1–B4 classifications |
-| `references/record-id-map.csv` | 36 entries | Mapping from corpus record IDs to bibliography keys |
+|----------|------:|----------------|
+| `corpus/included/` | 36 YAML files | Canonical structured empirical records |
+| `references/record-id-map.csv` | 36 entries | Mapping between canonical record IDs and bibliography keys |
+| `evidence/autonomy-loop-assignments.csv` | 36 rows | Classifications for canonical empirical records |
+| `references/source-map.csv` | 49 entries | Bibliography entries mapped to available source artifacts |
 
-**Do not assume that the number of YAML records must equal the number of `included_record` entries in `source-map.csv`.**
+`source-map.csv` currently contains 45 entries labelled `included_record`,
+while the canonical empirical corpus contains 36 records.
 
-When auditing empirical corpus membership, use `corpus/included/` and `references/record-id-map.csv` as the source of truth. When resolving manuscript citations to source material, use `references/source-map.csv`.
+These counts represent different repository layers and MUST NOT be assumed
+to be interchangeable.
+
+Do not infer the reason for the difference from counts alone. When corpus
+membership or record identity matters, use `corpus/included/` together with
+`references/record-id-map.csv` as the authoritative source.
 
 ## Source Hierarchy
 
@@ -104,11 +110,11 @@ pdftotext references/pdf/{pdf_file}.pdf - | grep -i "claim keywords"
 
 | Role | Count | Description |
 |------|-------|-------------|
-| included_record | 45 | All bibliography entries associated with included corpus records |
+| included_record | 45 | Source entries used within the included-record analysis layer |
 | background_anchor | 2 | Pre-2024 context sources |
 | loop_transition | 2 | B4 documentation sources |
 
-**Note:** The `source-map.csv` includes 45 `included_record` entries because some bibliography entries map to the same underlying corpus record (e.g., multiple citations to different parts of the same DARPA report). The canonical empirical corpus is the 36 YAML files in `corpus/included/`.
+**Note:** `included_record` in `source-map.csv` is a source-layer label and must not be interpreted as a count of unique empirical records. The canonical empirical corpus is the 36 YAML files in `corpus/included/`. The mapping between these layers is documented in `references/record-id-map.csv`.
 
 ## Source Types
 
