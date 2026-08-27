@@ -44,7 +44,6 @@ increasingly autonomous practice into an increasingly verifiable one.
 % sections/01-introduction.tex
 \section{Introduction}
 \label{sec:intro}
-
 Between 2024 and 2026, vulnerability discovery, exploitation, and patching acquired a new
 subject: software systems in which large language models select and execute security-relevant
 actions. Google reported an agent finding an exploitable memory-safety zero-day in SQLite that
@@ -404,7 +403,6 @@ $+$ 2 background $+$ 2 loop-transition $+$ 18 context $=$ 36 records.}\\
 % Provenance: all cited values verified in references/txt/* extracts or local PDFs (CP1-final).
 \section{Discovery: From Capability Probes to Production-Oriented Agents}
 \label{sec:discovery}
-
 Reading the in-window corpus through the decision-authority test yields a discovery landscape
 that separates cleanly into pipeline automation (A1) and task-level agents (A2), with no A0
 \emph{system} records: prompted-model capability probes persist only as benchmark subjects
@@ -512,7 +510,6 @@ ARTEMIS \cite{artemis2025} & A2/E2 & comparison arm & first-10h score & professi
 % sections/06-exploitation.tex — AIxCC treated as competition + system-design case (spec §6).
 \section{Exploitation and Validation: The AIxCC Case Study}
 \label{sec:aixcc}
-
 The Defense Advanced Research Projects Agency's Artificial Intelligence Cyber Challenge
 (AIxCC) is the only included setting in our corpus where discovery, proof-of-vulnerability
 generation, and patching were integrated, scored, and operated without human intervention --- and it is best
@@ -595,7 +592,6 @@ load-bearing components, invisible until the environment shifted.
 \subsection{Architecture Lessons and the Epistemics of A3}
 
 \label{sec:aixcc-epistemics}
-
 The finalist designs instantiate three distinct philosophies about where intelligence belongs
 in a CRS. Atlantis distributes it across N-version programming: independent sub-systems for
 C, Java, multilanguage discovery, patching, and SARIF bundling, deliberately orthogonal so a
@@ -609,7 +605,6 @@ scale: \$181 per competition point using exclusively non-reasoning models, versu
 for the winner~\cite{tobbuttercup2025}. Theori bet on removing the runtime oracle entirely,
 producing correct patches by pure static analysis at 44.4\% accuracy --- a strategy the
 accuracy-modifier formula priced heavily but did not disqualify~\cite{taafc2025}.
-
 Two quantitative facts refine any capability narrative. First, smaller models ``often
 outperformed larger foundation models and even reasoning
 models'' for patch generation~\cite{taafc2025}, echoing scaffold-over-scale findings elsewhere
@@ -617,38 +612,23 @@ in our corpus. Second, validation infrastructure capped agent counts: re-verifyi
 patch takes ten-plus minutes, so Atlantis ran six patching agents rather than sixty ---
 illustrating that, in this architecture, build-and-test throughput became a practical bottleneck
 on B3 scaling.
-
 The competition also yields its cleanest end-to-end A2 datapoint. During semifinals, Atlantis
 autonomously identified and patched a real SQLite FTS5 vulnerability --- an off-by-one read in
 the trigram tokenizer reaching a NULL dereference --- in roughly fifteen minutes spanning
-
 build, patch generation, iteration, and validation; the maintainer's subsequent fix
-
 (commit e9b919d5) extended the pattern to sibling tokenizer functions and was itself revised
-
 in a follow-up commit~\cite{taasc2024}. Discovery and repair here were performed by the system;
-
 the exploit-to-root-privilege demonstration afterward was not.
-
 What AIxCC can and cannot establish follows directly. It demonstrates integrated
-
 $\{B1,B2,B3\}$ operation with execution autonomy under active prohibition of human input ---
-
 the strongest documented autonomy evidence in our corpus. It does not satisfy the paper's A3
 predicate: challenges
-
 are forked repositories carrying inserted bugs (environment class E1, not E2), real-bug
-
 discovery went unscored, and DARPA has not released the telemetry that would let outsiders
-
 audit either claim~\cite{tobbuttercup2025}. Post-competition triage sharpened the point rather
-
 than resolving it: Ada Logics reproduced twenty-seven candidate real issues, while other
-
 findings dissolved into already-fixed code, project threat-model exclusions, or known
-
 OSS-Fuzz reports~\cite{openssfaixcc2026} --- outcome adjudication, not discovery, was the
-
 binding difficulty.
 
 \subsection{Interpretive Discipline}
@@ -666,7 +646,6 @@ through funded redeployment rather than ending at a scoreboard.
 % sections/07-patching.tex — B3 stream + AIxCC patching lessons + blind spots (spec §7).
 \section{Patching: The B3 Stream and Its Blind Spots}
 \label{sec:patching}
-
 For a title promising discovery, exploitation, \emph{and} patching, B3 is where the in-window
 corpus is thinnest --- and where its structure is therefore most informative. Autonomous repair
 evidence arrives through two independent channels: a general software-engineering agent lineage
@@ -743,7 +722,6 @@ the roadmap experiments of Sec.~\ref{sec:roadmap}.
 % sections/08-coevolution.tex — graded coupling edges; headline per protocol v4 claim ledger.
 \section{The Co-Evolution Loop: Graded Evidence}
 \label{sec:coevolution}
-
 Our second insight concerns coupling between offense and defense. We grade every candidate edge
 on a three-level scale --- \emph{documented response} (an explicit, sourced statement or
 traceable institutional flow), \emph{plausible coupling} (mechanism-reasonable temporal
@@ -802,60 +780,34 @@ administrative record correction showing that even authoritative primary sources
 version- and date-aware verification.
 
 
-
 \input{figures/timeline-f3}
 
 \subsection{Institutional Response}
-
 Between one-off response and field-level causation sits a grade our corpus documents richly:
-
 institutionalization. Three funding and governance flows carry competition-derived capability
-
 past the scoreboard. DARPA and ARPA-H created transition incentives of up to \$200K per finalist team to integrate CRSs
-
 into critical software~\cite{darparesults2025}. Team Atlanta recycled half of its \$4M prize
-
 into continuous autonomous hunting of OSS-Fuzz projects at Georgia Tech's SSLab, with OpenAI
-
 contributing API credits~\cite{taafc2025}. And OpenSSF chartered a Cyber Reasoning Systems
-
 Special Interest Group that now hosts OSS-CRS and FuzzingBrain, relaying post-competition
-
 yields --- sixty-two vulnerabilities across twenty-six projects for FuzzingBrain
-
 (forty-three maintainer-confirmed, thirty-six patched upstream), twenty-five vulnerabilities
-
 across sixteen projects for OSS-CRS, and twelve kernel-related plus ten user-space zero-day
-
 findings for 42-b3yond-6ug~\cite{openssfaixcc2026}. These counts remain team-relayed; the
-
 institutions, budgets, and standing governance are independently observable. Google's parallel
-
 commitment --- deploying Big Sleep against widely used open-source projects~\cite{bloggoogle2025}
-
 --- extends the same pattern from competition lineage to industrial program.
-
 On the speculative side of the ledger sits attacker-side adoption. The strongest candidate is
-
 GTG-1002: a framework wrapping Claude Code with MCP tool access, jailbroken through task
-
 decomposition and fabricated defensive-employment framing, executing reconnaissance,
-
 exploit drafting, credential harvesting, and exfiltration with humans selecting targets and
-
 retaining strategic authorization at critical escalation points~\cite{anthropicgtg2025,anthropicgtgreport2025}. The
 incident remains an unresolved, single-source autonomy assessment. Its
-
 grade stays \emph{plausible coupling}: no adversary-side telemetry exists to date whether
-
 defender publications caused, accelerated, or merely coincided with the technique transfer.
-
 A concrete falsifier structures future work: if adoption-lag measurement finds agentic
-
 offensive techniques appearing no earlier after major defender disclosures than baseline
-
 diffusion rates would predict, response-coupling loses its offensive half and I2 narrows to
-
 defender-internal loops.
 
 \subsection{Summary}
@@ -869,7 +821,6 @@ requires adversary-side measurement this corpus lacks (Sec.~\ref{sec:roadmap}).
 % sections/09-validity.tex — §9: validity as first-class measurement (spec §6 protocol).
 \section{Evaluation Validity}
 \label{sec:validity}
-
 Our third insight treats validity as a measurable property of evaluations, not a limitations
 paragraph. We organize the evidence as a progression --- information leakage, then dataset-level
 invalidity, then oracle manipulation --- because each tier changes what a reported number can
@@ -939,37 +890,23 @@ included evaluation satisfies all five today; E3 (Sec.~\ref{sec:roadmap}) operat
 gap.
 
 \subsection{The Measured Core, Quantified}
-
 Three numbers anchor the progression above; each survives re-examination better than the
-
 headline claims it corrects. Fang et al.'s intervention separates information supply from
-
 capability: Pass@5 of 86.7\% and an overall exploitation rate of 40\% for GPT-4 under
-
 description-supplied conditions collapse to 7\% overall without descriptions, while GPT-3.5,
-
 eight open-source models, ZAP, and Metasploit score zero throughout~\cite{fang2024agents} ---
 demonstrating that the supplied information condition materially determines performance in
 this evaluation. PrimeVul's reconstruction moves a
-
 state-of-the-art 7B detector from 68.26\% F1 on BigVul to 3.09\% on its paired,
-
 chronologically split evaluation, with GPT-3.5- and GPT-4-class prompting ``akin to random
-
 guessing'' under the most stringent settings~\cite{primevul2024} --- showing that dataset
 construction and evaluation methodology can become a binding constraint on apparent model
 performance. And XBOW's funnel makes
-
 outcome-definition noise concrete at production scale: of ${\sim}1{,}060$ submissions, 208
-
 duplicates and 209 informative reports --- roughly 39\% --- resolve into neither new nor fixed
-
 findings, so leaderboard position aggregates discovery quality with program-policy artifacts
-
 unless category-aware accounting is applied~\cite{xbowtop12025}. Each datum predates or
-
 operates independently of the others; their convergence on the same methodological conclusion
-
 is why we treat validity as measured rather than alleged.
 
 \subsection{What Survives}
@@ -1049,7 +986,6 @@ primary material.
 
 \section{Open Problems: An Experimental Roadmap}
 \label{sec:roadmap}
-
 Every gap below is stated with a falsifier: the observation that would disconfirm the
 expected result. We prioritize experiments by how efficiently they resolve load-bearing
 uncertainties identified in Secs.~\ref{sec:discovery}--\ref{sec:validity}.
@@ -1111,7 +1047,6 @@ would cap I3 at ``important constraint'' and justify removing ``binding.''
 % sections/12-conclusion.tex — §12: return to I1–I3, established vs unresolved.
 \section{Conclusion}
 \label{sec:conclusion}
-
 This systematization asked whether LLM-driven vulnerability work between January 2024 and June
 2026 is best understood through model capability or through something else. Our answer, built
 on a 36-record multi-stream corpus of which 14 records underwent autonomy assessment (13
