@@ -72,7 +72,8 @@ industrial documents; registry records) and classify every record on two orthogo
 a \emph{decision-authority} gradient A0--A3, assigned strictly by documented behavior ---
 ``who chooses the next action?'' --- with autonomy claims graded by their weakest missing
 condition; and the offense/defense loop positions B1--B4, recorded as sets for systems spanning
-phases. Fourteen in-window records bear autonomy classifications; the remaining 22 provide
+phases. Thirteen in-window records receive definitive autonomy classifications; one additional
+incident remains unresolved; the remaining 22 provide
 context, validity evidence, loop-transition documentation, or related-work positioning, and we
 keep the distinction explicit throughout.
 
@@ -461,11 +462,11 @@ HackerOne's policy on automated tools''~\cite{xbowtop12025} --- independent repo
 so XBOW is A2 regardless of marketing language.
 
 \subsection{A2 Under Experiment: Production Networks}
-The ARTEMIS study places six agent instances against ten professionals on the same
-corporate-style network (${\sim}8{,}000$ hosts, 12 subnets), scoring the first ten hours of
-sixteen-hour runs~\cite{artemis2025}. We use it as environment-class E2 evidence that
-agents can operate on realistic infrastructure; press-derived superiority percentages are
-excluded from this paper because they do not appear in the primary text.
+The ARTEMIS study (arXiv preprint December 2025) places six agent instances against ten
+professionals on the same corporate-style network (${\sim}8{,}000$ hosts, 12 subnets), scoring the
+first ten hours of sixteen-hour runs~\cite{artemis2025}. We use it as environment-class E2
+evidence that agents can operate on realistic infrastructure; press-derived superiority
+percentages are excluded from this paper because they do not appear in the primary text.
 
 \subsection{Cross-Cutting Comparison}
 Table~\ref{tab:disccompare} consolidates the discovery records. Reading down the autonomy
@@ -600,9 +601,8 @@ decomposition, integrating LLMs ``only where traditional tools fall short,'' aug
 
 libFuzzer and Jazzer with LLM-generated test cases behind a multi-agent patcher with
 
-separation of concerns --- and reports that this discipline, not model scale, drove its
-
-efficiency: \$181 per competition point using exclusively non-reasoning models, versus \$263
+separation of concerns --- and attributed its efficiency to this architecture rather than model
+scale: \$181 per competition point using exclusively non-reasoning models, versus \$263
 
 for the winner~\cite{tobbuttercup2025}. Theori bet on removing the runtime oracle entirely,
 
@@ -610,17 +610,16 @@ producing correct patches by pure static analysis at 44.4\% accuracy --- a strat
 
 accuracy-modifier formula priced heavily but did not disqualify~\cite{taafc2025}.
 
-Two quantitative facts refine any capability narrative. First, model scale inverted where it
-
-mattered most: smaller models ``often outperformed larger foundation models and even reasoning
+Two quantitative facts refine any capability narrative. First, smaller models ``often
+outperformed larger foundation models and even reasoning
 
 models'' for patch generation~\cite{taafc2025}, echoing scaffold-over-scale findings elsewhere
 
 in our corpus. Second, validation infrastructure capped agent counts: re-verifying one nginx
 
 patch takes ten-plus minutes, so Atlantis ran six patching agents rather than sixty ---
-
-a reminder that B3 scaling is gated by build-and-test throughput, not tokens.
+illustrating that, in this architecture, build-and-test throughput became a practical bottleneck
+on B3 scaling.
 
 The competition also yields its cleanest end-to-end A2 datapoint. During semifinals, Atlantis
 
@@ -706,13 +705,14 @@ reasoning over repair candidates --- rather than single-shot generation --- is a
 design choice for B3 systems. LLM4CVE~\cite{llm4cve2025} extends this line with an iterative
 pipeline that combines traditional bug repair methods with LLM techniques, demonstrating
 automated vulnerability repair in critical system software with minimal human input.
-RepoAudit~\cite{repoaudit2025} operationalizes autonomous repository-level code auditing,
-showing that LLM agents can systematically inspect large codebases and validate candidate bug
-paths. These systems, together with the agent lineage above, establish that B3 capability now
+These systems establish that B3 capability now
 spans from pipeline-orchestrated repair (Agentless) through iterative agentic workflows
-(AutoCodeRover, CodeRover-S) to autonomous discovery-audit pipelines (RepoAudit), yet robust
+(AutoCodeRover, CodeRover-S), yet robust
 validation of semantic security correctness beyond replaying known exploit inputs remains
 unevenly evaluated across the literature.
+Adjacent discovery-audit systems such as RepoAudit~\cite{repoaudit2025} demonstrate that
+comparable agentic control patterns also extend upstream into repository-level vulnerability
+analysis.
 
 \subsection{What the Competition Taught About Repair Quality}
 AIxCC provides the corpus's largest competition-based stress test of automated patching. Its lessons
@@ -766,7 +766,7 @@ off-by-one, the SQLite maintainer patched not only the reported function but sib
 code paths sharing the pattern, then revised his own patch in a follow-up commit after noting
 redundancy~\cite{taasc2024} --- human variant analysis triggered by an AI finding.
 \textbf{(D3) Institutional/funding flows.} The loop acquired governance: DARPA and ARPA-H
-committed \$200K per team to integrate CRSs into critical software~\cite{tobbuttercup2025};
+created transition incentives of up to \$200K per team to integrate CRSs into critical software~\cite{darparesults2025};
 Team Atlanta recycled half its \$4M prize (\$2M) into continuous autonomous hunting at Georgia
 Tech's SSLab with OpenAI contributing API credits~\cite{taafc2025}; OpenSSF chartered a Cyber
 Reasoning Systems SIG and hosts OSS-CRS and FuzzingBrain, whose post-competition operation is
@@ -815,9 +815,9 @@ Between one-off response and field-level causation sits a grade our corpus docum
 
 institutionalization. Three funding and governance flows carry competition-derived capability
 
-past the scoreboard. DARPA and ARPA-H committed \$200K per finalist team to integrate CRSs
+past the scoreboard. DARPA and ARPA-H created transition incentives of up to \$200K per finalist team to integrate CRSs
 
-into critical software~\cite{tobbuttercup2025}. Team Atlanta recycled half of its \$4M prize
+into critical software~\cite{darparesults2025}. Team Atlanta recycled half of its \$4M prize
 
 into continuous autonomous hunting of OSS-Fuzz projects at Georgia Tech's SSLab, with OpenAI
 
@@ -886,8 +886,8 @@ baseline (GPT-3.5, eight open-source models, ZAP, Metasploit) scored zero in bot
 conditions~\cite{fang2024agents}. This more-than-an-order-of-magnitude difference is produced by a single
 supplied-knowledge variable --- the CVE text functions as a partial answer key --- so any
 capability claim inherits its information condition. We therefore report such results only with
-their conditions attached, and the same discipline applies to temporal leakage: every
-vulnerability in that benchmark was publicly disclosed before model training cutoffs.
+their conditions attached, and the same discipline applies to temporal leakage: the benchmark
+authors report that vulnerabilities were publicly disclosed before model training cutoffs.
 
 \subsection{V1/V5: Dataset-Level Invalidity, Measured by Reconstruction}
 PrimeVul demonstrates that the detection literature's benchmark layer was structurally
@@ -920,8 +920,8 @@ accounting~\cite{xbowtop12025}.
 \subsection{Administrative Record Correction: A Separate Category}
 DARPA's closeout corrects its own synthetic-vulnerability count from 70 to 63 with an editor's
 note~\cite{darparesults2025}, and prize accounting requires three scoped figures rather than
-one (\$29.5M cumulative commitment, \$8.5M final pool, \$30.5M
-distributed~\cite{darpascoring2025,openssfaixcc2026}). These are administrative record
+one (\$29.5M cumulative commitment announced in 2023~\cite{darpa2023aixcc}, \$8.5M final pool, \$30.5M
+distributed~\cite{darpascoring2025,openssfaixcc2026}); these figures reflect different accounting scopes. These are administrative record
 corrections, not measurement-validity failures, but they carry a methodological moral we adopt
 as policy: even authoritative primary sources require version- and date-aware verification,
 and press intermediaries inherit whatever instability the primary contains.
@@ -958,9 +958,9 @@ state-of-the-art 7B detector from 68.26\% F1 on BigVul to 3.09\% on its paired,
 
 chronologically split evaluation, with GPT-3.5- and GPT-4-class prompting ``akin to random
 
-guessing'' under the most stringent settings~\cite{primevul2024} --- dataset construction, not
-
-model capacity, had been the binding constraint on prior comparisons. And XBOW's funnel makes
+guessing'' under the most stringent settings~\cite{primevul2024} --- showing that dataset
+construction and evaluation methodology can become a binding constraint on apparent model
+performance. And XBOW's funnel makes
 
 outcome-definition noise concrete at production scale: of ${\sim}1{,}060$ submissions, 208
 
@@ -1024,8 +1024,8 @@ claims to their sources' datelines and mark snapshot statistics as such.
 exist; nothing prevents undisclosed human effort behind vendor claims of full automation. Our
 classifications therefore track \emph{documented} autonomy floors, not ceilings.
 
-\textbf{Single-corpus induction.} All quantitative distributions (14 autonomy-bearing records;
-per-cell counts) derive from one team's inclusion decisions under one protocol; the saturation
+\textbf{Single-corpus induction.} All quantitative distributions (14 autonomy-assessed records,
+including 13 classified and one unresolved; per-cell counts) derive from one team's inclusion decisions under one protocol; the saturation
 test bounds but does not eliminate corpus-dependence. Where a claim would not survive a
 different reasonable inclusion rule, we say so in place.
 
@@ -1060,7 +1060,7 @@ uncertainties identified in Secs.~\ref{sec:discovery}--\ref{sec:validity}.
 Gap: no included work ablates autonomy-level contribution from base-model improvement.
 Setup: fix a task suite and environment; evaluate the same base model across A1-style fixed
 pipelines and A2-style dynamic agents, repeated across successive model releases.
-Controls: identical tools, prompts budgets, and scoring; release-pinned checkpoints.
+Controls: identical tools, prompt budgets, and scoring; release-pinned checkpoints.
 Metric: marginal success attributable to decision authority vs.\ model generation.
 Falsifier: if fixed pipelines close the gap to agents as models improve, ``autonomy'' is
 re-branding of scale, weakening I1's substantive reading.
@@ -1116,7 +1116,8 @@ would cap I3 at ``important constraint'' and justify removing ``binding.''
 
 This systematization asked whether LLM-driven vulnerability work between January 2024 and June
 2026 is best understood through model capability or through something else. Our answer, built
-on a 36-record multi-stream corpus of which 14 records bear autonomy classifications, is that
+on a 36-record multi-stream corpus of which 14 records underwent autonomy assessment (13
+definitive classifications, one unresolved), is that
 the field's evaluations, incentives, and discourse now measure progress in \emph{agentic
 autonomy} --- while whether underlying capability moved for reasons other than scale remains,
 honestly, an open question.
@@ -1134,9 +1135,9 @@ vendor-reported with hallucination caveats and human-selected targets.
 \textbf{On I2 (documented edges; causality bounded).} Offense and defense are coupled where the
 record says so: Project Zero named AIxCC's Team Atlanta as the inspiration for its SQLite
 variant-analysis campaign; a maintainer extended an AI-found bug's fix to sibling code paths;
-AIxCC generated documented institutional follow-through---DARPA committed \$200K per finalist
-team for transition activities, while the competition itself carried prize commitments reported
-as \$29.5M in DARPA's 2024 materials and \$30.5M in OpenSSF's later retrospective; separately,
+AIxCC generated documented institutional follow-through---DARPA created transition incentives
+of up to \$200K per finalist team for transition activities, while the competition itself carried prize commitments reported
+as \$29.5M in DARPA's 2023 announcement and \$30.5M in OpenSSF's later retrospective; separately,
 OpenSSF established governance and hosting structures for post-competition CRS development; and
 threat intelligence seeded a pre-exploitation disclosure. These documented edges do not license
 the arms-race vernacular: shared-cause explanations survive globally, and attacker-side
@@ -1195,12 +1196,12 @@ tob-buttercup2025 & 2025 & system & A2 & B1+B2+B3 & competition-participant & 1/
 xbow2025 & 2025 & system & A2 & B1+B2 & production stats & 0/1/0 & HTML\\
 \midrule
 \multicolumn{8}{l}{\emph{Background anchors (excluded from primary counts)}}\\
-csev12023bg & 2023 &  & A0 & B1 & benchmark & 2/1/2 & PDF\\
+csev12023bg & 2023 & benchmark & A0 & B1 & benchmark & 2/1/2 & PDF\\
 intercode2023bg & 2023 & benchmark & A1 & B2 & benchmark & 3/2/3 & PDF\\
 \midrule
 \multicolumn{8}{l}{\emph{Loop-transition documentation (B4)}}\\
-bloggoogle-summer2025 & 2025 & program-record & n/a & B4 — documents B1 discovery -> announced B4 redeployment of Big Sleep to OSS projects & program-announcement & --/--/-- & HTML\\
-openssfretro2026 & 2026 & program-record & n/a & B4 — documents post-competition B3->B4 institutionalization (SIG hosting, transition funding, ecosystem stats) & foundation closeout & 1/1/2 & HTML\\
+bloggoogle-summer2025 & 2025 & program-record & n/a & B4 — documents B1 discovery $\to$ announced B4 redeployment of Big Sleep to OSS projects & program-announcement & --/--/-- & HTML\\
+openssfretro2026 & 2026 & program-record & n/a & B4 — documents post-competition B3$\to$B4 institutionalization (SIG hosting, transition funding, ecosystem stats) & foundation closeout & 1/1/2 & HTML\\
 \midrule
 \multicolumn{8}{l}{\emph{Off-axis / context records}}\\
 csev22024 & 2024 & benchmark & n/a & n/a — probed {B1,B2} & benchmark & 2/2/2 & PDF\\
@@ -1220,7 +1221,7 @@ r4csur2025 & 2025 & survey & n/a & n/a & survey & 0/0/0 & payw.\\
 r5usenix26agentic & 2026 & survey & n/a & n/a & survey & 0/0/0 & PDF\\
 r6tosem2026 & 2026 & survey & n/a & n/a & survey & 0/0/3 & payw.\\
 r7sokaixcc2026 & 2026 & survey(systematization) & n/a & n/a & competition & 2/3/2 & PDF\\
-rissebohme-wrongexam2024 & 2024 &  & n/a & n/a & validity-critique & --/--/-- & PDF\\
+rissebohme-wrongexam2024 & 2024 & critique & n/a & n/a & validity-critique & --/--/-- & PDF\\
 \bottomrule
 \end{tabular}}
 \end{table*}
@@ -1251,7 +1252,7 @@ notes in repository file \texttt{search-log.md}.
 \hline
 Date & Event (source) \\
 \hline
-2023-08 & AIxCC announced; ${\sim}\$29.5$M cumulative program commitment~\cite{darparesults2025} \\
+2023-08 & AIxCC announced; ${\sim}\$29.5$M cumulative program commitment~\cite{darpa2023aixcc} \\
 2024-08 & ASC: 42 teams $\rightarrow$ 7 finalists (\$2M each); Atlantis autonomously patches real SQLite FTS5 bug (unscored); official fix e9b919d5 follows~\cite{taasc2024} \\
 2024-11 & Big Sleep reports SQLite stack-buffer-underflow zero-day; cites AIxCC inspiration (edge D1); AFL 150 CPU-h fails to rediscover; no CVE assigned~\cite{bigsleep2024}\\
 2024-11 & OSS-Fuzz reports 26 vulns from AI-generated fuzz targets incl.\ CVE-2024-9143 (${\sim}$20 years latent)~\cite{ossfuzz-levelingup-2024}\\
@@ -1273,18 +1274,20 @@ rules. All scenarios yield zero qualifying systems under the paper's strict oper
 definition.
 
 \begin{center}
-\captionof{table}{A3 sensitivity analysis.}
+\captionof{table}{A3 sensitivity analysis. Each row relaxes one classification condition
+while holding the others fixed; the rightmost column identifies the closest candidate and
+the condition that still prevents A3 qualification.}
 \label{tab:sensitivity}
 \centering\scriptsize
-\begin{tabular}{p{1.5cm}p{8cm}r}
+\begin{tabular}{p{1.5cm}p{5.5cm}p{2.5cm}p{5cm}}
 \hline
-Scenario & Relaxation & A3 count \\
+Scenario & Relaxation & A3 count & Closest candidate and remaining blocker \\
 \hline
-S0 & Baseline (strict four-verb test) & 0 \\
-S1 & Human review requirement relaxed & 0 \\
-S2 & Target-selection autonomy relaxed & 0 \\
-S3 & Production-environment requirement relaxed & 0 \\
-S4 & All relaxations combined & 0 \\
+S0 & Baseline (strict four-verb test) & 0 & XBOW: human review before submission; AIxCC CRS: human-selected targets; GTG-1002: unresolved evidence \\
+S1 & Human review relaxed & 0 & XBOW: still requires human security-team review; AIxCC CRS: human-selected targets \\
+S2 & Target-selection autonomy relaxed & 0 & AIxCC CRS: human-selected targets; but B1 still requires human triage \\
+S3 & Production-environment requirement relaxed & 0 & AIxCC CRS: benchmark settings; XBOW: mandated human review \\
+S4 & All relaxations combined & 0 & GTG-1002: unresolved (insufficient public evidence for definitive assignment) \\
 \hline
 \end{tabular}
 \end{center}
