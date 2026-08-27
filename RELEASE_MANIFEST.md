@@ -122,10 +122,6 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 - `CONTRADICTION_MATRIX.md` — Cross-artifact and source discrepancies
 - `audits/2026-08-27-forensic-audit.md` — Dated audit-trail entry
 - `audits/2026-08-27-clean-room-current-head.md` — Exact-current-state clean-room audit
-
-### Archived (not in active repository)
-- `archive/old-audit-notes/` — Superseded audit notes, old CSVs, old iteration plans (13 files)
-
 ### Build History
 - `docs/CHANGES.md` — Build history (10+ iterations)
 
