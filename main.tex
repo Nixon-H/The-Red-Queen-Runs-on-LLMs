@@ -467,8 +467,8 @@ so XBOW is A2 regardless of marketing language.
 The ARTEMIS study (arXiv preprint December 2025) places six agent instances against ten
 professionals on the same corporate-style network (${\sim}8{,}000$ hosts, 12 subnets), scoring the
 first ten hours of sixteen-hour runs~\cite{artemis2025}. We use it as environment-class E2
-evidence that agents can operate on realistic infrastructure; press-derived superiority
-percentages are excluded from this paper because they do not appear in the primary text.
+evidence that agents can operate on realistic infrastructure; superiority percentages not
+independently reported in the primary study are excluded.
 
 \subsection{Cross-Cutting Comparison}
 Table~\ref{tab:disccompare} consolidates the discovery records. Reading down the autonomy
@@ -1275,40 +1275,31 @@ Table~\ref{tab:sensitivity} reports the A3 count under progressively relaxed cla
 rules. All scenarios yield zero qualifying systems under the paper's strict operational
 definition.
 
-\begin{center}
-\captionof{table}{A3 sensitivity analysis. A3 requires independent planning, execution,
-validation, and reporting in environment class E2 (Sec.~\ref{sec:framework}). The
-\emph{no-human-interaction corollary} requires that reporting be fully autonomous; this
-corollary is not relaxed in any scenario. Each row relaxes one condition while holding the
-others fixed.}
+\begin{table*}[t]
+\centering
+\caption{A3 sensitivity analysis. A3 requires independent planning, execution, validation,
+and reporting in environment class E2 (Sec.~\ref{sec:framework}). The \emph{no-human-interaction
+corollary} requires that reporting be fully autonomous; this corollary is not relaxed in any
+scenario. Each row relaxes one condition while holding the others fixed.}
 \label{tab:sensitivity}
-\centering\scriptsize
-\begin{tabular}{p{1.3cm}p{4cm}p{1cm}p{2.2cm}p{5.5cm}}
+\scriptsize
+\begin{tabular}{lllll}
 \hline
 Scenario & Condition relaxed & A3 & Closest candidate & Remaining blocker(s) \\
 \hline
-S0 & None (baseline) & 0 & XBOW & XBOW: human review before submission (reporting);
-AIxCC CRS: human-selected targets (planning), E1 environment;
-ARTEMIS: human professionals set scope (planning);
-GTG-1002: insufficient evidence \\
-S1 & Human review relaxed & 0 & XBOW & XBOW: reporting pipeline includes human review
-(no-human-interaction corollary violated);
-AIxCC CRS: human-selected targets, E1;
-ARTEMIS: human professionals in planning and reporting \\
-S2 & Target-selection autonomy relaxed & 0 & AIxCC CRS & AIxCC CRS: E1 environment;
-XBOW: human review (corollary);
-ARTEMIS: human professionals \\
-S3 & E2 environment requirement relaxed & 0 & AIxCC CRS & AIxCC CRS: human-selected targets;
-XBOW: human review (corollary);
-ARTEMIS: human professionals \\
-S4 & All combined & 0 & XBOW & XBOW: reporting pipeline requires human review
-(no-human-interaction corollary);
-ARTEMIS: human professionals in planning and reporting;
-AIxCC CRS: E1 environment;
-GTG-1002: unresolved \\
+S0 & None (baseline) & 0 & XBOW & XBOW: human review (reporting); AIxCC: targets + E1;
+ARTEMIS: human scope (planning); GTG-1002: unresolved \\
+S1 & Human review & 0 & XBOW & XBOW: corollary (human review in pipeline);
+AIxCC: targets + E1; ARTEMIS: human scope + review \\
+S2 & Target selection & 0 & AIxCC CRS & AIxCC: E1 environment; XBOW: corollary;
+ARTEMIS: human scope + review \\
+S3 & E2 environment & 0 & AIxCC CRS & AIxCC: human-selected targets; XBOW: corollary;
+ARTEMIS: human scope + review \\
+S4 & All combined & 0 & XBOW & XBOW: corollary; ARTEMIS: human scope + review;
+AIxCC: E1; GTG-1002: unresolved \\
 \hline
 \end{tabular}
-\end{center}
+\end{table*}
 
 
 \end{document}
