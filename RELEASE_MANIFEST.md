@@ -2,7 +2,7 @@
 
 **Release Date:** 2026-08-27
 **Release Version:** Forensic audit rebuild (2026-08-27)
-**Status:** Audit artifacts complete; final author review remains required
+**Status:** Clean-room current-state audit complete; residual evidence limitations and author review remain required
 
 ---
 
@@ -17,8 +17,8 @@
 
 ### PDF Metadata
 - **Page count:** 18 pages
-- **File size:** 276,166 bytes
-- **Build hash:** 2eacec16192b1d2f33238180c11d805526367a5c (baseline HEAD; audit changes remain uncommitted)
+- **File size:** 276,280 bytes
+- **Build hash:** 80f6ce263b2ef78e14437752d0f54305c41ae9da (base HEAD; current clean-room audit changes remain uncommitted)
 - **Build status:** Successful; BibTeX zero errors, no fatal compilation errors
 
 ---
@@ -28,11 +28,11 @@
 ### Core Files
 | File | SHA-256 Hash |
 |------|--------------|
-| main.tex | b90fa819989a4a24ad8abf0ee712872fd69fca7382cc25d67403b443b2a5a308 |
+| main.tex | 54cab114610bc42a80b2142dc9a8cddda82b4fa6850b7fddf514d3881708eddc |
 | refs.bib | 2f1b0f6835547bb5c4157e16d54e1a1f22efba37ae5ff9a8cf19da92310e484f |
-| main.pdf | 162db28b9157bf04ac036f7164de157872c1273b10cf182c9a2d10711e7c18bb |
+| main.pdf | 72f6d29a3605d4ab34ac818f77560b1c34458251da97efd08733f023ca17039c |
 | evidence/autonomy-loop-assignments.csv | 1a8eead4ccc70e8560d6acc609630f1259d6713f36bb0015193eab4c0064b547 |
-| references/manifest.csv | 20be0e96379d9d53548b0aa8cd98adcafa5f62629e52ce82ce124fc21feaa763 |
+| references/manifest.csv | 05ff31192de6cf669fdfea2ef15945fb37f18d97c47657931fee862b6565a5bf |
 
 ### Verification Command
 ```bash
@@ -129,6 +129,11 @@ sha256sum main.tex refs.bib main.pdf evidence/autonomy-loop-assignments.csv refe
 - `I3_CALIBRATION.md` — I3 wording correction
 - `TABLE_FIGURE_RECONCILIATION.md` — Table/Figure verification
 - `E1_E2_JUSTIFICATION.md` — Environment-class justification
+- `audits/2026-08-27-clean-room-current-head.md` — Exact-current-state clean-room audit
+- `CURRENT_HEAD_REFERENCE_AUDIT.csv` — Fresh 50-entry current-state metadata/access sweep
+- `CURRENT_HEAD_NUMERIC_AUDIT.csv` — Fresh current-state numeric occurrence sweep
+- `CURRENT_HEAD_RECORD_AUDIT.csv` — Fresh 36-record predicate reconciliation
+- `CURRENT_HEAD_AIXCC_GTG_AUDIT.csv` — Fresh AIxCC/GTG-1002 occurrence and scope audit
 
 ### Build History
 - `docs/CHANGES.md` — Build history (10+ iterations)
@@ -211,5 +216,5 @@ PYEOF
 
 *Manifest generated: 2026-08-27*
 *Last updated: 2026-08-27*
-*Baseline Git commit: 2eacec16192b1d2f33238180c11d805526367a5c*
-*Status: Audit rebuild ready for final author review; working tree contains uncommitted audit changes*
+*Base Git commit: 80f6ce263b2ef78e14437752d0f54305c41ae9da*
+*Status: Clean-room current-state audit rebuild ready for final author review; working tree contains uncommitted audit changes*

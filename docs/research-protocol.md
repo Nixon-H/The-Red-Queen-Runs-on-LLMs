@@ -75,7 +75,9 @@ approval; CP4 final release after freeze/venue audit.
 
 ## Canonical record schema
 corpus/included/<key>.yaml with fields per PHASE 4 list (bib identity … limitations).
-Exclusions: corpus/excluded/. Aggregate: corpus-summary.csv. Claims ledger: claim-verification.csv.
+Exclusions: corpus/excluded/. Canonical record accounting: corpus/included/ plus
+references/record-id-map.csv. Current claim audit: CLAIM_EVIDENCE_MATRIX.csv; current
+numeric audit: NUMERIC_FACT_AUDIT.csv.
 
 ## AMENDMENTS v2 (2026-08-26, post-reviewer-rejection of CP1 v1)
 

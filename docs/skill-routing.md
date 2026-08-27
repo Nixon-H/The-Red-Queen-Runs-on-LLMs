@@ -9,7 +9,7 @@ No new parallel workflow is created; overlapping duties defer to the authoritati
 
 | skill / agent | tool location | purpose in this SoK | stage used | required inputs | expected outputs |
 |---|---|---|---|---|---|
-| deep-research (skill) | academic-research-skills/deep-research/SKILL.md (LOADED into session) | systematic-review protocol, PRISMA discipline, source-quality hierarchy, failure-path handling | PHASES 2–5, CP1 | spec RQs, seed corpus, search strings | search-log.md, prisma-counts.csv, screening decisions |
+| deep-research (skill) | academic-research-skills/deep-research/SKILL.md (LOADED into session) | systematic-review protocol, PRISMA discipline, source-quality hierarchy, failure-path handling | PHASES 2–5, CP1 | spec RQs, seed corpus, search strings | search-log.md, current corpus/audit records, screening decisions |
 | bibliography_agent | .../deep-research/agents/bibliography_agent.md | reproducible multi-database search strategy + annotated records | PHASE 2 | query strings, window filters | search-log.md entries, candidate ID pool |
 | source_verification_agent | .../source_verification_agent.md | evidence grading (primary/secondary/claimed), predatory/COI flags, claim-vs-source checks | PHASES 3–4, 13 | fetched full texts, vendor pages | references/txt/*.txt evidence extracts, manifest.csv verification columns |
 | risk_of_bias_agent | .../risk_of_bias_agent.md | bias domains adapted from RoB/ROBINS-I → our validity taxonomy V1–V5 | PHASE 5 | included-work records | per-work validity_concerns fields, §9 material |

@@ -1,0 +1,43 @@
+% figures/timeline-f3.tex — F3: capability timeline 2023–2026 (spec-required figure)
+% Every date cross-checked against Appendix C / claim-verification.csv.
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  ev/.style={font=\tiny,align=center},
+  dot/.style={circle,fill,inner sep=1.6pt},
+  comp/.style={dot,orange!90!black}, ind/.style={dot,red!70!black,shape=rectangle,inner sep=2.2pt},
+  mis/.style={dot,violet!80!black,diamond,inner sep=1.1pt}, gov/.style={dot,green!50!black,shape=regular polygon,regular polygon sides=3,inner sep=1.1pt},
+  scale=1.0,transform shape]
+\draw[->,thick] (-0.4,0) -- (15.6,0);
+% Slash-separated labels denote discrete event months, not continuous intervals.
+\foreach \x/\lab in {1.2/{2023-08},4.0/{2024-08},5.6/{2024-11},7.6/{2025-05/06},
+                     9.4/{2025-07/08},11.6/{2025-09/11},13.4/{2026-02/05}} {
+  \node[ev,below] at (\x,-0.12) {\lab}; \node[dot,gray] at (\x,0) {};}
+% above-axis events
+\node[ev,anchor=south] at (1.2,0.55) {AIxCC announced\\ \$29.5M program};
+\node[comp] at (1.2,0.30) {};
+\node[ev,anchor=south] at (4.0,0.55) {ASC: Atlantis patches\\ real SQLite bug (unscored)};
+\node[comp] at (4.0,0.30) {};
+\node[ev,anchor=south] at (5.6,1.45) {Big Sleep zero-day (cites AIxCC)\\ OSS-Fuzz AI targets: 26 vulns};
+\node[ind] at (5.6,1.20) {}; \draw[gray!60] (5.6,1.20)--(5.6,0.06);
+\node[ev,anchor=south] at (7.6,0.55) {Argusee CVE find;\\ XBOW \#1 US HackerOne};
+\node[ind] at (7.6,0.30) {};
+\node[ev,anchor=south] at (9.4,1.45) {CVE threat-intel disclosure;\\ AFC finals: 18 real vulns};
+\node[ind] at (9.4,1.20) {}; \draw[gray!60] (9.4,1.20)--(9.4,0.06);
+\node[mis] at (11.6,0.30) {};
+\node[ev,anchor=south] at (11.6,0.55) {GTG-1002 campaign\\ (80--90\% autonomous)};
+\node[ev,anchor=south] at (13.4,0.55) {R7 SoK; OpenSSF legacy\\ SIG + transition funding};
+\node[gov] at (13.4,0.30) {};
+% legend
+\node[font=\tiny,anchor=west] at (0.2,-0.75)
+ {\tikz{\node[comp,inner sep=1.4pt,circle,fill=orange!90!black]{};} competition \quad
+  \tikz{\node[ind,inner sep=1.4pt,circle,fill=red!70!black]{};} industrial/program \quad
+  \tikz{\node[mis,inner sep=1.4pt,circle,fill=violet!80!black]{};} offensive-misuse incident \quad
+  \tikz{\node[gov,inner sep=1.4pt,circle,fill=green!50!black]{};} governance/institutionalization};
+\end{tikzpicture}
+\caption{Capability-and-coupling timeline for the graded edges of Sec.~VIII. Colors separate
+evidence classes; every event carries a primary source in Appendix~\ref{app:timeline}. The
+sequence visualizes I2's documented edges --- most notably the AIxCC$\rightarrow$Big Sleep
+inspiration link --- without implying field-wide causal closure.}
+\label{fig:f3timeline}
+\end{figure*}
