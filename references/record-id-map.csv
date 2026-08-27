@@ -1,0 +1,37 @@
+record_id,citation_key,notes
+agentless2024,agentless2024,identical
+argusee2025,darknavyargusee2025,CSV uses short ID; bib uses full vendor name
+artemis2025,artemis2025,identical
+autocoderoever-2024,autocoderoever-2024,identical
+bigsleep2024,bigsleep2024,identical
+bloggoogle-summer2025,bloggoogle2025,CSV includes season; bib omits
+csev12023bg,csev12023bg,identical
+csev22024,csev22024,identical
+csev32024,csev32024,identical
+cybench2024,cybench2024,identical
+fang2024one-day,fang2024agents,CSV uses description; bib uses shorthand
+gtg1002-2025,anthropicgtg2025,CSV uses project code; bib uses vendor name
+intercode2023bg,intercode2023,CSV has bg suffix; bib omits
+mcpeco2025,mcpfirstlook2025,CSV uses short name; bib uses full name
+mcpgov2025,mcpgovernance2025,CSV uses short name; bib uses full name
+mcppoison2026,mcppoisoning2026,CSV uses short name; bib uses full name
+mcpspec2026,mcpspec2026,identical
+nvdcve20256965,nvd6965,CSV uses full CVE ID; bib uses short form
+nyuctfbench2024,nyuctfbench2024,identical
+openssfretro2026,openssfaixcc2026,CSV uses short name; bib uses full name
+ossfuzz-aifixing-2024,ossfuzz-aifixing-2024,identical
+ossfuzz-levelingup-2024,ossfuzz-levelingup-2024,identical
+primevul2024,primevul2024,identical
+r1slr2024,r1slr2024,identical
+r2slr2024,r2slr2024,identical
+r3survey2026,r3survey2026,identical
+r4csur2025,r4csur2025,identical
+r5usenix26agentic,r5usenix26agentic,identical
+r6tosem2026,r6tosem2026,identical
+r7sokaixcc2026,r7sokaixcc2026,identical
+rissebohme-wrongexam2024,rissebohme-wrongexam2024,identical
+sweagent2024,sweagent2024,identical
+teamatlanta-afc2025,taafc2025,CSV uses full name; bib uses abbreviation
+teamatlanta-sqlite2024,taasc2024,CSV uses full name; bib uses abbreviation
+tob-buttercup2025,tobbuttercup2025,CSV uses full name; bib uses abbreviation
+xbow2025,xbowtop12025,CSV uses short name; bib uses full name

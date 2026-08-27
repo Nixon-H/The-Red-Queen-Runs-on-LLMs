@@ -34,7 +34,7 @@ operation, and the DARPA AI Cyber Challenge's fully autonomous scored rounds; no
 evidence meets our operational definition of A3. We further grade offense$\leftrightarrow$
 defense coupling, documenting an explicit cross-program edge (Project Zero's SQLite campaign
 citing AIxCC as inspiration) while declining field-wide causal claims, and we systematize
-evaluation validity as a measured constraint: information conditions change reported exploitation
+evaluation validity as a measured methodological constraint: information conditions change reported exploitation
 rates by more than an order of magnitude, dataset reconstruction collapses detection performance, and proof-of-
 vulnerability oracles admit documented mitigation gaming. We close with a falsifier-specified
 roadmap --- from autonomy-versus-scale ablations to decision-impact audits --- for converting an
@@ -100,7 +100,7 @@ We cover January 2024--June 2026, with pre-2024 work as background only. We clas
 \emph{documented behavior}, not marketing; we distinguish vendor-reported from independently
 verified results everywhere; and we found it necessary to state plainly that no included
 evidence met our operational definition of an autonomous production hunter (A3). We explicitly
-exclude the AgentFlow paper~\cite{agentless2024} from our comparison and analysis, as its
+exclude the Agentless paper~\cite{agentless2024} from our comparison and analysis, as its
 focus on multi-agent orchestration for code generation falls outside our vulnerability discovery,
 exploitation, and patching scope.
 
@@ -236,14 +236,13 @@ taxonomy.
 
 \subsection{Limitations}
 First-page screening caps per query, publisher-API absence, and English-language sources are
-documented limitations; none, we argue, plausibly reverses the central negative finding
- (Sec.~\ref{sec:conclusion}), which is robust to reasonable variations of the inclusion rule.
+documented limitations; the A3-negative finding remains robust within the documented corpus under the sensitivity scenarios reported in Sec.~\ref{sec:conclusion}, but cannot exclude undocumented systems outside the observable evidence base.
  Classification reliability: all 36 records were classified by the first author using the
  autonomy$\times$loop taxonomy (Sec.~\ref{sec:framework}). To assess reproducibility, we
  applied the classification protocol twice to the 14 autonomy-bearing records plus 6 boundary
  cases (GTG-1002, XBOW, ARTEMIS, Big Sleep, Argusee, AIxCC cluster), once during initial
  coding and once during a blind re-coding pass. The two passes yielded consistent
- classifications for all 20 records; disagreements were concentrated on environment-class
+ classifications for all 20 records, although intermediate uncertainty was concentrated on environment-class
  boundaries (E1 vs.\ E2) and the uncertain classification of GTG-1002, which the
  weakest-missing-condition rule (Sec.~\ref{sec:framework}) resolved without changing any
  record's autonomy level. We report this as evidence that the taxonomy produces stable
@@ -435,7 +434,7 @@ No CVE was assigned: the bug was fixed pre-release~\cite{bigsleep2024}.
 
 \subsection{A2: Entry-Point-Assisted Auditing}
 DARKNAVY's Argusee distributes auditing across Manager, Auditor, and Checker agents backed by an
-LSP-based code reader, and reports the discovery and analysis of CVE-2025-37891 --- an arbitrary
+LSP-based code reader, and DARKNAVY reports that Argusee discovered and analyzed CVE-2025-37891 --- a vendor-characterized arbitrary
 kernel heap overflow in the Linux USB MIDI2-to-UMP conversion path --- alongside fifteen further
 vendor-reported flaws in projects such as GPAC and GIFLIB~\cite{darknavyargusee2025}. Its own
 text, however, fixes the autonomy boundary: Argusee ``is not intended to completely replace
@@ -563,7 +562,7 @@ validation oracle re-runs PoVs against patched builds while acknowledging that M
 recompilation or broad \texttt{catch(Exception)} wrappers can suppress PoVs without semantic
 repair~\cite{taafc2025}. \emph{Buttercup} (Trail of Bits) took the opposite bet:
 deterministic, expertise-decomposed workflows with LLMs only where classical tools fail,
-using exclusively non-reasoning models --- achieving the field's best cost efficiency at
+using exclusively non-reasoning models --- achieving lower reported cost per competition point at
 \$181 per point (versus Atlanta's \$263) on 28 vulnerabilities and 19 patches across 20 CWE
 classes with ${>}90\%$ accuracy~\cite{tobbuttercup2025,r7sokaixcc2026}. \emph{Theori}
 demonstrated purely static, PoV-free patching, trading accuracy for robustness to absent
@@ -720,13 +719,13 @@ so teams built additional oracles (optional \texttt{test.sh}) and accuracy modif
 binding score component~\cite{taafc2025}. Patch correctness is itself iterative and review-dependent:
 the SQLite maintainer's own fix for the FTS5 bug initially added redundant checks to sibling
 tokenizer functions and required revision in a follow-up commit~\cite{taasc2024}. Ensemble
-patching emerged as the dominant mitigation for LLM non-determinism --- Atlantis capped its
+patching emerged as a prominent mitigation strategy among the AIxCC architectures for LLM non-determinism --- Atlantis capped its
 patching agents at six not by principle but because validating one nginx patch takes ten-plus
 minutes~\cite{taafc2025}, an infrastructure constraint on B3 scaling that no benchmark measures.
 
 \subsection{Blind Spots}
 Four gaps bound current evidence. (i)~\emph{Exploit-aware validation}: outside competition
-scoring, no corpus system validates that a patch removes exploitability rather than a symptom;
+scoring, we found no included system with documented exploit-aware patch validation outside the competition artifacts;
 the PoV-as-oracle literature begins and largely ends with AIxCC artifacts~\cite{patcheval2025}.
 (ii)~\emph{Regression and redeployment}: B4 exists in our corpus solely as foundation-documented
 ecosystem transition --- OpenSSF SIG hosting, \$200K-per-team integration funding, Team Atlanta's
@@ -803,22 +802,6 @@ version- and date-aware verification.
 
 
 \input{figures/timeline-f3}
-\subsection{Temporal Association Only}
-Benchmark releases trailing industrial demos, press arms-race narratives, and leaderboard
-movements populate this tier; per our claim ledger they carry no inferential weight here.
-
-\subsection{Falsification Test and Record Reliability}
-The shared-cause objection --- frontier-model releases independently advancing both sides ---
-survives globally: it is defeated only for edges D1--D2, where stated mechanisms precede any
-model-release timing argument. We therefore do not generalize from the AIxCC--Google hub to the
-field. Record reliability itself becomes evidence, once accounting scopes are labeled precisely:
-\$29.5M denotes the cumulative program prize commitment announced in 2024, \$8.5M denotes the
-final competition pool per DARPA's scoring guide~\cite{darpascoring2025}, and OpenSSF reports
-\$30.5M ultimately distributed across both rounds~\cite{openssfaixcc2026} --- distinct
-boundaries, not competing totals for one quantity. Separately, DARPA's own closeout corrects
-its earlier synthetic-vulnerability count from 70 to 63~\cite{darparesults2025}: an
-administrative record correction showing that even authoritative primary sources require
-version- and date-aware verification.
 
 \subsection{Institutional Response}
 
@@ -1077,7 +1060,7 @@ Falsifier: if fixed pipelines close the gap to agents as models improve, ``auton
 re-branding of scale, weakening I1's substantive reading.
 
 \textbf{E2 --- Quantifying write-up exposure in agentic CTF suites (V1).}
-Gap: public-solution contamination is asserted everywhere, measured nowhere for multi-step
+Gap: public-solution contamination is widely hypothesized but insufficiently quantified for multi-step
 agents. Setup: time-split evaluation on challenges disclosed after each model's cutoff, against
 a matched pre-cutoff set. Controls: difficulty matching via human solve rates; retrieval
 audits. Metric: within-model success delta across the disclosure boundary.
@@ -1145,15 +1128,16 @@ vendor-reported with hallucination caveats and human-selected targets.
 \textbf{On I2 (documented edges; causality bounded).} Offense and defense are coupled where the
 record says so: Project Zero named AIxCC's Team Atlanta as the inspiration for its SQLite
 variant-analysis campaign; a maintainer extended an AI-found bug's fix to sibling code paths;
-\$30M-class prizes became transition funding, university labs, and foundation governance; and
+\$29.5M in cumulative program prizes funded \$200K/team transition integration and university research,
+while \$30.5M in competition distributions supported foundation governance; and
 threat intelligence seeded a pre-exploitation disclosure. These documented edges do not license
 the arms-race vernacular: shared-cause explanations survive globally, and attacker-side
 response remains unmeasured.
 
 \textbf{On I3 (observed; binding claim pending E7).} Validity failures here are not rhetorical.
 Information conditions change reported exploitation rates by more than an order of magnitude; dataset
-reconstruction collapses detection SOTA; oracle gaming has a named taxonomy; environment
-heuristics decide winners; and leaderboard counting conflates outcome categories. Because
+reconstruction collapses detection SOTA; oracle gaming has a named taxonomy; environment-specific
+heuristics can materially affect system outcomes; and leaderboard counting conflates outcome categories. Because
 these measures allocate prizes and rank vendors directly --- and inform funding
 decisions through transition programs --- evaluation validity \emph{appears to be} a binding
 methodological constraint on what this field can claim to know, though the decision-impact
@@ -1251,7 +1235,7 @@ notes in repository file \texttt{search-log.md}.
 \section{AIxCC and Industrial Timeline}
 \label{app:timeline}
 \begin{center}
-\captionof{table}{Dated event chain (all primary-sourced; grades per Sec.~\ref{sec:coevolution}).}
+\captionof{table}{Dated event chain (primary sources where available; secondary synthesis explicitly identified; grades per Sec.~\ref{sec:coevolution}).}
 \label{tab:timeline}
 \centering\scriptsize
 \resizebox{\columnwidth}{!}{%
@@ -1259,16 +1243,16 @@ notes in repository file \texttt{search-log.md}.
 \hline
 Date & Event (source) \\
 \hline
-2023-08 & AIxCC announced; ${\sim}\$29.5$M cumulative program commitment [darpa.mil 2024 page] \\
-2024-08 & ASC: 42 teams $\rightarrow$ 7 finalists (\$2M each); Atlantis autonomously patches real SQLite FTS5 bug (unscored); official fix e9b919d5 follows [taasc2024] \\
-2024-11 & Big Sleep reports SQLite stack-buffer-underflow zero-day; cites AIxCC inspiration (edge D1); AFL 150 CPU-h fails to rediscover; no CVE assigned [bigsleep2024]\\
-2024-11 & OSS-Fuzz reports 26 vulns from AI-generated fuzz targets incl.\ CVE-2024-9143 (${\sim}$20 years latent) [ossfuzz-levelingup-2024]\\
-2025-05 & DARKNAVY Argusee finds CVE-2025-37891 (Linux USB); root LPE by human team [darknavyargusee2025]\\
-2025-06 & XBOW \#1 US HackerOne; ${\sim}$1060 submissions; mandated human review disclosed [xbowtop12025]\\
-2025-07 & CVE-2025-6965 threat-intel-seeded disclosure; ``first time an AI agent has been used to directly foil'' claim [bloggoogle2025,nvd6965]\\
-2025-08 & AFC finals: 48 challenges/23 repos; 143 h fully autonomous operation; 18 real vulns found; Atlanta \$4M / ToB \$3M / Theori \$1.5M; \$200K/team transition funding [darparesults2025,tobbuttercup2025,taafc2025,darpascoring2025]\\
-2025-09..11 & Anthropic reports GTG-1002 campaign, 80--90\% autonomous execution [anthropicgtg2025,anthropicgtgreport2025]\\
-2026-02..05 & R7 SoK camera-ready (USENIX Sec'26); OpenSSF legacy retrospective: CRS SIG, FuzzingBrain 62v/26proj, OSS-CRS 25v/16proj [r7sokaixcc2026,openssfaixcc2026]\\
+2023-08 & AIxCC announced; ${\sim}\$29.5$M cumulative program commitment~\cite{darparesults2025} \\
+2024-08 & ASC: 42 teams $\rightarrow$ 7 finalists (\$2M each); Atlantis autonomously patches real SQLite FTS5 bug (unscored); official fix e9b919d5 follows~\cite{taasc2024} \\
+2024-11 & Big Sleep reports SQLite stack-buffer-underflow zero-day; cites AIxCC inspiration (edge D1); AFL 150 CPU-h fails to rediscover; no CVE assigned~\cite{bigsleep2024}\\
+2024-11 & OSS-Fuzz reports 26 vulns from AI-generated fuzz targets incl.\ CVE-2024-9143 (${\sim}$20 years latent)~\cite{ossfuzz-levelingup-2024}\\
+2025-05 & DARKNAVY Argusee finds CVE-2025-37891 (Linux USB); root LPE by human team~\cite{darknavyargusee2025}\\
+2025-06 & XBOW \#1 US HackerOne; ${\sim}$1060 submissions; mandated human review disclosed~\cite{xbowtop12025}\\
+2025-07 & CVE-2025-6965 threat-intel-seeded disclosure; ``first time an AI agent has been used to directly foil'' claim~\cite{bloggoogle2025,nvd6965}\\
+2025-08 & AFC finals: 48 challenges/23 repos; 143 h fully autonomous operation; 18 real vulns found; Atlanta \$4M / ToB \$3M / Theori \$1.5M; \$200K/team transition funding~\cite{darparesults2025,tobbuttercup2025,taafc2025,darpascoring2025}\\
+2025-09..11 & Anthropic reports GTG-1002 campaign, 80--90\% autonomous execution~\cite{anthropicgtg2025,anthropicgtgreport2025}\\
+2026-02..05 & R7 SoK camera-ready (USENIX Sec'26); OpenSSF legacy retrospective: CRS SIG, FuzzingBrain 62v/26proj, OSS-CRS 25v/16proj~\cite{r7sokaixcc2026,openssfaixcc2026}\\
 \hline
 \end{tabular}}
 \end{center}
