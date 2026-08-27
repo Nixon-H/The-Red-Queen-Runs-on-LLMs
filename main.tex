@@ -467,8 +467,9 @@ so XBOW is A2 regardless of marketing language.
 The ARTEMIS study (arXiv preprint December 2025) places six agent instances against ten
 professionals on the same corporate-style network (${\sim}8{,}000$ hosts, 12 subnets), scoring the
 first ten hours of sixteen-hour runs~\cite{artemis2025}. We use it as environment-class E2
-evidence that agents can operate on realistic infrastructure; superiority percentages not
-independently reported in the primary study are excluded.
+evidence that agents can operate on realistic infrastructure; comparative performance figures
+are treated separately because the study's evaluation design does not isolate general agent
+capability from scaffold and task conditions.
 
 \subsection{Cross-Cutting Comparison}
 Table~\ref{tab:disccompare} consolidates the discovery records. Reading down the autonomy
@@ -482,8 +483,9 @@ systems by their degree of autonomous operation.
 \begin{table}[t]
 \centering\scriptsize
 \caption{Discovery-side comparison across autonomy levels. E-class per protocol v4;
-validity flags use the V1--V5 taxonomy of Sec.~\ref{sec:validity}. All production statistics are
-vendor-reported unless noted.}
+validity flags use the V1--V5 taxonomy of Sec.~\ref{sec:validity}. Operational statistics are
+source-reported; their provenance varies across vendor disclosures, research reports, and
+controlled experiments.}
 \label{tab:disccompare}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{p{1.55cm}llp{1.5cm}p{1.6cm}p{1.7cm}}
@@ -889,7 +891,8 @@ conditions~\cite{fang2024agents}. This more-than-an-order-of-magnitude differenc
 supplied-knowledge variable --- the CVE text functions as a partial answer key --- so any
 capability claim inherits its information condition. We therefore report such results only with
 their conditions attached, and the same discipline applies to temporal leakage: the benchmark
-authors report that vulnerabilities were publicly disclosed before model training cutoffs.
+authors report that a substantial subset of vulnerabilities post-dated the relevant model
+knowledge cutoff, yet supplied CVE descriptions still dramatically altered performance.
 
 \subsection{V1/V5: Dataset-Level Invalidity, Measured by Reconstruction}
 PrimeVul demonstrates that the detection literature's benchmark layer was structurally
