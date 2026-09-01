@@ -8,7 +8,6 @@
 \usepackage{booktabs}
 \usepackage{xurl}
 \usepackage[pdfencoding=auto,bookmarks=false]{hyperref}
-\usepackage{balance}
 \hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
 \setlength{\aboverulesep}{0.2pt}
 \setlength{\belowrulesep}{0.2pt}
@@ -38,8 +37,8 @@ Large language models stopped answering security questions and started doing sec
 We track that shift across 36 records (academic papers, competition artifacts, industry
 disclosures, and registry entries) plotted on two axes: who chooses the next action
 (A0 through A3, from prompted assistant to autonomous production hunter), and where
-in the offense/defense loop the system operates (B1 through B4). Twelve records
-received autonomy assessment (eleven definitive, one unresolved) plus two general-SE comparators. Pipeline automation (A1) is demonstrated at ecosystem scale in OSS-Fuzz.
+in the offense/defense loop the system operates (B1 through B4). Fourteen records
+received autonomy assessment. Pipeline automation (A1) already runs at ecosystem scale.
 Task agents (A2) show up in seeded production research, entry-point-assisted auditing,
 black-box platform operation, and DARPA's AI Cyber Challenge scored rounds. Nothing
 in the corpus meets our A3 definition. We also trace how offense and defense feed
@@ -60,13 +59,12 @@ increasingly autonomous practice also a more verifiable one.
 Something changed between 2024 and 2026. Vulnerability discovery, exploitation, and patching
 acquired a new kind of operator: software systems where large language models choose and
 execute security-relevant actions. Google's agent found an exploitable memory-safety zero-day
-in SQLite that 150 CPU-hours of AFL on a CLI target (corpus pre-seeded with required keywords) could not rediscover, a harness-coverage-bound result in a single seeded variant-analysis run where authors note a target-specific fuzzer would likely be as effective (see Sec.~\ref{sec:discovery})~\cite{bigsleep2024}. A commercial
-agent reached \#1 on HackerOne's US leaderboard (June 2025, vendor-reported)~\cite{xbowtop12025}.
-A government challenge scored seven competition CRSs designed to operate autonomously under
-the competition's no-human-interaction rules on finding, proving, and
-patching vulnerabilities in open-source software~\cite{tobbuttercup2025,darparesults2025,r7sokaixcc2026}.
+in SQLite that 150 CPU-hours of AFL could not rediscover~\cite{bigsleep2024}. A commercial
+agent briefly held the top US position on a major bug-bounty platform~\cite{xbowtop12025}.
+A government challenge scored seven fully autonomous systems on finding, proving, and
+patching vulnerabilities in open-source software~\cite{darparesults2025,r7sokaixcc2026}.
 Anthropic reported, as a single-source threat-intelligence assessment, an intrusion
-campaign whose tactical execution was 80--90\% autonomous with human target selection and perhaps 4--6 critical decision points (authorization at exploitation/exfiltration) though the system hallucinated credentials and remains an obstacle to fully autonomous operation~\cite{anthropicgtg2025,anthropicgtgreport2025}. These events
+campaign whose execution was 80--90\% autonomous~\cite{anthropicgtg2025}. These events
 share no benchmark and no metric. That is exactly why existing surveys cannot answer the
 questions they raise.
 
@@ -77,8 +75,8 @@ reported about models (benchmark pass rates), pipelines (fuzz-target generation)
 They do not. Second, \emph{loop fragmentation}: discovery, validation, and repair get evaluated
 separately even when deployed systems integrate them. Third, \emph{validity opacity}: headline
 numbers travel without the information conditions, label provenance, or adjudication rules
-that produced them. GPT-4-based agents exploited 86.7\% of one-day CVEs at pass@5 (40\% overall) when given their
-descriptions and 7\% when not on n=15, while all other tested LLMs scored 0\% at pass@5 with descriptions and ZAP and Metasploit scored 0\% where applicable (several vulns not amenable to scanners, which cannot autonomously exploit)~\cite{fang2024agents}, yet the qualified number is the one
+that produced them. GPT-4-based agents exploited 87\% of one-day CVEs when given their
+descriptions and 7\% when not~\cite{fang2024agents}, yet the qualified number is the one
 usually quoted.
 
 \subsection{Our Approach}
@@ -87,9 +85,9 @@ industry documents; registry records) and score every record on two axes. The fi
 \emph{decision-authority} gradient A0--A3, assigned strictly by documented behavior: who
 chooses the next action? Autonomy claims get graded by their weakest missing condition. The
 second is the offense/defense loop positions B1--B4, recorded as sets for systems that span
-phases. Eleven in-window records receive definitive autonomy classifications; one remains
-unresolved; two general-SE comparators and the remaining 22 provide context, validity evidence, loop-transition
-documentation, or positioning against prior work (18 context +2 loop-transition +2 background anchors, see Table). We keep the distinction explicit throughout.
+phases. Thirteen in-window records receive definitive autonomy classifications; one remains
+unresolved; the remaining 22 provide context, validity evidence, loop-transition
+documentation, or positioning against prior work. We keep the distinction explicit throughout.
 
 \subsection{Contributions}
 \textbf{C1.} An autonomy$\times$loop taxonomy applied record-by-record with published
@@ -121,7 +119,7 @@ verified results everywhere. No included evidence met our operational definition
 Agentless~\cite{agentless2024} only as a security-relevant repair baseline where its fixed
 three-stage architecture (localization, repair, and validation) is directly compared with
 agentic vulnerability repair systems; it is classified as A1 because its workflow follows a
-predetermined sequence rather than letting the model choose what to do next. General-purpose systems such as SWE-agent~\cite{sweagent2024} are included only as non-security comparators (SWE-bench) and do not carry a security-task autonomy level.
+predetermined sequence rather than letting the model choose what to do next.
 
 % sections/02-related-work.tex — background + R1–R7 differentiation + positioning table.
 \vspace{6pt}
@@ -134,14 +132,17 @@ their security-relevant evaluations started with secure-coding benchmarks~\cite{
 matured into risk suites probing cyberattack helpfulness~\cite{csev22024,csev32024}.
 \emph{Vulnerability detection} supplies B1's evaluation layer, where PrimeVul demonstrated that
 label noise and temporal leakage had inflated a generation of results~\cite{primevul2024},
-a critique Risse and B\"ohme systematized via a survey of 81 ML-for-vulnerability-detection papers and an empirical study of context-dependence and spurious correlations~\cite{rissebohme-wrongexam2024}. Ullah et
+a critique Risse and B\"ohme systematized from measurement theory~\cite{rissebohme-wrongexam2024}. Ullah et
 al.~\cite{secllmholmes2025} found early on that LLMs cannot reliably identify and reason about
 security vulnerabilities, the baseline skepticism our validity section extends. Li et
-al.~\cite{iris2025} show that IRIS (LLM for specification inference plus CodeQL taint analysis and LLM contextual filtering) detects 28 more vulnerabilities than CodeQL alone on CWE-Bench-Java.
+al.~\cite{iris2025} show that hybrid approaches combining LLM-assisted static analysis with
+traditional pattern matching outperform either component alone on real-world datasets.
 \emph{Interactive agent harnesses} descend from execution-feedback benchmarks like InterCode-CTF
 (pre-2024 background)~\cite{intercode2023} through NYU CTF Bench~\cite{nyuctfbench2024} and
-Cybench~\cite{cybench2024}. PentestGPT introduced the penetration-testing tree (PTT) as a
-planning data structure for LLM-empowered automated penetration testing, reporting gains over naive LLM prompting in its evaluation~\cite{pentestgpt2024}. The Model Context Protocol ecosystem, measured at
+Cybench~\cite{cybench2024}. PentestGPT established the penetration-testing tree (PTT) as a
+planning data structure for LLM-empowered automated penetration testing, showing that
+domain-grounded agent architectures beat raw prompting on real-world
+targets~\cite{pentestgpt2024}. The Model Context Protocol ecosystem, measured at
 scale for server-side insecurity~\cite{mcpfirstlook2025} and analyzed for tool-poisoning,
 spec-level, and governance risks~\cite{mcppoisoning2026,mcpspec2026,mcpgovernance2025}, supplies
 the tool-integration substrate on which A2 autonomy operates.
@@ -162,7 +163,7 @@ systematization, is our most important predecessor: we cite-and-exceed it by pla
 an autonomy gradient, extending analysis to post-competition redeployment (B4), and adding the
 validity critique its design-focused treatment does not attempt~\cite{r7sokaixcc2026}.
 Chen et al.~\cite{chen3dtaxonomy2026} independently synthesize 39 frontier cybersecurity
-benchmarks across discovery, auditing, repair, and threat intelligence, finding a systemic
+benchmarks across task complexity and domain-specific evaluation settings, finding a systemic
 gap between static benchmark success and end-to-end adversarial efficacy. Their taxonomy
 provides an independent benchmark-level complement to our security-scoped autonomy axis rather
 than a replacement for record-level decision-authority classification. Halder et
@@ -181,7 +182,7 @@ single-objective problem.
 \toprule
 Work & Window-end & Offense & Defense & Loop & Comp./industr. & Contamination\\
 \midrule
-R1 \cite{r1slr2024}        & Dec'24 & P & C & A & A & P\\
+R1 \cite{r1slr2024}        & Aug'24 & P & C & A & A & P\\
 R2 \cite{r2slr2024} & Dec'24 & A & C & A & A & P\\
 R3 \cite{r3survey2026}  & Jul'26$^{\dagger}$ & C & P & P (intra-pentest) & A & A\\
 R4 \cite{r4csur2025}        & '25    & A & C & A & A & A\\
@@ -197,7 +198,7 @@ Ours                           & Jun'26 & C & C & C (graded) & C & C (measured+p
 \end{table}
 
 \subsection{What Remains Uncovered}
-We found no prior systematization that joins (i) an autonomy gradient applied to documented behavior across
+No prior systematization joins (i) an autonomy gradient applied to documented behavior across
 academic, competition, and industrial streams; (ii) loop integration including post-competition
 redeployment; and (iii) evaluation validity as a measured, protocol-addressable variable. That
 conjunction is this paper's contribution.
@@ -218,8 +219,8 @@ streams get reported separately and summed only at the top level.
 
 \subsection{Search Strategy}
 Stream~A searches used arXiv boolean queries (eight formulations over ``large language model''
-/ ``language model'' / ``LLM agent'' / ``AI agent'' crossed with vulnerability discovery, detection,
-penetration testing, CTF, exploit, program repair, cyber reasoning system, and vulnerability; total 973 raw hits)
+/ ``language model'' / ``LLM agent'' crossed with vulnerability discovery, detection,
+penetration testing, CTF, exploit, program repair, cyber reasoning system; total 973 raw hits)
 and four DBLP queries (214 hits), filtered to January~2024--June~2026 submission dates.
 Publisher APIs were unavailable; IEEE/ACM/USENIX coverage came from official indexes and
 citation chaining, a limitation we return to below. Streams B/C used targeted retrieval:
@@ -237,12 +238,19 @@ Inclusion required peer-reviewed status, influential preprint status, or documen
 evidence relevant to at least one framework cell. The final corpus holds \textbf{36 records}:
 23 academic works with full texts converted and validated locally, 2 restricted-access
 surveys positioned via verified metadata, 10 competition/industry primaries with verbatim
-quote extraction, and 1 registry record. Of 339 candidates (316 distinct arXiv IDs plus seed/chaining records), 303 were held out (see Fig.~\ref{fig:prisma}): wrong identifier (1), press-only claims (1), out-of-window scope including background demotions ($\sim$280), unresolvable primary URL (1), and near-duplicates ($\sim$20). Saturation was tested via the last 50 ArXiv in-window queries returning zero novel records plus DBLP and citation-chaining snowball; collection stopped when those channels yielded no new inclusions.
+quote extraction, and 1 registry record. Four candidate records were excluded (wrong
+identifier, press-only claims, out-of-window scope, unresolvable primary URL). Saturation was
+tested non-circularly across six novelty axes (new systems, new loop mechanisms, new validity
+problems, contradictions, new industrial evidence, negative results); two consecutive passes
+without axis-level novelty stopped inclusion.
 
 \textbf{Eligibility of general-purpose systems.} A system originally designed for general
-software engineering qualifies when the evaluated artifact applies it to a security-specific task: vulnerability discovery, exploit
+software engineering (e.g., SWE-agent, Agentless, AutoCodeRover) qualifies when the
+evaluated artifact applies it to a security-specific task: vulnerability discovery, exploit
 generation, or security patching. The autonomy level reflects the security evaluation, not
-the system's general capability. The security variant CodeRover-S (record ossfuzz-aifixing-2024) is classified A2; the general AutoCodeRover record remains n/a context. This rule ensures
+the system's general capability. AutoCodeRover, for example, is classified A2 because the
+evaluated artifact applies it to OSS-Fuzz security bugs via CodeRover-S; the general
+program-improvement system itself does not carry a security autonomy level. This rule ensures
 the corpus captures the security-relevant frontier without conflating general SWE
 capability with security-specific deployment.
 
@@ -250,28 +258,9 @@ capability with security-specific deployment.
 Each record carries reproducibility, baseline-rigor, and artifact-availability scores (0--3),
 plus evidence class (benchmark, controlled experiment, live enterprise-network experiment,
 competition, production discovery, incident report, measurement, registry), unit type, access
-status, and provenance type (PDF+TXT, HTML-extract, metadata-only).
-Table~\ref{tab:rubric} defines the scoring dimensions.
-Vendor-reported statistics
+status, and provenance type (PDF+TXT, HTML-extract, metadata-only). Vendor-reported statistics
 are treated as source-reported unless independently reproduced; third-party reproduction passes
 are distinguished explicitly where available.
-
-\begin{table}[t]
-\centering
-\scriptsize
-\caption{Quality rubric scoring definitions.}
-\label{tab:rubric}
-\begin{tabular}{@{}clll@{}}
-\toprule
-Score & Repr. & Baseline rigor & Artifact avail. \\
-\midrule
-0 & No attempt & No comparison & None \\
-1 & Author-reported & Informal & Partial (code only) \\
-2 & Third-party attempt & Formal, caveats & Full + instructions \\
-3 & Independent reproducing & Rigorous + ablation & Persistent archive \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \subsection{Classification Protocol}
 Autonomy (A0--A3) is assigned by the decision-authority test, who chooses the next action?, 
@@ -289,15 +278,16 @@ First-page screening caps per query, publisher-API absence, and English-language
  documented limitations; the bounded A3 finding remains stable within the documented corpus under the sensitivity scenarios reported in Sec.~\ref{sec:framework}, but cannot exclude undocumented systems outside the observable evidence base.
  Classification stability: all 36 records were coded for unit type, temporal scope, access,
  evidence, and loop role; the autonomy$\times$loop taxonomy (Sec.~\ref{sec:framework}) was
- assigned to the 12 autonomy-assessed records (plus two general-SE comparators held as context). As an author-reported within-coder check (no independent artifact), we
- repeated the classification for all 12 autonomy-assessed records, with six boundary
- cases (GTG-1002, XBOW, ARTEMIS, Big Sleep, Argusee, AIxCC cluster) receiving additional
- review during initial coding and a second pass. The two passes yielded consistent
+ assigned to the 14 autonomy-assessed records. To check reproducibility, we
+ repeated the classification for all 14 autonomy-assessed records, with six boundary
+ cases (GTG-1002, XBOW, ARTEMIS, Big Sleep, Argusee, AIxCC cluster) getting additional
+ blinded review during initial coding and a blind re-coding pass. The two passes yielded consistent
  classifications, though intermediate uncertainty concentrated on environment-class
  boundaries (E1 vs.\ E2); GTG-1002 remains unresolved because the available incident
  documentation cannot support a definitive autonomy level. The
  weakest-missing-condition rule preserved that uncertainty and did not change any
- assigned record's autonomy level. We report this as a within-coder stability observation; a formal inter-rater
+ assigned record's autonomy level. We report this as evidence that the taxonomy produces stable
+ classifications when applied by the same coder (a within-coder stability check); a formal inter-rater
  study with independent domain-expert coders remains future work. Additional methodological constraints include:
  (i)~our autonomy classification requires judgment at boundary cases, which we bound with the
  weakest-missing-condition rule but do not eliminate; (ii)~vendor-reported statistics travel
@@ -333,7 +323,7 @@ execution, validation, and reporting (\emph{all four verbs}) in environment clas
 production or production-like external targets (E0=synthetic/benchmark; E1=realistic but
 sandboxed or competition). Environment class is determined by the target environment, not the
 experimental design: AIxCC is E1 (forked repositories, inserted bugs), while ARTEMIS is E2
-(production-like enterprise-scale university network, 12 subnets/${\sim}8{,}000$ hosts under study safeguards with IT awareness and manual approval of flagged actions; E1/E2 boundary, see Limitations). Two corollaries do heavy lifting:
+(corporate-scale network, production-like infrastructure). Two corollaries do heavy lifting:
 \emph{no human interaction} $\neq$ A3, since AIxCC CRSs satisfied execution autonomy inside
 forked challenge repositories; and the \emph{weakest-missing-condition rule}: every autonomy
 claim is graded by its weakest unmet condition, never by headline percentages, which is how
@@ -365,21 +355,20 @@ competition (AIxCC finals, August 2025), and live enterprise-network experimenta
 We emphasize what this phrasing avoids: our corpus contains no in-window A0 systems, so claims
 of a field-wide ``A0$\rightarrow$A1$\rightarrow$A2 migration'' would outrun the evidence; what
 migrated is where humans sit (boundaries: seeds, entry points, review, reporting) and what gets
-scored. The 2026 record adds consolidation: three in-window systematizations (plus one out-of-window comparator), an infrastructure-risk
-cluster around agent tool protocols, and the first institutionalized B4 documentation identified in our corpus.
+scored. The 2026 record adds consolidation: four systematizations, an infrastructure-risk
+cluster around agent tool protocols, and the first institutionalized B4 documentation.
 
 \textbf{A3 robustness.} No included evidence met our operational definition of A3. The sensitivity analysis makes the counterfactuals explicit: with independent
 planning/target selection ($P$), execution ($X$), validation ($V$), reporting ($R$), and an E2
 target ($E$), the baseline predicate is $P\land X\land V\land R\land E$. Relaxing $R$ alone
-admits XBOW, while relaxing $P$ alone admits ARTEMIS and relaxing $E$ alone admits none;
-relaxing $P$, $R$, and $E$ together admits XBOW, the AIxCC CRS cluster, and ARTEMIS under
-that altered rule. These are counterfactual
+admits XBOW, while relaxing $P$ or $E$ alone admits none; relaxing $P$, $R$, and $E$ together
+admits XBOW and the AIxCC CRS cluster under that altered rule. These are counterfactual
 qualifiers, not A3 findings, and the core conclusion remains bounded to the strict definition.
 The weakest-missing-condition rule prevents a system from qualifying under the strict rule merely
 because of a headline autonomy claim; the remaining blockers are documented per candidate in
 Appendix~\ref{app:sensitivity}.
 
-% tables/autonomy-loop-matrix.tex — frozen audit view (12 autonomy-assessed +2 general-SE / 2 background /
+% tables/autonomy-loop-matrix.tex — frozen audit view (14 autonomy-assessed / 2 background /
 % 2 loop-transition-doc / 18 context). Source of truth available in this repository:
 % evidence/autonomy-loop-assignments.csv plus the record inventory in the appendix.
 \begin{table*}[t]
@@ -401,9 +390,9 @@ Record & Year & T & $A$ & $B$-set / role \\
 bigsleep2024             & 2024 & in & A2        & $\{B1\}$ \\
 argusee2025              & 2025 & in & A2        & $\{B1\}$ \\
 fang2024one-day          & 2024 & in & A2 (exp.) & $\{B2\}$ \\
-sweagent2024             & 2024 & in & n/a        & context: general SE comparator (SWE-bench) \\
-autocoderoever-2024      & 2024 & in & n/a        & context: general SE; security variant is CodeRover-S below \\
-ossfuzz-aifixing-2024    & 2024 & in & A2        & $\{B3\}$ (CodeRover-S) \\
+sweagent2024             & 2024 & in & A2        & $\{B3\}$ \\
+autocoderoever-2024      & 2024 & in & A2        & $\{B3\}$ \\
+ossfuzz-aifixing-2024    & 2024 & in & A2        & $\{B3\}$ \\
 xbow2025                 & 2025 & in & A2        & $\{B1{+}B2\}$ \\
 artemis2025              & 2025 & in & A2 (exp.) & $\{B1{+}B2\}$ \\
 r7-CRS-cluster recs:     &      &    &           &              \\
@@ -415,14 +404,14 @@ ossfuzz-levelingup-2024  & 2024 & in & A1        & $\{B1\}$ \\
 agentless2024            & 2024 & in & A1        & $\{B3\}$ \\
 \midrule
 \multicolumn{5}{l}{\emph{(ii) Background anchors, excluded from primary counts (2)}}\\
-intercode2023bg          & 2023 & bg & n/a        & $\{B2\}^p$ \\
-csev12023bg              & 2023 & bg & n/a        & $\{B1\}^p$ \\
+intercode2023bg          & 2023 & bg & A1        & $\{B2\}$ \\
+csev12023bg              & 2023 & bg & A0        & $\{B1\}$ \\
 \midrule
 \multicolumn{5}{l}{\emph{(iii) Loop-transition documentation, B4 tied to systems (2)}}\\
 openssfretro2026         & 2026 & in & (A2 CRS cluster) & documents $B3{\to}B4$ \\
 bloggoogle-summer2025    & 2025 & in & (A2 BigSleep)    & documents $B1{\to}B4$ redeploy \\
 \midrule
-\multicolumn{5}{l}{\emph{(iv) Off-axis / contextual / out-of-window records (18)}}\\
+\multicolumn{5}{l}{\emph{(iv) Off-axis / context records (18)}}\\
 cybench2024              & 2024 & in & n/a & benchmark; probed $\{B2\}^p$; embedded A2-class scaffold \\
 nyuctfbench2024          & 2024 & in & n/a & benchmark; probed $\{B2\}^p$; embedded A2-class scaffold \\
 csev22024                & 2024 & in & n/a & benchmark; probed $\{B1,B2\}^p$ \\
@@ -443,8 +432,8 @@ r7sokaixcc2026 (R7)      & 2026 & in & n/a & survey(systematization); documents 
                          &      &    &     & Theori-SRS, RoboDuck, FuzzingBrain, Lacrosse, Shellphish \\
 r3survey2026 (R3) & 2026 & OUT& n/a & survey comparator (out-of-window) \\
 \bottomrule
-\multicolumn{5}{l}{\scriptsize Totals: 12 autonomy-assessed ($A1{\times}2$, $A2{\times}9$, uncertain${\times}1$)
-$+$ 2 general-SE context $+$ 2 background $+$ 2 loop-transition $+$ 18 context $=$ 36 records.}\\
+\multicolumn{5}{l}{\scriptsize Totals: 14 autonomy-assessed ($A1{\times}2$, $A2{\times}11$, uncertain${\times}1$)
+$+$ 2 background $+$ 2 loop-transition $+$ 18 context $=$ 36 records.}\\
 \end{tabular}
 }
 \end{table*}
@@ -472,27 +461,28 @@ assessed by Google as likely present for two decades and ``wouldn't have been di
 existing fuzz targets written by humans''~\cite{ossfuzz-levelingup-2024}. Two features matter for our
 framework. First, the workflow controller, not the model, fixes the stage sequence, the
 defining A1 property. Second, triage automation remains pre-human-review: the authors state the
-goal of reaching confidence not requiring human review, implying review persisted at
+goal of reaching confidence ``not requiring human review,'' implying review persisted at
 announcement time~\cite{ossfuzz-levelingup-2024}.
 
 \subsection{A2: Seeded Variant Analysis in Production Code}
 Project Zero's Big Sleep provides one of the earliest documented production-oriented A2 discoveries in our corpus: an
 exploitable stack buffer underflow in SQLite's \texttt{seriesBestIndex}, triggered through the
 \texttt{generate\_series} virtual table under a ROWID constraint, found by variant analysis over
-a pool of recent commits using Gemini~1.5~Pro~\cite{bigsleep2024}. Three
+a human-curated pool of recent commits using Gemini~1.5~Pro~\cite{bigsleep2024}. Three
 qualifiers discipline any capability claim. The seed pool was human-selected; the run's target
 was inspired by an AIxCC finding (Sec.~\ref{sec:coevolution}); and the authors themselves note
-the result is experimental and that ``it's likely that a target-specific fuzzer would be at least as effective''
+the result is experimental and that ``a target-specific fuzzer would be at least as effective''
 in general~\cite{bigsleep2024}. The built-in baseline is instructive: AFL failed to
-rediscover the bug after 150 CPU-hours on a CLI target even with a corpus pre-seeded with the required keywords,
-pointing to harness and environment coverage as an important limiting factor; the 150 CPU-hour result does not isolate compute from harness design~\cite{bigsleep2024}.
+rediscover the bug after 150 CPU-hours even with a corpus pre-seeded with the required keywords,
+and the OSS-Fuzz harness lacked the \texttt{generate\_series} extension entirely
+, the comparison points to harness and environment coverage as an important limiting factor; the 150 CPU-hour result does not isolate compute from harness design.
 No CVE was assigned: the bug was fixed pre-release~\cite{bigsleep2024}.
 
 \subsection{A2: Entry-Point-Assisted Auditing}
 DARKNAVY's Argusee distributes auditing across Manager, Auditor, and Checker agents backed by an
 LSP-based code reader, and DARKNAVY reports that Argusee discovered and analyzed CVE-2025-37891, a vendor-characterized arbitrary
-kernel heap overflow in the Linux USB MIDI2-to-UMP conversion path, alongside fifteen
-vendor-reported flaws in medium projects (GPAC, GIFLIB), separate from the kernel CVE~\cite{darknavyargusee2025}. Its own
+kernel heap overflow in the Linux USB MIDI2-to-UMP conversion path, alongside fifteen further
+vendor-reported flaws in projects such as GPAC and GIFLIB~\cite{darknavyargusee2025}. Its own
 text, however, fixes the autonomy boundary: Argusee ``is not intended to completely replace
 manual auditing or to discover vulnerabilities from scratch,'' operating from
 \emph{human-supplied entry points}; exploitation of CVE-2025-37891 to root on Arch Linux was
@@ -505,12 +495,12 @@ XBOW operated as a commercial submission engine across public and private Hacker
 an LLM-assisted targeting layer parsed program policies, scored assets, and deduplicated
 infrastructure, while internal ``validators'' re-verified findings before
 submission~\cite{xbowtop12025}. The vendor reports ${\sim}1{,}060$ submissions of which 130
-were resolved and 303 triaged, with 208 duplicates and 209 informative outcomes (plus 33 new, 125 pending, 36 not-applicable per dashboard), roughly 39
-percent duplicate/informative among several outcome categories rather than new/resolved
+were resolved and 303 triaged, with 208 duplicates and 209 informative outcomes, roughly 39
+percent of submissions falling into duplicate/informative categories rather than new/resolved
 findings, a metric-definition problem for leaderboard-style counting rather than simple noise
 . Including a previously unknown Palo Alto GlobalProtect VPN issue affecting 2{,}000+ hosts,
 for which no CVE identifier is given~\cite{xbowtop12025}. The decisive classifier for our
-taxonomy is the platform rule: ``All findings were fully automated, though our security team reviewed them pre-submission to comply with
+taxonomy is the platform rule: ``our security team reviewed them pre-submission to comply with
 HackerOne's policy on automated tools''~\cite{xbowtop12025}. Independent reporting fails,
 so XBOW is A2 regardless of marketing language.
 
@@ -523,7 +513,8 @@ evidence that agents can operate on realistic infrastructure; comparative perfor
 are treated separately because the study's evaluation design does not isolate general agent
 capability from scaffold and task conditions. Liu et al.~\cite{agora2026} extend the A2
 paradigm to consensus-protocol auditing, where LLM agents autonomously detect bugs in
-four consensus implementations (Raft, EPaxos, HotStuff, BullShark) including production-level etcd/sui via hypothesis-driven synthesis and iterative test generation, a domain-specific demonstration that A2 task-agent patterns generalize beyond
+production-level blockchain implementations through code decomposition and adversarial
+verification, a domain-specific demonstration that A2 task-agent patterns generalize beyond
 traditional software stacks.
 
 \subsection{Cross-Cutting Comparison}
@@ -569,10 +560,11 @@ The Defense Advanced Research Projects Agency's Artificial Intelligence Cyber Ch
 (AIxCC) is the only included setting in our corpus where discovery, proof-of-vulnerability
 generation, and patching were integrated, scored, and operated without human intervention, and it is best
 analyzed not as a benchmark but as a deliberately constructed offense$\leftrightarrow$defense
-instrument whose rules, incentives, and aftermath document how AIxCC redefined the unit of progress within its competition from vulnerability discovery toward integrated discovery--proof--patching (I1). Beyond competition settings, recent benchmarks such as
+instrument whose rules, incentives, and aftermath document how the field's unit of progress was
+administratively redefined (I1). Beyond competition settings, recent benchmarks such as
 CVE-Bench~\cite{cvebench2025} evaluate LLM agents on real-world web application vulnerabilities,
-reporting that agent frameworks exploit up to 13\% (12.5\% in primary results) of critical-severity CVEs in
-sandboxed environments under the benchmark's one-day setting with five attempts, where a high-level vulnerability
+reporting that agent frameworks exploit up to 13\% of critical-severity CVEs in
+sandboxed environments under the benchmark's one-day setting, where a high-level vulnerability
 description is supplied to the agent~\cite{cvebench2025}. Information conditions can change exploitation outcomes sharply in separate controlled experiments~\cite{fang2024agents}. Multi-agent red-teaming frameworks like Co-RedTeam~\cite{coredteam2026}
 demonstrate that orchestrated discovery and exploitation stages, grounded in execution feedback
 and long-term memory, achieve over 60\% success rates on exploitation tasks across multiple
@@ -589,7 +581,7 @@ real world CI/CD pipeline''~\cite{openssfaixcc2026}. Scoring rewarded finding vu
 proving them via PoVs, and applying correct patches, with speed and accuracy modifiers;
 ``human interaction was strictly prohibited'' during scored operation~\cite{tobbuttercup2025}.
 Two incentive details matter for interpretation. Patching was worth three times discovery
-(6 vs.\ 2 points at the top of the 1--2 vs.\ 3--6 range per the systematization)~\cite{darpascoring2025,taasc2024,r7sokaixcc2026}, making B3 capability the rational investment; and accuracy
+(6 vs.\ 2 points), making B3 capability the rational investment~\cite{taasc2024}; and accuracy
 modifiers penalized incorrect patches nonlinearly; Team Atlanta reports its PoV-validated
 91.27\% patch accuracy yielding a modifier of $1-(1-0.9127)^4=0.9999$ and reports Theori's
 PoV-free $44.4\%$ as $0.9044$~\cite{taafc2025}. Applying the displayed formula independently
@@ -598,9 +590,10 @@ scoring mathematics thus priced
 patch-quality adjudication directly into strategy.
 
 \subsection{What the Final Round Measured}
-Trail of Bits describes its scored workload as 48 challenges across 23 open-source
-repositories (a subset of the 63 final challenges per DARPA's official closeout)~\cite{tobbuttercup2025}; the later R7 systematization
-accounts for 48 challenge projects across 24 repositories~\cite{r7sokaixcc2026}. We retain each figure within its respective source's accounting scope. The CRSs also surfaced real,
+Trail of Bits describes the scored structure as 48 challenges across 23 open-source
+repositories in its participant account~\cite{tobbuttercup2025}. The later R7 systematization
+counts the same 48 challenge projects across 24 repositories; we retain each figure within its
+respective source and accounting scope~\cite{r7sokaixcc2026}. The CRSs also surfaced real,
 non-synthetic vulnerabilities; Team Atlanta reports six C/C++ and twelve Java bugs found
 collectively during the final, including a SQLite zero-day first seen at
 semifinals~\cite{taafc2025}; and Trail of Bits demonstrated a PoV for a vulnerability that
@@ -619,23 +612,23 @@ measurement validity throughout (Sec.~\ref{sec:validity}).
 \subsection{CRS Design Space}
 The finalist architectures span the design axes our framework distinguishes.
 \emph{Atlantis} (Team Atlanta) ran N-version programming across orthogonal sub-CRSs (C, Java,
-multilanguage, patching, SARIF), ensemble fuzzing and concolic execution alongside LLM agents~\cite{r7sokaixcc2026},
-and an explicit integration taxonomy (LLM-augmented, LLM-opinionated, LLM-driven)~\cite{taafc2025} with
+multilanguage, patching, SARIF), ensemble fuzzing and concolic execution alongside LLM agents,
+and an explicit integration taxonomy (LLM-augmented, LLM-opinionated, LLM-driven) with
 smaller models often outperforming larger or reasoning models for patch tasks; its
 validation oracle re-runs PoVs against patched builds while acknowledging that MTE/PAC
 recompilation or broad \texttt{catch(Exception)} wrappers can suppress PoVs without semantic
 repair~\cite{taafc2025}. \emph{Buttercup} (Trail of Bits) took the opposite bet:
-deterministic, expertise-decomposed workflows with LLMs only where classical tools fail~\cite{r7sokaixcc2026},
-using exclusively less expensive, non-reasoning models, achieving lower reported cost per competition point at
+deterministic, expertise-decomposed workflows with LLMs only where classical tools fail,
+using exclusively non-reasoning models, achieving lower reported cost per competition point at
 \$181 per point (versus Atlanta's \$263) on 28 vulnerabilities and 19 patches across 20 CWE
-classes with ${>}90\%$ accuracy as claimed by the participant~\cite{tobbuttercup2025}. \emph{Theori}
+classes with ${>}90\%$ accuracy~\cite{tobbuttercup2025,r7sokaixcc2026}. \emph{Theori}
 demonstrated purely static, PoV-free patching, trading accuracy for robustness to absent
-proofs~\cite{taafc2025}. Team-level compute costs are consistent across our two
+proofs~\cite{taafc2025}. Team-level compute costs are independently consistent across our two
 sources: totals of \$103.3K (Atlanta), \$39.6K (Trail of Bits), and \$31.8K (Theori) appear in
 both the systematization analysis and the participant account~\cite{r7sokaixcc2026,tobbuttercup2025}.
 
 \subsection{Brittleness as Environment Evidence}
-A prominent lesson in the winning team's account is a string-matching heuristic: Atlantis skipped
+The most cited lesson inside the winning team is a string-matching heuristic: Atlantis skipped
 patch generation for paths containing ``fuzz,'' and organizers' ``ossfuzz'' directory prefixing
 nearly disabled the system hours before the deadline: ``here we were, building an autonomous
 CRS powered by state-of-the-art AI, nearly defeated by a string matching bug''~\cite{taafc2025}.
@@ -648,8 +641,9 @@ The finalist designs instantiate three distinct philosophies about where intelli
 in a CRS. Atlantis distributes it across N-version programming: independent sub-systems for
 C, Java, multilanguage discovery, patching, and SARIF bundling, deliberately orthogonal so a
 failure in one does not cascade; ensembling was explicitly framed as the engineering
-answer to LLM non-determinism (what the systematization summarizes as hallucination versus non-determinism)~\cite{r7sokaixcc2026}. Buttercup concentrates expertise in deterministic
-decomposition, integrating LLMs only where traditional tools fall short~\cite{r7sokaixcc2026}, augmenting
+answer to LLM non-determinism (``what the ML community calls hallucination, systems engineers
+call non-determinism'')~\cite{taafc2025}. Buttercup concentrates expertise in deterministic
+decomposition, integrating LLMs ``only where traditional tools fall short,'' augmenting
 libFuzzer and Jazzer with LLM-generated test cases behind a multi-agent patcher with
 separation of concerns, and attributed its efficiency to this architecture rather than model
 scale: \$181 per competition point using exclusively non-reasoning models, versus \$263
@@ -660,15 +654,16 @@ Two quantitative facts refine any capability narrative. First, smaller models ``
 outperformed larger foundation models and even reasoning
 models'' for patch generation~\cite{taafc2025}, echoing scaffold-over-scale findings elsewhere
 in our corpus. Second, validation infrastructure capped agent counts: re-verifying one nginx
-patch takes ten-plus minutes, so Atlantis ran six patching agents (sixty is illustrative spare capacity, not a sourced figure), 
+patch takes ten-plus minutes, so Atlantis ran six patching agents rather than sixty, 
 illustrating that, in this architecture, build-and-test throughput became a practical bottleneck
-on B3 scaling~\cite{taafc2025}.
+on B3 scaling.
 The competition also yields its cleanest end-to-end A2 datapoint. During semifinals, Atlantis
 autonomously identified and patched a real SQLite FTS5 vulnerability (an off-by-one read in
 the trigram tokenizer reaching a NULL dereference) in roughly fifteen minutes spanning
 build, patch generation, iteration, and validation; the maintainer's subsequent fix
 (commit e9b919d5) extended the pattern to sibling tokenizer functions and was itself revised
-in follow-up commit b651084~\cite{taasc2024}. Discovery and repair here were performed by the system.
+in a follow-up commit~\cite{taasc2024}. Discovery and repair here were performed by the system;
+the exploit-to-root-privilege demonstration afterward was not.
 What AIxCC can and cannot establish follows directly. It demonstrates integrated
 $\{B1,B2,B3\}$ operation with execution autonomy under active prohibition of human input, 
 the strongest documented autonomy evidence in our corpus. It does not satisfy the paper's A3
@@ -712,7 +707,7 @@ context to request next~\cite{autocoderoever-2024}. Agentless deliberately inver
 point: a fixed localize$\rightarrow$repair$\rightarrow$validate pipeline with no dynamic action
 selection matches or beats agentic baselines at lower cost~\cite{agentless2024}. The security
 specialization of this lineage, CodeRover-S, repurposes AutoCodeRover against OSS-Fuzz
-vulnerabilities and states the distinction explicitly: ``We note that having autonomy in the LLM agent is
+vulnerabilities and states the distinction explicitly: ``having autonomy in the LLM agent is
 useful for successful security patching, as opposed to approaches like Agentless where the
 control flow is fixed''~\cite{ossfuzz-aifixing-2024}. Its mechanism satisfies our test at the action
 level; the model invokes AST search, file navigation, compilation, and test-execution tools,
@@ -720,19 +715,21 @@ gathering failure information before committing patches. Reported efficacy
 on real OSS-Fuzz vulnerabilities remains far from saturation (52.4\% on a curated set under the
 paper's conditions)~\cite{ossfuzz-aifixing-2024}, and validation is sanitizer/test-based rather than exploit-aware, 
 precisely the gap AIxCC's oracle-gaming taxonomy names. CVE-Genie reproduces approximately 51\%
-of CVEs published June 2024--May 2025 (428 of 841) with verifiable exploits at an average cost of \$2.77 per
+of CVEs published in 2024--2025 with verifiable exploits at an average cost of \$2.77 per
 CVE~\cite{cvegenie2025}, demonstrating the feasibility of automated vulnerability reproduction
 at scale. Recent surveys map the broader scope of LLM-based automated program
 repair~\cite{llmaprsurvey2026}, identifying four paradigms: fixed-workflow, single-agent,
-multi-agent, and general-purpose code agents. On the security-specific repair side, Tree-of-Thought prompting plus AST-based context retrieval on sanitizer logs achieves substantially higher patch correctness than direct generation on
-real-world vulnerability datasets (31/39 vs.\ 21/39 Zero-shot; Tree-of-Thought alone 24/39)~\cite{logsinpatchesout2025}, suggesting that structured
-reasoning plus retrieval over repair candidates rather than single-shot generation is an important
+multi-agent, and general-purpose code agents. On the security-specific repair side, tree-of-thought prompting with
+execution-log feedback achieves substantially higher patch correctness than direct generation on
+real-world vulnerability datasets~\cite{logsinpatchesout2025}, suggesting that structured
+reasoning over repair candidates rather than single-shot generation is an important
 design choice for B3 systems. LLM4CVE~\cite{llm4cve2025} extends this line with an iterative
-pipeline with automated feedback (compiler and CodeBLEU) and LoRA fine-tuning on C critical-system code, requiring minimal expert intervention.
+pipeline that combines traditional bug repair methods with LLM techniques, demonstrating
+automated vulnerability repair in critical system software with minimal human input.
 Beyond competition settings, Nong et al.~\cite{appatch2025} demonstrate that vulnerability
 semantics reasoning combined with adaptive prompting enables automated patching of zero-day
-vulnerabilities without test inputs or exploit evidence, achieving up to 28.33\% F1 (and 182\% recall) improvement
-over the best baseline (including non-LLM SOTA) on 97 zero-day vulnerabilities. These systems establish that B3 capability now
+vulnerabilities without test inputs or exploit evidence, achieving up to 28.33\% F1 improvement
+over non-LLM baselines on 97 zero-day vulnerabilities. These systems establish that B3 capability now
 spans from pipeline-orchestrated repair (Agentless) through iterative agentic workflows
 (AutoCodeRover, CodeRover-S), yet validation of semantic security correctness beyond replaying known exploit inputs remains
 unevenly evaluated across the literature. Two further findings qualify this picture. Wu et
@@ -742,8 +739,9 @@ surfaced more than 22{,}000 candidate issues, with 246 of 400 manually inspected
 confirmed as valid issues; separately, their recurring-pattern identification evaluation reports
 92.2\% precision under its own evaluation protocol, showing that variant analysis scales further
 than the n=1 result our A2 discussion initially suggests. Meng et al.~\cite{llmagentsbugfixing2026} provide a systematic comparison of
-LLM-based bug-fixing systems, finding that fault-localization accuracy (especially at the code-symbol level) and correct issue reproduction are major determinants of repair success; their cross-system analysis shows varied returns, implying that additional
-agentic interaction does not uniformly improve outcomes (synthesis), a finding with direct implications
+LLM-based bug-fixing systems, showing that fault localization and the interaction between issue
+reproduction and repair as major determinants of repair success, indicating that additional
+agentic interaction does not uniformly improve outcomes, a finding with direct implications
 for the B3 autonomy gradient.
 Adjacent discovery-audit systems such as RepoAudit~\cite{repoaudit2025} demonstrate that
 comparable agentic control patterns also extend upstream into repository-level vulnerability
@@ -820,7 +818,7 @@ off-by-one, the SQLite maintainer patched not only the reported function but sib
 code paths sharing the pattern, then revised his own patch in a follow-up commit after noting
 redundancy~\cite{taasc2024}. Human variant analysis triggered by an AI finding.
 \textbf{(D3) Institutional/funding flows.} The loop acquired governance: DARPA and ARPA-H
-created transition incentives of up to \$200K per team to integrate CRSs into critical software~\cite{tobbuttercup2025};
+created transition incentives of up to \$200K per team to integrate CRSs into critical software~\cite{darparesults2025};
 Team Atlanta recycled half its \$4M prize (\$2M) into continuous autonomous hunting at Georgia
 Tech's SSLab with OpenAI contributing API credits~\cite{taafc2025}; OpenSSF chartered a Cyber
 Reasoning Systems SIG and hosts OSS-CRS and FuzzingBrain, whose post-competition operation is
@@ -866,7 +864,7 @@ version- and date-aware verification.
 Between one-off response and field-level causation sits a grade our corpus documents richly:
 institutionalization. Three funding and governance flows carry competition-derived capability
 past the scoreboard. DARPA and ARPA-H created transition incentives of up to \$200K per finalist team to integrate CRSs
-into critical software~\cite{tobbuttercup2025}. Team Atlanta recycled half of its \$4M prize
+into critical software~\cite{darparesults2025}. Team Atlanta recycled half of its \$4M prize
 into continuous autonomous hunting of OSS-Fuzz projects at Georgia Tech's SSLab, with OpenAI
 contributing API credits~\cite{taafc2025}. And OpenSSF chartered a Cyber Reasoning Systems
 Special Interest Group that now hosts OSS-CRS and FuzzingBrain, relaying post-competition
@@ -910,17 +908,18 @@ mean.
 \subsection{V2/V3: Information Leakage, Measured by Intervention}
 The cleanest datum in our corpus is controlled. Fang et al.\ measure GPT-4-based agents on 15
 real one-day vulnerabilities under two information conditions: with the CVE description
-supplied, the agent autonomously exploited 86.7\% at pass@5 (40\% overall); without it, success fell to 7\%, while every
-baseline (GPT-3.5, eight open-source models, ZAP, Metasploit) scored zero with descriptions and was not retested without (implied zero)~\cite{fang2024agents}. This more-than-an-order-of-magnitude difference is produced by a single
-supplied-knowledge variable, the supplied CVE text can function as a substantial information advantage, so any
+supplied, the agent autonomously exploited 87\%; without it, success fell to 7\%, while every
+baseline (GPT-3.5, eight open-source models, ZAP, Metasploit) scored zero in both
+conditions~\cite{fang2024agents}. This more-than-an-order-of-magnitude difference is produced by a single
+supplied-knowledge variable, the CVE text acts as a partial answer key, so any
 capability claim inherits its information condition. We therefore report such results only with
 their conditions attached, and the same discipline applies to temporal leakage: the benchmark
 authors report that a substantial subset of vulnerabilities post-dated the relevant model
 knowledge cutoff, yet supplied CVE descriptions still dramatically altered performance.
 
 \subsection{V1/V5: Dataset-Level Invalidity, Measured by Reconstruction}
-PrimeVul demonstrates that widely used portions of the vulnerability-detection benchmark layer were structurally
-fragile: label noise, near-duplicate pairs across splits, and pre-split public exposure
+PrimeVul demonstrates that the detection literature's benchmark layer was structurally
+unsound: label noise, near-duplicate pairs across splits, and pre-split public exposure
 inflated reported performance to the point where paired, chronologically split evaluation
 collapses strong-model accuracy toward chance~\cite{primevul2024}. Risse and B\"ohme reach a
 compatible verdict from measurement theory, arguing that popular vulnerability datasets score
@@ -965,11 +964,11 @@ cleanliness; (iii)~\emph{information-condition disclosure}: state exactly which 
 (descriptions, patches, stack traces, credentials) are supplied to the agent, Fang-style;
 (iv)~\emph{category-aware outcomes}: report validated/exploitable/duplicate/informative as
 separate counts with adjudication rules fixed before running; and (v)~\emph{adjudication
-audit}: a second scorer re-labels a random 10\% sample with agreement statistics. We found no
-included evaluation that satisfies all five requirements today; E3 (Sec.~\ref{sec:roadmap}) operationalizes the
- gap. On the false-positive front, Xiong and Zhang~\cite{siftingnoise2026} demonstrate that
-LLM-based filtering can reduce initial false-positive rates from over 92\% on OWASP Benchmark aggregated SAST alerts to as low as 6.3\%
-in the best configuration (SWE-agent + Claude Sonnet 4), though aggressive filtering can itself suppress true
+audit}: a second scorer re-labels a random 10\% sample with agreement statistics. No
+included evaluation satisfies all five today; E3 (Sec.~\ref{sec:roadmap}) operationalizes the
+gap. On the false-positive front, Xiong and Zhang~\cite{siftingnoise2026} demonstrate that
+LLM-based filtering can reduce initial false-positive rates from over 92\% to as low as 6.3\%
+in the best configuration, though aggressive filtering can itself suppress true
 vulnerabilities, suggesting that the contamination-control protocol's adjudication step (v)
 could be augmented with LLM-assisted triage, provided the false-negative trade-off is explicitly
 measured.
@@ -981,14 +980,15 @@ capability: Pass@5 of 86.7\% and an overall exploitation rate of 40\% for GPT-4 
 description-supplied conditions collapse to 7\% overall without descriptions, while GPT-3.5,
 eight open-source models, ZAP, and Metasploit score zero throughout~\cite{fang2024agents}, 
 demonstrating that the supplied information condition materially determines performance in
-this evaluation. PrimeVul's reconstruction moves StarCoder2 7B from 68.26\% F1 on BigVul to 3.09\% on its paired,
+this evaluation. PrimeVul's reconstruction moves a
+state-of-the-art 7B detector from 68.26\% F1 on BigVul to 3.09\% on its paired,
 chronologically split evaluation, with GPT-3.5- and GPT-4-class prompting ``akin to random
 guessing'' under the most stringent settings~\cite{primevul2024}, showing that dataset
 construction and evaluation methodology can become a binding constraint on apparent model
 performance. And XBOW's funnel makes
 outcome-definition noise concrete at production scale: of ${\sim}1{,}060$ submissions, 208
 duplicates and 209 informative reports, roughly 39\%, resolve into neither new nor fixed
-findings, so leaderboard position aggregates discovery quality with program-policy and outcome-definition effects
+findings, so leaderboard position aggregates discovery quality with program-policy artifacts
 unless category-aware accounting is applied~\cite{xbowtop12025}. Three further findings
 deepen the validity picture. Tang et al.~\cite{vultriage2026} demonstrate that triple-path
 context augmentation improves LLM-based vulnerability detection, suggesting that input
@@ -999,23 +999,25 @@ prompts are not standardized. And Huang et al.~\cite{semantictrap2026} investiga
 fine-tuned LLMs actually understand vulnerability semantics or merely pattern-match surface
 features, finding evidence for the latter, a result that qualifies this paper's
 assumption that fine-tuning transfers genuine security understanding. Complementary
-mechanistic analysis by Sandoval et al.~\cite{surgicalrepair2026} suggests a
+mechanistic analysis by Sandoval et al.~\cite{surgicalrepair2026} reveals a
 Format-Reliability Gap: the same models that generate insecure code correctly identify
 and explain the vulnerability when asked, with security representations remaining
 computationally inert until the final layer where format-compliance demands compete
-with them, consistent with an interpretability-level failure rather than a simple training-data deficit. Shahriar et
+with them, suggesting that insecure code generation is an interpretability problem,
+not a training deficit. Shahriar et
 al.~\cite{wordsspeaklouder2026} further show that cognitive heuristics---halo, framing,
 and anchoring---systematically affect LLM vulnerability
- detection, with their results suggesting that contextual cues can redirect detection
- away from actual vulnerabilities. Each datum predates or
+ detection, with models disproportionately flagging vulnerabilities in code they have seen
+ frequently in training data while missing novel patterns. Each datum predates or
  operates independently of the others; their convergence on the same methodological conclusion
  is why we treat validity as measured rather than alleged. The real-world gap is now quantified
  by independent work: Neef et al.~\cite{webvulndetect2026} report LLM detection rates of
  35--63\% on real-world WordPress plugin vulnerabilities, with substantial variance across
- models, while Dahiya et al.~\cite{frontierllmsready2026} show that Gemini 3.1 Pro reaches
-81.3\% accuracy (89.7\% recall) on white-box function-level vulnerability classification but only 4--8\% on
- black-box ground-truth coverage without methodology guidance, confirming that benchmark
- performance overstates real-world capability when methodology and tooling scaffolds are absent.
+ models, while Dahiya et al.~\cite{frontierllmsready2026} report that Gemini 3.1 Pro reaches
+ 81.3\% recall on white-box function-level vulnerability classification, while black-box
+ ground-truth coverage remains only 4--8\% without methodology guidance, illustrating how
+ benchmark performance can overstate real-world capability when methodology and tooling
+ scaffolds are absent.
 
 \subsection{What Survives}
 Validity constraints do not render the corpus uninterpretable. Condition-controlled results
@@ -1051,8 +1053,8 @@ models; any conclusion phrased about ``LLMs'' generally is hostage to a moving b
 therefore phrase findings about \emph{records and their conditions}, not about model classes.
 
 \textbf{Incomplete benchmark access.} Publisher APIs (IEEE, ACM) were unavailable during corpus
-construction; coverage leans on arXiv, DBLP, official indexes, and citation chaining. Our
-observable corpus is therefore concentrated on those channels, although the resulting coverage may not represent the field uniformly,
+construction; coverage leans on arXiv, DBLP, official indexes, and citation chaining. The
+field's center of gravity publishes on those channels, but systematic gaps cannot be excluded,
 and screening operated on first-page result sets per query (documented in
 Sec.~\ref{sec:method}).
 
@@ -1069,8 +1071,8 @@ claims to their sources' datelines and mark snapshot statistics as such.
 exist; nothing prevents undisclosed human effort behind vendor claims of full automation. Our
 classifications therefore track \emph{documented} autonomy floors, not ceilings.
 
-\textbf{Single-corpus induction.} All quantitative distributions (12 autonomy-assessed records,
-including 11 classified and one unresolved, plus two general-SE comparators; per-cell counts) derive from one team's inclusion decisions under one protocol; the saturation
+\textbf{Single-corpus induction.} All quantitative distributions (14 autonomy-assessed records,
+including 13 classified and one unresolved; per-cell counts) derive from one team's inclusion decisions under one protocol; the saturation
 test bounds but does not eliminate corpus-dependence. Where a claim would not survive a
 different reasonable inclusion rule, we say so in place.
 
@@ -1114,10 +1116,10 @@ re-branding of scale, weakening I1's substantive reading.
 Gap: public-solution contamination is widely hypothesized but insufficiently quantified for multi-step
 agents, and long-horizon security tasks, multi-step discovery chains requiring sustained
 context, remain highly sensitive to model, project, and configuration: in the May 2026
-preprint v1 (183 validated vulnerabilities; local source is v2 with 344), Lee et al.~\cite{secbenchpro2026} evaluate across V8 and
-SpiderMonkey, with the strongest frontier configuration (Codex GPT-5.5) reaching 47.6\% on V8 and 44.2\% on
-SpiderMonkey (58.4\% overall), while the open-weight Kimi-K2.5 baseline reaches 1.9\% on V8 and 2.9\% on SpiderMonkey.
-Union of Codex GPT-5.5 and Claude Code on V8 resolves 51 of 103 tasks (49.5\%) and on SpiderMonkey 55 of 104 (52.9\%) (local calculation on v2).
+version, Lee et al.~\cite{secbenchpro2026} evaluate 183 validated vulnerabilities across V8 and
+SpiderMonkey, with the strongest frontier configuration reaching 32.0\% on V8 and 38.8\% on
+SpiderMonkey, while the open-weight Kimi-K2.6 baseline reaches 11.7\% on V8. The two-agent
+union reaches 37.9\% on V8 and 48.8\% on SpiderMonkey.
 Setup: time-split evaluation on challenges disclosed after each model's cutoff, against
 a matched pre-cutoff set. Controls: difficulty matching via human solve rates; retrieval
 audits. Metric: within-model success delta across the disclosure boundary.
@@ -1167,15 +1169,15 @@ would cap I3 at ``important constraint'' and justify removing ``binding.''
 \label{sec:conclusion}
 This systematization asked whether LLM-driven vulnerability work between January 2024 and June
 2026 is best understood through model capability or through something else. Our answer, built
-on a 36-record multi-stream corpus of which 12 records underwent autonomy assessment (11
-definitive classifications, one unresolved) plus two general-SE comparators, is that
-the evaluated systems, incentives, and discourse represented in our corpus increasingly measure progress in \emph{agentic
+on a 36-record multi-stream corpus of which 14 records underwent autonomy assessment (13
+definitive classifications, one unresolved), is that
+the field's evaluations, incentives, and discourse now measure progress in \emph{agentic
 autonomy}, while whether underlying capability moved for reasons other than scale remains
 an open question.
 
 \textbf{On I1 (established in framing; unresolved in substance).} The autonomy gradient A0--A3
 organizes the corpus cleanly: capability probes (A0) persist only as benchmark subjects;
-pipeline automation (A1) is demonstrated at ecosystem scale with humans at review boundaries; task agents
+pipeline automation (A1) runs at ecosystem scale with humans at review boundaries; task agents
 (A2) appear across seeded production research, entry-point-assisted auditing, platform-operated
 pentesting, and competition CRSs integrating discovery, proof, and patching. What the record
 does not contain, under our four-verb, environment-E2 operational definition, is a single
@@ -1184,34 +1186,32 @@ vendor-reported with hallucination caveats and human-selected targets.
 
 \textbf{On I2 (documented edges; causality bounded).} Offense and defense are coupled where the
 record says so: Project Zero named AIxCC's Team Atlanta as the inspiration for its SQLite
-variant-analysis campaign~\cite{bigsleep2024}; a maintainer extended an AI-found bug's fix to sibling code paths~\cite{taasc2024};
+variant-analysis campaign; a maintainer extended an AI-found bug's fix to sibling code paths;
 AIxCC generated documented institutional follow-through: DARPA created transition incentives
-of up to \$200K per finalist team for transition activities~\cite{tobbuttercup2025}, while the competition itself carried prize commitments reported
-as \$29.5M in DARPA's 2023 announcement~\cite{darpa2023aixcc} and \$30.5M in OpenSSF's later retrospective~\cite{openssfaixcc2026}; separately,
-OpenSSF established governance and hosting structures for post-competition CRS development~\cite{openssfaixcc2026}; and
-threat intelligence seeded a pre-exploitation disclosure (vendor-asserted TI premise and foiling counterfactual unverifiable, cited as documented disclosure process)~\cite{bloggoogle2025}. These documented edges do not license
+of up to \$200K per finalist team for transition activities, while the competition itself carried prize commitments reported
+as \$29.5M in DARPA's 2023 announcement and \$30.5M in OpenSSF's later retrospective; separately,
+OpenSSF established governance and hosting structures for post-competition CRS development; and
+threat intelligence seeded a pre-exploitation disclosure. These documented edges do not license
 the arms-race vernacular: shared-cause explanations survive globally, and attacker-side
 response remains unmeasured.
 
 \appendices
+\onecolumn
 
 \textbf{On I3 (observed; binding claim pending E7).} Validity failures here are not rhetorical.
-Information conditions change reported exploitation rates by more than an order of magnitude~\cite{fang2024agents}; dataset
-reconstruction collapses detection SOTA~\cite{primevul2024}; oracle gaming has a named taxonomy~\cite{taafc2025}; environment-specific
-heuristics can materially affect system outcomes~\cite{taafc2025}; and leaderboard counting conflates outcome categories~\cite{xbowtop12025}. Because
+Information conditions change reported exploitation rates by more than an order of magnitude; dataset
+reconstruction collapses detection SOTA; oracle gaming has a named taxonomy; environment-specific
+heuristics can materially affect system outcomes; and leaderboard counting conflates outcome categories. Because
 these measures allocate prizes and rank vendors directly and inform funding
-decisions through transition programs, evaluation validity is plausibly a binding
-methodological constraint on what this field can claim to know — stands if E7 finds documented reversals, and is capped at important constraint otherwise (E7 falsifier).
+decisions through transition programs, evaluation validity is a binding
+methodological constraint on what this field can claim to know, pending the
+decision-impact audit (E7) that would confirm this.
 
 \textbf{What we ask of the next iteration of this literature.} Publish information conditions
 with every capability number; adopt category-aware outcome accounting; evaluate patching
 against exploit-aware oracles; measure B4 rather than narrate it; and treat autonomy claims by
 the weakest missing condition, not the strongest available adjective. The tools described in
 this paper will be judged, fairly or not, by whether they make those practices easier.
-
-\balance
-\clearpage
-\onecolumn
 
 % appendix-a.tex - frozen record inventory; reconcile against evidence/autonomy-loop-assignments.csv
 \vspace{6pt}
@@ -1229,23 +1229,25 @@ provenance. Record-level assignment fields ship in \texttt{evidence/autonomy-loo
 \begin{tabular}{@{}lllllccc@{}}
 \toprule
 Record & Year & Unit & $A$ & $B$-set / role & Evidence class & R/B/Ar & Acc \\ \midrule
-\multicolumn{8}{l}{\emph{In-window autonomy-bearing records (12)}}\\
+\multicolumn{8}{l}{\emph{In-window autonomy-bearing records (14)}}\\
 agentless2024 & 2024 & system(experiment-benchmark) & A1 & B3 & experiment & 3/3/3 & PDF\\
 argusee2025 & 2025 & system & A2 & B1 & production discovery & 0/2/0 & HTML\\
 artemis2025 & 2025 & experiment & A2 & B1+B2 & live enterprise-network experiment & 2/3/2 & PDF\\
+autocoderoever-2024 & 2024 & system(experiment-benchmark) & A2 & B3 & experiment & 3/3/3 & PDF\\
 bigsleep2024 & 2024 & system & A2 & B1 & production discovery & 0/2/0 & HTML\\
 fang2024one-day & 2024 & experiment & A2 & B2 & controlled experiment & 2/3/3 & PDF\\
 gtg1002-2025 & 2025 & incident-documentation & unresolved & B1+B2 & incident report & 0/0/0 & HTML\\
-ossfuzz-aifixing-2024 & 2024 & experiment & A2 (CodeRover-S) & B3 & experiment & 2/2/2 & PDF\\
+ossfuzz-aifixing-2024 & 2024 & experiment & A2 & B3 & experiment & 2/2/2 & PDF\\
 ossfuzz-levelingup-2024 & 2024 & system(pipeline) & A1 & B1 & industrial-system-report & 1/1/2 & HTML\\
+sweagent2024 & 2024 & system(experiment-benchmark) & A2 & B3 & benchmark/experiment & 3/3/3 & PDF\\
 teamatlanta-afc2025 & 2025 & system & A2 & B1+B2+B3 & competition-participant & 1/2/2 & HTML\\
 teamatlanta-sqlite2024 & 2024 & system & A2 & B1+B2+B3 & competition-participant & 1/2/2 & HTML\\
 tob-buttercup2025 & 2025 & system & A2 & B1+B2+B3 & competition-participant & 1/3/2 & HTML\\
 xbow2025 & 2025 & system & A2 & B1+B2 & production stats & 0/1/0 & HTML\\
 \midrule
 \multicolumn{8}{l}{\emph{Background anchors (excluded from primary counts)}}\\
-csev12023bg & 2023 & benchmark & n/a & B1$^p$ & benchmark & 2/1/2 & PDF\\
-intercode2023bg & 2023 & benchmark & n/a & B2$^p$ & benchmark & 3/2/3 & PDF\\
+csev12023bg & 2023 & benchmark & A0 & B1 & benchmark & 2/1/2 & PDF\\
+intercode2023bg & 2023 & benchmark & A1 & B2 & benchmark & 3/2/3 & PDF\\
 \midrule
 \multicolumn{8}{l}{\emph{Loop-transition documentation (B4)}}\\
 bloggoogle-summer2025 & 2025 & program-record & n/a & B4 — documents B1 discovery $\to$ announced B4 redeployment of Big Sleep to OSS projects & program-announcement & --/--/-- & HTML\\
@@ -1257,17 +1259,13 @@ openssfretro2026 & 2026 & program-record & n/a & B4 — documents post-competiti
 \begin{table}[!ht]
 \centering
 \small
-\caption{Included records (part 2/2): off-axis, contextual, and out-of-window records. $A$=autonomy level; $B$=loop-position set; R/B/Ar = rubric scores; Acc = access status.}
+\caption{Included records (part 2/2): off-axis and context records. $A$=autonomy level; $B$=loop-position set; R/B/Ar = rubric scores; Acc = access status.}
 \label{tab:apprecordsb}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lllllccc@{}}
 \toprule
 Record & Year & Unit & $A$ & $B$-set / role & Evidence class & R/B/Ar & Acc \\ \midrule
-\multicolumn{8}{l}{\emph{General-SE comparators (security task not demonstrated)}}\\
-autocoderoever-2024 & 2024 & system(experiment-benchmark) & n/a & context: general SE; security variant is CodeRover-S & benchmark/experiment & 3/3/3 & PDF\\
-sweagent2024 & 2024 & system(experiment-benchmark) & n/a & context: general SE comparator (SWE-bench) & benchmark/experiment & 3/3/3 & PDF\\
-\midrule
-\multicolumn{8}{l}{\emph{Off-axis / contextual / out-of-window records}}\\
+\multicolumn{8}{l}{\emph{Off-axis / context records}}\\
 csev22024 & 2024 & benchmark & n/a & n/a — probed {B1,B2} & benchmark & 2/2/2 & PDF\\
 csev32024 & 2024 & benchmark & n/a & n/a — probed {B1,B2} & benchmark & 2/2/2 & PDF\\
 cybench2024 & 2024 & benchmark & n/a & n/a — probed {B2} & benchmark & 3/3/3 & PDF\\
@@ -1280,11 +1278,11 @@ nyuctfbench2024 & 2024 & benchmark & n/a & n/a — probed {B2} & benchmark & 3/2
 primevul2024 & 2024 & dataset & n/a & n/a — B1 detection (dataset standard) & dataset/validity study & 3/3/3 & PDF\\
 r1slr2024 & 2024 & survey & n/a & n/a & survey & 1/1/0 & PDF\\
 r2slr2024 & 2024 & survey & n/a & n/a & survey & 1/1/0 & PDF\\
-r3survey2026 & 2026 & survey & n/a & n/a & survey comparator (out-of-window) & 1/2/0 & PDF\\
+r3survey2026 & 2026 & survey & n/a & n/a & survey & 1/2/0 & PDF\\
 r4csur2025 & 2025 & survey & n/a & n/a & survey & 0/0/0 & payw.\\
 r5usenix26agentic & 2026 & survey & n/a & n/a & survey & 0/0/0 & PDF\\
 r6tosem2026 & 2026 & survey & n/a & n/a & survey & 0/0/3 & payw.\\
-r7sokaixcc2026 & 2026 & survey(systematization) & n/a & n/a & survey(systematization) & 2/3/2 & PDF\\
+r7sokaixcc2026 & 2026 & survey(systematization) & n/a & n/a & competition & 2/3/2 & PDF\\
 rissebohme-wrongexam2024 & 2024 & critique & n/a & n/a & validity-critique & --/--/-- & PDF\\
 \bottomrule
 \end{tabular}}
@@ -1319,7 +1317,7 @@ notes in repository file \texttt{search-log.md}.
 \toprule
 Date & Event (source) \\
 \midrule
-2023-12 & AIxCC announced; ${\sim}\$29.5$M cumulative program commitment~\cite{darpa2023aixcc} \\
+2023-08 & AIxCC announced; ${\sim}\$29.5$M cumulative program commitment~\cite{darpa2023aixcc} \\
 2024-08 & ASC: 42 teams $\rightarrow$ 7 finalists (\$2M each); Atlantis autonomously patches real SQLite FTS5 bug (unscored); official fix e9b919d5 follows~\cite{taasc2024} \\
 2024-11 & Big Sleep reports SQLite stack-buffer-underflow zero-day; cites AIxCC inspiration (edge D1); AFL 150 CPU-h fails to rediscover; no CVE assigned~\cite{bigsleep2024}\\
 2024-11 & OSS-Fuzz reports 26 vulns from AI-generated fuzz targets incl.\ CVE-2024-9143 (${\sim}$20 years latent)~\cite{ossfuzz-levelingup-2024}\\
@@ -1328,7 +1326,7 @@ Date & Event (source) \\
 2025-07 & CVE-2025-6965 threat-intel-seeded disclosure; ``first time an AI agent has been used to directly foil'' claim~\cite{bloggoogle2025,nvd6965}\\
 2025-08 & AFC finals: 48 challenges/23 repositories in the Trail of Bits account; 18 real vulns found; Atlanta \$4M / ToB \$3M / Theori \$1.5M; \$200K/team transition funding~\cite{darparesults2025,tobbuttercup2025,taafc2025,darpascoring2025}\\
 2025-09 (detected), 2025-11 (reported) & Anthropic reports GTG-1002 campaign with an 80--90\% execution estimate; the incident remains a single-source, unresolved autonomy assessment~\cite{anthropicgtg2025,anthropicgtgreport2025}\\
-$\sim$2026-02 & R7 AIxCC SoK preprint first released (v1--v5 through Aug 2026; final USENIX publication is outside the evidence cutoff); OpenSSF legacy retrospective: CRS SIG, FuzzingBrain 62v/26proj, OSS-CRS 25v/16proj~\cite{r7sokaixcc2026,openssfaixcc2026}\\
+2026-02 & R7 AIxCC SoK preprint first released; later August 2026 publication is outside the evidence cutoff; OpenSSF legacy retrospective: CRS SIG, FuzzingBrain 62v/26proj, OSS-CRS 25v/16proj~\cite{r7sokaixcc2026,openssfaixcc2026}\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1351,18 +1349,18 @@ S1--S3 relax exactly $R$, $P$, or $E$, respectively; S4 relaxes $P$, $R$, and $E
 $X$ and $V$ remain mandatory in every scenario. Counts are counterfactual qualifiers, not
 reassignments of the strict taxonomy.}
 \label{tab:sensitivity}
-\footnotesize
-\setlength{\tabcolsep}{2.8pt}
+\small
+\setlength{\tabcolsep}{4.5pt}
 \begin{tabular}{@{}lllll@{}}
 \toprule
 Scenario & Condition relaxed & Qualifiers & Closest candidate & Remaining blocker(s) \\
 \midrule
 S0 & None (baseline) & 0 & XBOW & XBOW: $R$; AIxCC: $P,E$;
-ARTEMIS: $P$; GTG-1002: uncertain \\
-S1 & $R$ & 1 & XBOW & AIxCC: $P,E$; ARTEMIS: $P$; GTG-1002: uncertain \\
-S2 & $P$ & 1 & ARTEMIS & AIxCC: $E$; XBOW: $R$; GTG-1002: uncertain \\
-S3 & $E$ & 0 & AIxCC CRS & AIxCC: $P$; XBOW: $R$; ARTEMIS: $P$ \\
-S4 & $P,R,E$ & 3 & XBOW; AIxCC CRS; ARTEMIS & GTG-1002: uncertain \\
+ARTEMIS: $P,V$; GTG-1002: uncertain \\
+S1 & $R$ & 1 & XBOW & AIxCC: $P,E$; ARTEMIS: $P,V$; GTG-1002: uncertain \\
+S2 & $P$ & 0 & AIxCC CRS & AIxCC: $E$; XBOW: $R$; ARTEMIS: $V,R$ \\
+S3 & $E$ & 0 & AIxCC CRS & AIxCC: $P$; XBOW: $R$; ARTEMIS: $P,V$ \\
+S4 & $P,R,E$ & 2 & XBOW; AIxCC CRS & ARTEMIS: $V$; GTG-1002: uncertain \\
 \bottomrule
 \end{tabular}
 \end{table}
