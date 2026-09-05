@@ -8,7 +8,9 @@
 \usepackage{booktabs}
 \usepackage{xurl}
 \usepackage[pdfencoding=auto,bookmarks=false]{hyperref}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,
+  pdftitle={The Red Queen Runs on LLMs: Taxonomy, Evaluation, and Co-Evolution of LLM-Driven Cybersecurity},
+  pdfauthor={Aditya Singh}}
 \setlength{\aboverulesep}{0.2pt}
 \setlength{\belowrulesep}{0.2pt}
 \setlength{\heavyrulewidth}{0.04em}
@@ -1366,9 +1368,17 @@ S4 & $P,R,E$ & 2 & XBOW; AIxCC CRS & ARTEMIS: $V$; GTG-1002: uncertain \\
 \end{table}
 
 \FloatBarrier
+
 \twocolumn
-\renewcommand{\baselinestretch}{0.85}\selectfont
+\renewcommand{\baselinestretch}{0.80}\selectfont
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
+
+\vspace{2pt}
+\noindent\textbf{Data and Code Availability:} The paper source, bibliography, evidence corpus, and classification data are available at:
+\url{https://github.com/Nixon-H/The-Red-Queen-Runs-on-LLMs}.
+The repository includes the \texttt{evidence/autonomy-loop-assignments.csv} artifact
+containing record-level autonomy classifications and the complete bibliography tracking
+files referenced throughout this paper.
 
 \end{document}
